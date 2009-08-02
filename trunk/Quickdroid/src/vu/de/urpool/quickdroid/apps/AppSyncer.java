@@ -29,7 +29,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.os.IBinder;
 
-public class AppSyncer extends Service implements Runnable{
+public class AppSyncer extends Service implements Runnable {
 	public static final String APPS_SETTINGS = "AppsSettings";
 	private static final String[] APPS_PROJECTION = new String[] {
 	       "_ID", // 0

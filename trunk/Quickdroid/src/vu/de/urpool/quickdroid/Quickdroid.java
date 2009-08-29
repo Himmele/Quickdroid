@@ -49,6 +49,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Quickdroid extends ListActivity {
 	private static final int SETTINGS = Menu.FIRST;
+	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
 	private ArrayList<Launcher> mLaunchers;
 	private SearchResultComposer mSearchResultComposer;
 	private MRUListComposer mMRUListComposer;
@@ -351,7 +352,12 @@ public class Quickdroid extends ListActivity {
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
 		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
 		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, contentIntent);
-		notificationManager.notify(Preferences.QUICK_LAUNCH_THUMBNAIL_ID, notification);
+		notificationManager.notify(QUICK_LAUNCH_THUMBNAIL_ID, notification);
+	}
+	
+	public static final void deactivateQuickLaunch(Context context) {
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(QUICK_LAUNCH_THUMBNAIL_ID);
 	}
 }
 

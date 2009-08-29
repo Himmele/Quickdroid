@@ -18,10 +18,6 @@ package vu.de.urpool.quickdroid;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -54,16 +50,11 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String PREF_ALBUMS_PATTERN_MATCHING_LEVEL = "albumsPatternMatchingLevel";
 	public static final String PREF_SONGS_PATTERN_MATCHING_LEVEL = "songsPatternMatchingLevel";
 	public static final String PREFS_CHANGED = "prefsChanged";
-	public static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
-	
-	private NotificationManager mNM;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.layout.preferences);
-        
-        mNM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -83,16 +74,10 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	}
 	
 	private void activateQuickLaunch() {
-		Notification notification = new Notification(R.drawable.mini_app_thumbnail, null, 0);
-		Intent intent = new Intent(this, Quickdroid.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
-		notification.setLatestEventInfo(this, getText(R.string.appName), null, contentIntent);
-		mNM.notify(QUICK_LAUNCH_THUMBNAIL_ID, notification);
+		Quickdroid.activateQuickLaunch(this);
 	}
 
 	private void deactivateQuickLaunch() {
-		mNM.cancel(QUICK_LAUNCH_THUMBNAIL_ID);
+		Quickdroid.deactivateQuickLaunch(this);
 	}
 }

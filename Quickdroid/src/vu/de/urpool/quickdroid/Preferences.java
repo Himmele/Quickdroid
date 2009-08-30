@@ -55,7 +55,6 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.layout.preferences);
-        
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -63,21 +62,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		if (key.equals(PREF_QUICK_LAUNCH)) {
             if (preferences.getBoolean(key, true)) {
-            	activateQuickLaunch();
+            	Quickdroid.activateQuickLaunch(this);
             } else {
-            	deactivateQuickLaunch();
+            	Quickdroid.deactivateQuickLaunch(this);
             }
 		}
 		Intent data = new Intent();
 		data.putExtra(PREFS_CHANGED, true);
 		setResult(RESULT_OK, data);
-	}
-	
-	private void activateQuickLaunch() {
-		Quickdroid.activateQuickLaunch(this);
-	}
-
-	private void deactivateQuickLaunch() {
-		Quickdroid.deactivateQuickLaunch(this);
 	}
 }

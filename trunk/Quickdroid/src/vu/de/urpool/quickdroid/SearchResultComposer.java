@@ -129,9 +129,8 @@ public class SearchResultComposer extends BaseAdapter {
 			mQuickdroid.setProgressBarIndeterminateVisibility(true);
 			mClearSuggestions = true;
 			mNumDoneSearchers = 0;
-			String upperCaseSearchText = searchText.toUpperCase();
 			for (int i = 0; i < mNumLaunchers; i++) {
-				mSearchers.get(i).search(upperCaseSearchText);
+				mSearchers.get(i).search(searchText.toLowerCase());
 			}			
 		} else {
 			mSuggestions.clear();

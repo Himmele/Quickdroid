@@ -65,14 +65,14 @@ public class AlbumLauncher extends Launcher {
 			case PatternMatchingLevel.TOP:
 				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"UPPER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?",
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?",
 					new String[] { searchText },
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"UPPER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND length("
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND length("
 						+ MediaStore.Audio.Albums.ALBUM + ") > " + searchText.length(),
 					new String[] { searchText + "%" },
 					MediaStore.Audio.Albums.ALBUM + " ASC");
@@ -80,7 +80,7 @@ public class AlbumLauncher extends Launcher {
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"UPPER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND UPPER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND LOWER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
 					new String[] { "%" + searchText + "%", searchText + "%" }, 
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;
@@ -92,7 +92,7 @@ public class AlbumLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"UPPER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND UPPER(" 
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND LOWER(" 
 						+ MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" },
 					MediaStore.Audio.Albums.ALBUM + " ASC");

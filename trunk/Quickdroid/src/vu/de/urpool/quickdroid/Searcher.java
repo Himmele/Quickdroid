@@ -72,12 +72,12 @@ public class Searcher extends Handler {
 			mPatternMatchingLevel = patternMatchingLevel;
 			mOffset = offset;
 			mLimit = limit;
+			mSearchResult.searchText = mSearchText;
+			mSearchResult.patternMatchingLevel = mPatternMatchingLevel;
 		}
 		
 		@Override
 		public void run() {			
-			mSearchResult.searchText = mSearchText;
-			mSearchResult.patternMatchingLevel = mPatternMatchingLevel;
 			mSearchResult.suggestions = mLauncher.getSuggestions(mSearchText, mPatternMatchingLevel, mOffset, mLimit);
 			Message msg = obtainMessage();
 			msg.arg1 = EVENT_ARG_PUBLISH_SUGGESTIONS;
@@ -86,7 +86,6 @@ public class Searcher extends Handler {
 		}
 		
 		public void cancel() {
-			mSearchText = null;
 			mSearchResult.searchText = null;
 		}
 	}

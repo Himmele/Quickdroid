@@ -64,7 +64,7 @@ public class BookmarkLauncher extends Launcher {
 			case PatternMatchingLevel.TOP:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI, 
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND UPPER(" 
+					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER(" 
 						+ Browser.BookmarkColumns.TITLE + ") LIKE ?", 
 					new String[] { searchText }, 
 					Browser.BookmarkColumns.TITLE + " ASC");
@@ -72,7 +72,7 @@ public class BookmarkLauncher extends Launcher {
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI,
 					BOOKMARKS_PROJECTION, 
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND UPPER(" 
+					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER(" 
 						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND length("
 						+ Browser.BookmarkColumns.TITLE + ") > " + searchText.length(), 
 					new String[] { searchText + "%" }, 
@@ -81,8 +81,8 @@ public class BookmarkLauncher extends Launcher {
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI,
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND UPPER("
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND UPPER("
+					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER("
+						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND LOWER("
 						+ Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
 					new String[] { "%" + searchText + "%", searchText + "%" }, 
 					Browser.BookmarkColumns.TITLE + " ASC");
@@ -95,8 +95,8 @@ public class BookmarkLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI, 
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND UPPER("
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND UPPER("
+					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER("
+						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND LOWER("
 						+ Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" }, 
 					Browser.BookmarkColumns.TITLE + " ASC");

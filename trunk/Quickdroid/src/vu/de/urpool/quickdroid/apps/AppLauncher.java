@@ -65,19 +65,19 @@ public class AppLauncher extends Launcher {
 		switch(patternMatchingLevel) {
 		case PatternMatchingLevel.TOP:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
-				"UPPER(Label) LIKE ?", 
+				"LOWER(Label) LIKE ?", 
 				new String[] { searchText }, 
 				"Label");
 			break;
 		case PatternMatchingLevel.HIGH:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
-				"UPPER(Label) LIKE ? AND length(Label) > " + searchText.length(), 
+				"LOWER(Label) LIKE ? AND length(Label) > " + searchText.length(), 
 				new String[] { searchText + "%" },
 				"Label");
 			break;
 		case PatternMatchingLevel.MIDDLE:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
-				"UPPER(Label) LIKE ? AND UPPER(Label) NOT LIKE ?", 
+				"LOWER(Label) LIKE ? AND LOWER(Label) NOT LIKE ?", 
 				new String[] { "%" + searchText + "%", searchText + "%" }, 
 				"Label");
 			break;
@@ -88,7 +88,7 @@ public class AppLauncher extends Launcher {
 			}
 			searchPattern += "%";
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
-				"UPPER(Label) LIKE ? AND UPPER(Label) NOT LIKE ?", 
+				"LOWER(Label) LIKE ? AND LOWER(Label) NOT LIKE ?", 
 				new String[] { searchPattern, "%" + searchText + "%" }, 
 				"Label");
 			break;

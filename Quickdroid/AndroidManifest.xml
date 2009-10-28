@@ -15,8 +15,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="12"
-    android:versionName="2.5">
+    android:versionCode="14"
+    android:versionName="2.5.2">
     <application android:icon="@drawable/app_thumbnail" android:label="@string/appName">
         <activity android:name=".Quickdroid"
             android:label="@string/appName"                  
@@ -49,5 +49,5 @@
     </application>
 	<uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
-	<uses-sdk android:minSdkVersion="3"/>
+	<uses-sdk android:minSdkVersion="4"/>
 </manifest> 

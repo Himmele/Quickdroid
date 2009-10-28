@@ -41,7 +41,7 @@
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"
             android:singleLine="true"
-            android:defaultValue="10"
+            android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchApps"
             quickdroid:minValue="1"
@@ -68,7 +68,7 @@
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"
             android:singleLine="true"
-            android:defaultValue="10"
+            android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchContacts"
             quickdroid:minValue="1"
@@ -95,7 +95,7 @@
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"
             android:singleLine="true"
-            android:defaultValue="10"
+            android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchBookmarks"
             quickdroid:minValue="1"
@@ -117,7 +117,7 @@
 	    android:key="artistsSettings">
 	    <CheckBoxPreference android:key="searchArtists"
 	        android:title="@string/searchArtists"
-	        android:defaultValue="true"/>
+	        android:defaultValue="false"/>
 	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="artistsNumSuggestions" 
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"
@@ -144,7 +144,7 @@
 	    android:key="albumsSettings">
 	    <CheckBoxPreference android:key="searchAlbums"
 	        android:title="@string/searchAlbums"
-	        android:defaultValue="true"/>
+	        android:defaultValue="false"/>
 	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="albumsNumSuggestions" 
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"
@@ -171,7 +171,7 @@
 	    android:key="songsSettings">
 	    <CheckBoxPreference android:key="searchSongs"
 	        android:title="@string/searchSongs"
-	        android:defaultValue="true"/>
+	        android:defaultValue="false"/>
 	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="songsNumSuggestions" 
             android:title="@string/suggestions"
             android:summary="@string/maxNumSuggestions"

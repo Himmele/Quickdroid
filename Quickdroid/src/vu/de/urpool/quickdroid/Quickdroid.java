@@ -133,7 +133,7 @@ public class Quickdroid extends ListActivity {
 		if (settings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
 	    	AppLauncher appLauncher = new AppLauncher(this);
 	    	String strNumSuggestions = settings.getString(Preferences.PREF_APPS_NUM_SUGGESTIONS,
-		    	Preferences.DEFAULT_NUM_SUGGESTIONS_10);
+		    	Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 	    	try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		appLauncher.setMaxSuggestions(numSuggestions);
@@ -152,7 +152,7 @@ public class Quickdroid extends ListActivity {
 		if (settings.getBoolean(Preferences.PREF_SEARCH_CONTACTS, Preferences.SEARCH_LAUNCHER)) {
 			ContactLauncher contactLauncher = new ContactLauncher(this);
 			String strNumSuggestions = settings.getString(Preferences.PREF_CONTACTS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_10);
+				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		contactLauncher.setMaxSuggestions(numSuggestions);
@@ -171,7 +171,7 @@ public class Quickdroid extends ListActivity {
 		if (settings.getBoolean(Preferences.PREF_SEARCH_BOOKMARKS, Preferences.SEARCH_LAUNCHER)) {
 			BookmarkLauncher bookmarkLauncher = new BookmarkLauncher(this);
 			String strNumSuggestions = settings.getString(Preferences.PREF_BOOKMARKS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_10);
+				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		bookmarkLauncher.setMaxSuggestions(numSuggestions);
@@ -187,7 +187,7 @@ public class Quickdroid extends ListActivity {
 			mLaunchers.add(mLauncherIndex++, bookmarkLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.SEARCH_LAUNCHER)) {
+		if (settings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			ArtistLauncher artistLauncher = new ArtistLauncher(this);
 			String strNumSuggestions = settings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
@@ -206,7 +206,7 @@ public class Quickdroid extends ListActivity {
 			mLaunchers.add(mLauncherIndex++, artistLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.SEARCH_LAUNCHER)) {
+		if (settings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			AlbumLauncher albumLauncher = new AlbumLauncher(this);
 			String strNumSuggestions = settings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
@@ -225,7 +225,7 @@ public class Quickdroid extends ListActivity {
 			mLaunchers.add(mLauncherIndex++, albumLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.SEARCH_LAUNCHER)) {
+		if (settings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			SongLauncher songLauncher = new SongLauncher(this);
 			String strNumSuggestions = settings.getString(Preferences.PREF_SONGS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
@@ -320,7 +320,7 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 12) {
+		if (versionCode < 14) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -339,7 +339,7 @@ public class Quickdroid extends ListActivity {
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 12);
+			editor.putInt("versionCode", 14);
 			editor.commit();
 		}
 	}

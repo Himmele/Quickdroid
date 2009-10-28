@@ -85,14 +85,14 @@ public class ContactLauncher extends Launcher {
 			case PatternMatchingLevel.TOP:
 				cursor = mContentResolver.query(MY_CONTACTS, 
 					CONTACTS_PROJECTION,
-					"UPPER(" + Contacts.People.NAME + ") LIKE ?", 
+					"LOWER(" + Contacts.People.NAME + ") LIKE ?", 
 					new String[] { searchText }, 
 					Contacts.People.DEFAULT_SORT_ORDER);
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MY_CONTACTS,
 					CONTACTS_PROJECTION, 
-					"UPPER(" + Contacts.People.NAME + ") LIKE ? AND length("
+					"LOWER(" + Contacts.People.NAME + ") LIKE ? AND length("
 						+ Contacts.People.NAME + ") > " + searchText.length(), 
 					new String[] { searchText + "%" }, 
 					Contacts.People.DEFAULT_SORT_ORDER);
@@ -100,8 +100,8 @@ public class ContactLauncher extends Launcher {
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MY_CONTACTS,
 					CONTACTS_PROJECTION,
-					"UPPER(" + Contacts.People.NAME + ") LIKE ? AND UPPER(" + Contacts.People.NAME + ") NOT LIKE ?",
-					new String[] { "%" + searchText + "%", searchText + "%" },  
+					"LOWER(" + Contacts.People.NAME + ") LIKE ? AND LOWER(" + Contacts.People.NAME + ") NOT LIKE ?",
+					new String[] { "%" + searchText + "%", searchText + "%" },
 					Contacts.People.DEFAULT_SORT_ORDER);
 				break;
 			case PatternMatchingLevel.LOW:
@@ -112,7 +112,7 @@ public class ContactLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MY_CONTACTS, 
 					CONTACTS_PROJECTION,
-					"UPPER(" + Contacts.People.NAME + ") LIKE ? AND UPPER("
+					"LOWER(" + Contacts.People.NAME + ") LIKE ? AND LOWER("
 						+ Contacts.People.NAME + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" },  
 					Contacts.People.DEFAULT_SORT_ORDER);

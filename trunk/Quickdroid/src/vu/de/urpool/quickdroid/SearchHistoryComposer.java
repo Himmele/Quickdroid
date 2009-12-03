@@ -39,10 +39,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MRUListComposer extends BaseAdapter {
-	private static final String MRU_LIST_TABLE = "MRUList";
+public class SearchHistoryComposer extends BaseAdapter {
+	private static final String SEARCH_HISTORY_DB = "SearchHistory";
 	
-	private static final String[] MRU_LIST_PROJECTION = new String[] {
+	private static final String[] SEARCH_HISTORY_PROJECTION = new String[] {
        "_ID", // 0
         "LauncherID", // 1
         "LaunchableID" // 2
@@ -51,27 +51,27 @@ public class MRUListComposer extends BaseAdapter {
 	private static final int LAUNCHER_ID_COLUMN_INDEX = 1;
 	private static final int LAUNCHABLE_ID_COLUMN_INDEX = 2;
 	
-	private static final int EVENT_ARG_INIT_MRU_LIST = 1;
-    private static final int EVENT_ARG_ADD_LAUNCHABLE_TO_MRU_LIST_DB = 2;
+	private static final int EVENT_ARG_INIT_SEARCH_HISTORY = 1;
+    private static final int EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY = 2;
 	
 	private static HandlerThread sHandlerThread = null;
 	
 	private final Quickdroid mQuickdroid;
 	private final Context mContext;
 	private final LayoutInflater mLayoutInflater;
-	private final MRUListWorker mMRUListWorker;
+	private final SearchHistoryWorker mSearchHistoryWorker;
 	private final ArrayList<Launcher> mLaunchers;
 	private final int mNumLaunchers;
 	private final HashMap<Integer, Integer> mLauncherIndexes;
 	private Vector<Launchable> mSuggestions = new Vector<Launchable>();
-	private int mMaxMruListSize = 10;
-	private boolean mCancelInitMRUList = false;
+	private int mMaxSearchHistorySize = 10;
+	private boolean mCancelInitSearchHistory = false;
 	
-	private static class MRUListDatabase extends SQLiteOpenHelper {
-		private static final String DB_NAME = "MRUList.db";
+	private static class SearchHistoryDatabase extends SQLiteOpenHelper {
+		private static final String DB_NAME = "SearchHistory.db";
 		private static final int DB_VERSION = 2;
 		
-		public MRUListDatabase(Context context) {
+		public SearchHistoryDatabase(Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
 		}
 
@@ -87,9 +87,9 @@ public class MRUListComposer extends BaseAdapter {
 		
 		private void updateDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
 			if (oldVersion < 2) {
-				db.execSQL("DROP TABLE IF EXISTS " + MRU_LIST_TABLE);				
+				db.execSQL("DROP TABLE IF EXISTS " + SEARCH_HISTORY_DB);				
 			}
-			db.execSQL("CREATE TABLE IF NOT EXISTS " + MRU_LIST_TABLE + " ( "
+			db.execSQL("CREATE TABLE IF NOT EXISTS " + SEARCH_HISTORY_DB + " ( "
 				+ "_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ "LauncherID INTEGER, "
 				+ "LaunchableID INTEGER "
@@ -97,33 +97,33 @@ public class MRUListComposer extends BaseAdapter {
 		}
 	}
 	
-	private class MRUListWorker extends Handler {
-		private final AsyncMRUListWorker mAsyncMRUListWorker;
-		private final MRUListDatabase mMRUListDatabase;
+	private class SearchHistoryWorker extends Handler {
+		private final AsyncSearchHistoryWorker mAsyncSearchHistoryWorker;
+		private final SearchHistoryDatabase mSearchHistoryDatabase;
 		
-		public MRUListWorker(Context context) {
-			synchronized (MRUListWorker.class) {
+		public SearchHistoryWorker(Context context) {
+			synchronized (SearchHistoryWorker.class) {
 	            if (sHandlerThread == null) {
-	            	sHandlerThread = new HandlerThread("MRUListWorker");
+	            	sHandlerThread = new HandlerThread("SearchHistoryWorker");
 	            	sHandlerThread.start();
 	            }
 			}
-			mAsyncMRUListWorker = new AsyncMRUListWorker(sHandlerThread.getLooper());
-			mMRUListDatabase = new MRUListDatabase(context);
+			mAsyncSearchHistoryWorker = new AsyncSearchHistoryWorker(sHandlerThread.getLooper());
+			mSearchHistoryDatabase = new SearchHistoryDatabase(context);
 		}
 		
-		public void initMRUList() {
-			Message msg = mAsyncMRUListWorker.obtainMessage();
-			msg.arg1 = EVENT_ARG_INIT_MRU_LIST;
-			msg.obj = mMRUListWorker;
-			mAsyncMRUListWorker.sendMessage(msg);
+		public void initSearchHistory() {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+			msg.arg1 = EVENT_ARG_INIT_SEARCH_HISTORY;
+			msg.obj = mSearchHistoryWorker;
+			mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
-		public void addLaunchableToMRUListDB(Launchable launchable) {
-			Message msg = mAsyncMRUListWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_ADD_LAUNCHABLE_TO_MRU_LIST_DB;
+		public void addLaunchableToSearchHistory(Launchable launchable) {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+	        msg.arg1 = EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY;
 	        msg.obj = launchable;
-	        mAsyncMRUListWorker.sendMessage(msg);
+	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
 		@Override
@@ -131,14 +131,14 @@ public class MRUListComposer extends BaseAdapter {
 			int event = msg.arg1;
 			Launchable launchable = (Launchable) msg.obj;
 	        switch (event) {
-	            case EVENT_ARG_INIT_MRU_LIST:
+	            case EVENT_ARG_INIT_SEARCH_HISTORY:
 	            	addLaunchable(launchable, false, false);
 	            	break;
 	        }
 		}
 		
-		private class AsyncMRUListWorker extends Handler {
-			public AsyncMRUListWorker(Looper looper) {
+		private class AsyncSearchHistoryWorker extends Handler {
+			public AsyncSearchHistoryWorker(Looper looper) {
 				super(looper);
 	        }
 	
@@ -146,34 +146,34 @@ public class MRUListComposer extends BaseAdapter {
 	        public void handleMessage(Message msg) {
 				int event = msg.arg1;
 	            switch (event) {
-	                case EVENT_ARG_INIT_MRU_LIST:
+	                case EVENT_ARG_INIT_SEARCH_HISTORY:
 	                {
-	                	initMRUList(msg);
+	                	initSearchHistory(msg);
 	                	break;
 	                }
-	                case EVENT_ARG_ADD_LAUNCHABLE_TO_MRU_LIST_DB:
+	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
 	                {
-	                	addLaunchableToMRUListDB(msg);
+	                	addLaunchableToSearchHistory(msg);
 	                	break;
 	                }
 	            }
 			}
 
-			private void initMRUList(Message msg) {
+			private void initSearchHistory(Message msg) {
 				Handler handler = (Handler) msg.obj;
 				SQLiteDatabase db;
 				try {
-					db = mMRUListDatabase.getWritableDatabase();
+					db = mSearchHistoryDatabase.getWritableDatabase();
 				} catch (SQLiteException e) {
 					db = null;
 				}
 				if (db != null) {
-					Cursor cursor = db.rawQuery("SELECT _ID, LauncherID, LaunchableID FROM " + MRU_LIST_TABLE
-						+ " ORDER BY _ID DESC LIMIT " + mMaxMruListSize, null);
+					Cursor cursor = db.rawQuery("SELECT _ID, LauncherID, LaunchableID FROM " + SEARCH_HISTORY_DB
+						+ " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
 					if(cursor != null) {
 						if(cursor.getCount() > 0) {
 							cursor.moveToFirst();
-							while(!cursor.isAfterLast() && !mCancelInitMRUList) {
+							while(!cursor.isAfterLast() && !mCancelInitSearchHistory) {
 								int launcherId = cursor.getInt(LAUNCHER_ID_COLUMN_INDEX);
 								int launchableId = cursor.getInt(LAUNCHABLE_ID_COLUMN_INDEX);
 								Integer launcherIndex = mLauncherIndexes.get(launcherId);
@@ -202,26 +202,26 @@ public class MRUListComposer extends BaseAdapter {
         		AppSyncer.start(mContext);
 			}
 			
-			private void addLaunchableToMRUListDB(Message msg) {
+			private void addLaunchableToSearchHistory(Message msg) {
 				Launchable launchable = (Launchable) msg.obj;
 				SQLiteDatabase db;
 				try {
-					db = mMRUListDatabase.getWritableDatabase();
+					db = mSearchHistoryDatabase.getWritableDatabase();
 				} catch (SQLiteException e) {
 					db = null;
 				}
 				if (db != null) {
-					db.execSQL("DELETE FROM " + MRU_LIST_TABLE
+					db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB
 						+ " WHERE LauncherID = " + launchable.getLauncher().getId() + " AND LaunchableID = " + launchable.getId());
-					db.execSQL("INSERT INTO " + MRU_LIST_TABLE + " (LauncherID, LaunchableID) VALUES "
+					db.execSQL("INSERT INTO " + SEARCH_HISTORY_DB + " (LauncherID, LaunchableID) VALUES "
 						+ "('" + launchable.getLauncher().getId() + "', '" 
 						+ launchable.getId() + "');");
-					Cursor cursor = db.rawQuery("SELECT _ID FROM " + MRU_LIST_TABLE + " ORDER BY _ID DESC LIMIT " + mMaxMruListSize, null);
+					Cursor cursor = db.rawQuery("SELECT _ID FROM " + SEARCH_HISTORY_DB + " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
 					if(cursor != null) {
-						if(cursor.getCount() >= mMaxMruListSize) {
+						if(cursor.getCount() >= mMaxSearchHistorySize) {
 							cursor.moveToLast();
 							int id = cursor.getInt(ID_COLUMN_INDEX);
-							db.execSQL("DELETE FROM " + MRU_LIST_TABLE + " WHERE _ID < " + id);
+							db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB + " WHERE _ID < " + id);
 						}
 						cursor.close();
 					}
@@ -231,11 +231,11 @@ public class MRUListComposer extends BaseAdapter {
 		}
 	}
 	
-	public MRUListComposer(Quickdroid quickdroid) {
+	public SearchHistoryComposer(Quickdroid quickdroid) {
 		mQuickdroid = quickdroid;
 		mContext = quickdroid;
 		mLayoutInflater = LayoutInflater.from(mQuickdroid);
-		mMRUListWorker = new MRUListWorker(mContext);
+		mSearchHistoryWorker = new SearchHistoryWorker(mContext);
 		mLaunchers = mQuickdroid.getLaunchers();
 		mNumLaunchers = mLaunchers.size();
 		mLauncherIndexes = new HashMap<Integer, Integer>(mNumLaunchers);
@@ -245,21 +245,21 @@ public class MRUListComposer extends BaseAdapter {
 		}
 		
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(quickdroid);
-		String strMaxMruListSize = settings.getString(Preferences.PREF_MAX_MRU_LIST_SIZE,
-			Preferences.DEFAULT_MRU_LIST_SIZE);
+		String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
+			Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 		try {
-			mMaxMruListSize = Integer.parseInt(strMaxMruListSize);
+			mMaxSearchHistorySize = Integer.parseInt(strMaxSearchHistorySize);
     	} catch (NumberFormatException e) {	
     	}
     	
-    	mMRUListWorker.initMRUList();
+    	mSearchHistoryWorker.initSearchHistory();
 	}
 	
 	public void onDestroy() {
-		mCancelInitMRUList = true;
+		mCancelInitSearchHistory = true;
 	}
 	
-	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateMRUListDB) {
+	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateSearchHistory) {
 		for (Launchable l : mSuggestions) {
 			if (launchable.getId() == l.getId() &&
 					launchable.getLauncher().getId() == l.getLauncher().getId()) {
@@ -272,12 +272,12 @@ public class MRUListComposer extends BaseAdapter {
 		} else {
 			mSuggestions.add(launchable);
 		}
-		if (mSuggestions.size() > mMaxMruListSize) {
-			mSuggestions.setSize(mMaxMruListSize);
+		if (mSuggestions.size() > mMaxSearchHistorySize) {
+			mSuggestions.setSize(mMaxSearchHistorySize);
 		}
 		notifyDataSetChanged();
-		if (updateMRUListDB) {
-			mMRUListWorker.addLaunchableToMRUListDB(launchable);			
+		if (updateSearchHistory) {
+			mSearchHistoryWorker.addLaunchableToSearchHistory(launchable);			
 		}
 	}
 	

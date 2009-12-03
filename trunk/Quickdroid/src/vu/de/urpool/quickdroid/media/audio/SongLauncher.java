@@ -119,8 +119,8 @@ public class SongLauncher extends Launcher {
  				while(!cursor.isAfterLast() && i++ < limit) {
  					SongLaunchable launchable = new SongLaunchable(this,
 						cursor.getInt(ID_COLUMN_INDEX),
-						cursor.getString(TITLE_COLUMN_INDEX), cursor.getString(ALBUM_COLUMN_INDEX) 
-							+ " - " + cursor.getString(ARTIST_COLUMN_INDEX));
+						cursor.getString(TITLE_COLUMN_INDEX), cursor.getString(ARTIST_COLUMN_INDEX) 
+							+ " - " + cursor.getString(ALBUM_COLUMN_INDEX));
 					suggestions.add(launchable);
  					cursor.moveToNext();
  				}
@@ -140,7 +140,7 @@ public class SongLauncher extends Launcher {
  				cursor.moveToFirst();
  				launchable = new SongLaunchable(this,
 					cursor.getInt(ID_COLUMN_INDEX),
-					cursor.getString(TITLE_COLUMN_INDEX), cursor.getString(ALBUM_COLUMN_INDEX) + " - " + cursor.getString(ARTIST_COLUMN_INDEX));
+					cursor.getString(TITLE_COLUMN_INDEX), cursor.getString(ARTIST_COLUMN_INDEX) + " - " + cursor.getString(ALBUM_COLUMN_INDEX));
  			}
  			cursor.close();
 		}

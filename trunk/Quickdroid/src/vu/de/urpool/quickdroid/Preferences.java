@@ -24,8 +24,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
-	public static final String PREF_MAX_MRU_LIST_SIZE = "maxMRUListSize";
-	public static final String DEFAULT_MRU_LIST_SIZE = "10";
+	public static final String PREF_MAX_SEARCH_HISTORY_SIZE = "maxSearchHistorySize";
+	public static final String DEFAULT_SEARCH_HISTORY_SIZE = "10";
 	public static boolean SEARCH_LAUNCHER = true;
 	public static boolean DO_NOT_SEARCH_LAUNCHER = false;
 	public static final String PREF_SEARCH_APPS = "searchApps";

@@ -53,7 +53,7 @@ public class Quickdroid extends ListActivity {
 	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
 	private ArrayList<Launcher> mLaunchers;
 	private SearchResultComposer mSearchResultComposer;
-	private MRUListComposer mMRUListComposer;
+	private SearchHistoryComposer mSearchHistoryComposer;
 	private BaseAdapter mListAdapter;
 	private EditText mSearchText;
 	private Launchable mActiveLaunchable;
@@ -82,8 +82,8 @@ public class Quickdroid extends ListActivity {
         mSearchText.setCompoundDrawablesWithIntrinsicBounds(null, null, this.getResources().getDrawable(R.drawable.search), null);
 		
 		mSearchResultComposer = new SearchResultComposer(this);
-		mMRUListComposer = new MRUListComposer(this);
-		setListAdapter(mMRUListComposer);
+		mSearchHistoryComposer = new SearchHistoryComposer(this);
+		setListAdapter(mSearchHistoryComposer);
         
         mSearchText.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -101,7 +101,7 @@ public class Quickdroid extends ListActivity {
 					setListAdapter(mSearchResultComposer);
 					mSearchResultComposer.search(mSearchText.getText().toString());	
 				} else {
-					setListAdapter(mMRUListComposer);
+					setListAdapter(mSearchHistoryComposer);
 					mSearchResultComposer.search(null);
 				}
 			}
@@ -248,7 +248,7 @@ public class Quickdroid extends ListActivity {
 	
 	@Override
 	public void onDestroy() {
-		mMRUListComposer.onDestroy();
+		mSearchHistoryComposer.onDestroy();
 		mSearchResultComposer.onDestroy();
 		super.onDestroy();
 	}
@@ -286,7 +286,7 @@ public class Quickdroid extends ListActivity {
 	public void activateLaunchable(Launchable launchable) {
 		mActiveLaunchable = launchable;
 		if (mActiveLaunchable.activate()) {
-			mMRUListComposer.addLaunchable(launchable, true, true);
+			mSearchHistoryComposer.addLaunchable(launchable, true, true);
 		}
 	}
 	
@@ -321,7 +321,7 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 14) {
+		if (versionCode < 15) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -340,7 +340,7 @@ public class Quickdroid extends ListActivity {
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 14);
+			editor.putInt("versionCode", 15);
 			editor.commit();
 		}
 	}
@@ -350,9 +350,9 @@ public class Quickdroid extends ListActivity {
 		Notification notification = new Notification(R.drawable.mini_app_thumbnail, null, 0);
 		Intent quickdroidIntent = new Intent(context, Quickdroid.class);
 		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
 		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
-		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, contentIntent);
+		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, pendingIntent);
 		notificationManager.notify(QUICK_LAUNCH_THUMBNAIL_ID, notification);
 	}
 	

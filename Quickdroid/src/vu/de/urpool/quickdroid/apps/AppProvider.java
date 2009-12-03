@@ -141,7 +141,7 @@ public class AppProvider extends ContentProvider {
 	
 	private void insert(SQLiteDatabase db, ContentValues values) {
 		Object object = values.get("label");
-		String appLabel = (object == null ? "" : object.toString().replace("'", "''")); // escape apostrophes in SQL string
+		String appLabel = (object == null ? "" : object.toString().replace("'", "''")); // escape apostrophes inside of SQL strings
 		values.remove("label");
 		
 		object = values.get("package");

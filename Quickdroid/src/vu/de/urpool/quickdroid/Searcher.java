@@ -28,7 +28,7 @@ import android.os.Message;
 
 public class Searcher extends Handler {
 	public static final int MIN_CORE_POOL_SIZE = 1;
-    private static final int MAXIMUM_POOL_SIZE = 10;
+    private static final int MAXIMUM_POOL_SIZE = 4;
     private static final int KEEP_ALIVE = 10;
 
     private static final AtomicInteger sNumSearchers = new AtomicInteger(0);

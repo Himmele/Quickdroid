@@ -168,7 +168,7 @@ public class SearchResultComposer extends BaseAdapter {
 	
 	public void onDone(Searcher searcher) {
 		mNumDoneSearchers++;
-		if (mNumDoneSearchers == mSearchers.size()) {
+		if (mNumDoneSearchers >= mSearchers.size()) {
 			if (mClearSuggestions) {
 				mClearSuggestions = false;
 				mSuggestions.clear();

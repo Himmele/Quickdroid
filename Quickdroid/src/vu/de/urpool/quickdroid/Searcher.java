@@ -28,13 +28,14 @@ import android.os.Message;
 
 public class Searcher extends Handler {
 	public static final int MIN_CORE_POOL_SIZE = 1;
-    private static final int MAXIMUM_POOL_SIZE = 5;
+    private static final int MAX_POOL_SIZE = 5;
+    private static final int MAX_QUEUE_SIZE = 10;
     private static final int KEEP_ALIVE = 10;
 
     private static final AtomicInteger sNumSearchers = new AtomicInteger(0);
     
     private static final BlockingQueue<Runnable> sWorkQueue =
-    	new ArrayBlockingQueue<Runnable>(MAXIMUM_POOL_SIZE);
+    	new ArrayBlockingQueue<Runnable>(MAX_QUEUE_SIZE);
 
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
@@ -46,7 +47,7 @@ public class Searcher extends Handler {
     };
 
     private static final ThreadPoolExecutor sExecutor = new ThreadPoolExecutor(MIN_CORE_POOL_SIZE,
-    	MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sWorkQueue, sThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
+    	MAX_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sWorkQueue, sThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
 
 	private static final int MAX_SUGGESTIONS_PER_QUERY = 8;
     private static final int EVENT_ARG_PUBLISH_SUGGESTIONS = 1;
@@ -77,7 +78,7 @@ public class Searcher extends Handler {
 		}
 		
 		@Override
-		public void run() {			
+		public void run() {
 			mSearchResult.suggestions = mLauncher.getSuggestions(mSearchText, mPatternMatchingLevel, mOffset, mLimit);
 			Message msg = obtainMessage();
 			msg.arg1 = EVENT_ARG_PUBLISH_SUGGESTIONS;
@@ -168,7 +169,7 @@ public class Searcher extends Handler {
 	
 	private static void setThreadPoolSize(int size) {
 		int corePoolSize = (size < MIN_CORE_POOL_SIZE) ? MIN_CORE_POOL_SIZE : size;
-		corePoolSize = (corePoolSize > MAXIMUM_POOL_SIZE) ? MAXIMUM_POOL_SIZE : corePoolSize;
+		corePoolSize = (corePoolSize > MAX_POOL_SIZE) ? MAX_POOL_SIZE : corePoolSize;
 		sExecutor.setCorePoolSize(corePoolSize);
 	}
 }

@@ -83,15 +83,12 @@ public class AppSyncer extends Service implements Runnable {
     	int syncState = settings.getInt("syncState", AppProvider.OUT_OF_SYNC);
 		do {
 			if (syncState != AppProvider.SYNC) {
-				try {
-					if (synchronize()) {
-						SharedPreferences.Editor editor = settings.edit();
-						syncState = AppProvider.SYNC;
-						editor.putInt("syncState", syncState);
-						editor.commit();			
-					}
-				} catch (Exception e) {
-	            }
+				if (synchronize()) {
+					SharedPreferences.Editor editor = settings.edit();
+					syncState = AppProvider.SYNC;
+					editor.putInt("syncState", syncState);
+					editor.commit();
+				}
 			}
 			
 			synchronized (this) {

@@ -48,6 +48,7 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Quickdroid extends ListActivity {
+	public static final String LOG_TAG = "Quickdroid";
 	private static final int SETTINGS = Menu.FIRST;
 	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
 	private ArrayList<Launcher> mLaunchers;

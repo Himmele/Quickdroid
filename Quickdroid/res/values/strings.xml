@@ -18,10 +18,12 @@
     <string name="appSettings">Settings</string>
     <string name="searchHint">Quickdroid Search</string>
     
+    <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
 	<string name="searchHistory">Search history</string>
-	<string name="maxSearchHistorySize">Set the maximal size of the search history</string>
+	<string name="recentlyUsedSuggestions">Recently used suggestions</string>
+	<string name="maxSearchHistorySize">Set the maximal number of recently used suggestions that are shown as search history</string>
     <string name="searchCategories">Search categories</string>
     <string name="appsSettings">Applications</string>
     <string name="appsSettingsSummary"></string>

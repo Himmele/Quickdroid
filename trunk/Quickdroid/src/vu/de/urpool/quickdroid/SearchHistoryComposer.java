@@ -116,7 +116,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 		public void initSearchHistory() {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
 			msg.arg1 = EVENT_ARG_INIT_SEARCH_HISTORY;
-			msg.obj = mSearchHistoryWorker;
+			msg.obj = this;
 			mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		

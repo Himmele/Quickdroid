@@ -285,24 +285,26 @@ public class SearchHistoryComposer extends BaseAdapter {
 	}
 	
 	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateSearchHistory) {
-		for (Launchable l : mSuggestions) {
-			if (launchable.getId() == l.getId() &&
-					launchable.getLauncher().getId() == l.getLauncher().getId()) {
-				mSuggestions.remove(l);
-				break;
+		if (mMaxSearchHistorySize > 0) {
+			for (Launchable l : mSuggestions) {
+				if (launchable.getId() == l.getId() &&
+						launchable.getLauncher().getId() == l.getLauncher().getId()) {
+					mSuggestions.remove(l);
+					break;
+				}
 			}
-		}
-		if (topOfList) {
-			mSuggestions.add(0, launchable);		
-		} else {
-			mSuggestions.add(launchable);
-		}
-		if (mSuggestions.size() > mMaxSearchHistorySize) {
-			mSuggestions.setSize(mMaxSearchHistorySize);
-		}
-		notifyDataSetChanged();
-		if (updateSearchHistory) {
-			mSearchHistoryWorker.addLaunchableToSearchHistory(launchable);			
+			if (topOfList) {
+				mSuggestions.add(0, launchable);		
+			} else {
+				mSuggestions.add(launchable);
+			}
+			if (mSuggestions.size() > mMaxSearchHistorySize) {
+				mSuggestions.setSize(mMaxSearchHistorySize);
+			}
+			notifyDataSetChanged();
+			if (updateSearchHistory) {
+				mSearchHistoryWorker.addLaunchableToSearchHistory(launchable);			
+			}
 		}
 	}
 	

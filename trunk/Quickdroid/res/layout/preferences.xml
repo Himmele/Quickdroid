@@ -15,18 +15,6 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:quickdroid="http://schemas.android.com/apk/res/vu.de.urpool.quickdroid">
-    <CheckBoxPreference android:key="quickLaunch"
-        android:title="@string/quickLaunch"
-        android:summary="@string/quickLaunchSummary"
-        android:defaultValue="true"/>
-    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="maxSearchHistorySize" 
-        android:title="@string/searchHistory"
-        android:summary="@string/maxSearchHistorySize"
-        android:singleLine="true"
-        android:defaultValue="10"
-        android:inputType="number"
-        quickdroid:minValue="0"
-        quickdroid:maxValue="20"/>
         
     <PreferenceCategory android:title="@string/searchCategories"/>
     
@@ -191,4 +179,23 @@
             android:dialogTitle="@string/patternMatchingDialogTitle"
             android:dependency="searchSongs"/>
 	</PreferenceScreen>
+	
+	<PreferenceCategory android:title="@string/searchHistory"/>
+	
+	<vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="maxSearchHistorySize" 
+        android:title="@string/recentlyUsedSuggestions"
+        android:summary="@string/maxSearchHistorySize"
+        android:singleLine="true"
+        android:defaultValue="10"
+        android:inputType="number"
+        quickdroid:minValue="0"
+        quickdroid:maxValue="20"/>
+        
+    <PreferenceCategory android:title="@string/miscellaneous"/>
+    
+    <CheckBoxPreference android:key="quickLaunch"
+        android:title="@string/quickLaunch"
+        android:summary="@string/quickLaunchSummary"
+        android:defaultValue="true"/>
+	
 </PreferenceScreen>

@@ -53,6 +53,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 	
 	private static final int EVENT_ARG_INIT_SEARCH_HISTORY = 1;
     private static final int EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY = 2;
+    private static final int EVENT_ARG_CLEAR_SEARCH_HISTORY = 3;
 	
 	private static HandlerThread sHandlerThread = null;
 	
@@ -126,6 +127,12 @@ public class SearchHistoryComposer extends BaseAdapter {
 	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
+		public void clearSearchHistory() {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+	        msg.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;
+	        mAsyncSearchHistoryWorker.sendMessage(msg);
+		}
+		
 		@Override
         public void handleMessage(Message msg) {
 			int event = msg.arg1;
@@ -154,6 +161,11 @@ public class SearchHistoryComposer extends BaseAdapter {
 	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
 	                {
 	                	addLaunchableToSearchHistory(msg);
+	                	break;
+	                }
+	                case EVENT_ARG_CLEAR_SEARCH_HISTORY:
+	                {
+	                	clearSearchHistory();
 	                	break;
 	                }
 	            }
@@ -228,6 +240,19 @@ public class SearchHistoryComposer extends BaseAdapter {
 					db.close();
 				}
 			}
+			
+			private void clearSearchHistory() {
+				SQLiteDatabase db;
+				try {
+					db = mSearchHistoryDatabase.getWritableDatabase();
+				} catch (SQLiteException e) {
+					db = null;
+				}
+				if (db != null) {
+					db.delete(SEARCH_HISTORY_DB, null, null);					
+					db.close();
+				}
+			}
 		}
 	}
 	
@@ -279,6 +304,12 @@ public class SearchHistoryComposer extends BaseAdapter {
 		if (updateSearchHistory) {
 			mSearchHistoryWorker.addLaunchableToSearchHistory(launchable);			
 		}
+	}
+	
+	public void clearSearchHistory() {
+		mSuggestions.clear();
+		notifyDataSetChanged();
+		mSearchHistoryWorker.clearSearchHistory();
 	}
 	
 	@Override

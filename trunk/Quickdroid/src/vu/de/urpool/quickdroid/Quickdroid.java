@@ -50,6 +50,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Quickdroid extends ListActivity {
 	public static final String LOG_TAG = "Quickdroid";
 	private static final int SETTINGS = Menu.FIRST;
+	private static final int CLEAR_SEARCH_HISTORY = Menu.FIRST + 1;
 	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
 	private ArrayList<Launcher> mLaunchers;
 	private SearchResultComposer mSearchResultComposer;
@@ -79,7 +80,7 @@ public class Quickdroid extends ListActivity {
 		mSearchText = (EditText) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
         mSearchText.setCompoundDrawablePadding(4);
-        mSearchText.setCompoundDrawablesWithIntrinsicBounds(null, null, this.getResources().getDrawable(R.drawable.search), null);
+        mSearchText.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.search), null);
 		
 		mSearchResultComposer = new SearchResultComposer(this);
 		mSearchHistoryComposer = new SearchHistoryComposer(this);
@@ -266,7 +267,12 @@ public class Quickdroid extends ListActivity {
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		if (getListAdapter() == mSearchHistoryComposer) {
+			MenuItem clearSearchHistory = menu.add(0, CLEAR_SEARCH_HISTORY, 0, R.string.clearSearchHistory);
+			clearSearchHistory.setIcon(R.drawable.clear_search_history);
+		}
 		MenuItem settings = menu.add(0, SETTINGS, 0, R.string.appSettings);
 		settings.setIcon(R.drawable.settings);
 		return true;
@@ -278,6 +284,9 @@ public class Quickdroid extends ListActivity {
 			case SETTINGS:
 				Intent intent = new Intent(this, Preferences.class);
 				startActivityForResult(intent, 42);
+				return true;
+			case CLEAR_SEARCH_HISTORY:
+				mSearchHistoryComposer.clearSearchHistory();
 				return true;
 		}
 		return super.onOptionsItemSelected(item);

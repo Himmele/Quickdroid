@@ -330,7 +330,7 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 15) {
+		if (versionCode < 16) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -349,7 +349,7 @@ public class Quickdroid extends ListActivity {
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 15);
+			editor.putInt("versionCode", 16);
 			editor.commit();
 		}
 	}

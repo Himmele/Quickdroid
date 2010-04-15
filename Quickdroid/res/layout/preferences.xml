@@ -197,5 +197,10 @@
         android:title="@string/quickLaunch"
         android:summary="@string/quickLaunchSummary"
         android:defaultValue="true"/>
+        
+    <CheckBoxPreference android:key="gestureRecognizer"
+        android:title="@string/gestureRecognizer"
+        android:summary="@string/gestureRecognizerSummary"
+        android:defaultValue="true"/>
 	
 </PreferenceScreen>

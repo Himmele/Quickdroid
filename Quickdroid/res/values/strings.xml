@@ -17,10 +17,11 @@
     <string name="appName">Quickdroid</string>
     <string name="appSettings">Settings</string>
     <string name="searchHint">Quickdroid Search</string>
-    
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
+	<string name="gestureRecognizer">Gesture recognizer</string>
+	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="searchHistory">Search history</string>
 	<string name="recentlyUsedSuggestions">Recently used suggestions</string>
 	<string name="maxSearchHistorySize">Set the maximal number of recently used suggestions that are shown as search history</string>

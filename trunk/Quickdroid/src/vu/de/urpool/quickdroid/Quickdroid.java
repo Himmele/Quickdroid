@@ -16,6 +16,7 @@ package vu.de.urpool.quickdroid;
  * limitations under the License.
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import vu.de.urpool.quickdroid.apps.AppLauncher;
 import vu.de.urpool.quickdroid.apps.AppProvider;
@@ -29,8 +30,15 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.Prediction;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,7 +55,7 @@ import android.view.MotionEvent;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class Quickdroid extends ListActivity {
+public class Quickdroid extends ListActivity implements OnGesturePerformedListener {
 	public static final String LOG_TAG = "Quickdroid";
 	private static final int SETTINGS = Menu.FIRST;
 	private static final int CLEAR_SEARCH_HISTORY = Menu.FIRST + 1;
@@ -59,6 +67,7 @@ public class Quickdroid extends ListActivity {
 	private EditText mSearchText;
 	private Launchable mActiveLaunchable;
 	private int mLauncherIndex = 0;
+	private GestureLibrary mGestureLibrary;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,10 +127,6 @@ public class Quickdroid extends ListActivity {
 			}
         });
         
-        SearchTextGestureDetector searchTextViewGestureDetector = 
-        	new SearchTextGestureDetector(mSearchText);
-        mSearchText.setOnTouchListener(searchTextViewGestureDetector);
-        
         ImageButton clearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
         clearSearchText.setOnClickListener(new OnClickListener() {
 			@Override
@@ -129,6 +134,26 @@ public class Quickdroid extends ListActivity {
 				mSearchText.setText("");
 			}
         });
+        
+        SearchTextGestureDetector searchTextViewGestureDetector = 
+        	new SearchTextGestureDetector(mSearchText);
+        mSearchText.setOnTouchListener(searchTextViewGestureDetector);
+        
+        GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
+        if (settings.getBoolean(Preferences.PREF_GESTURE_RECOGNIZER, true)) {
+	        File gesturesFile = new File(Environment.getExternalStorageDirectory() + File.separator + "gestures");
+	        if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED) && gesturesFile.exists()) {
+	        	mGestureLibrary = GestureLibraries.fromFile(gesturesFile);
+	        } else {
+	        	mGestureLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+	        }
+	        if (mGestureLibrary.load()) {
+	        	gestures.addOnGesturePerformedListener(this);
+	        	gestures.setGestureVisible(true);
+	        }
+        } else {        	
+        	gestures.setGestureVisible(false);
+        }
     }
 
 	private void createLaunchers(SharedPreferences settings) {
@@ -330,7 +355,7 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 16) {
+		if (versionCode < 17) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -349,7 +374,7 @@ public class Quickdroid extends ListActivity {
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 16);
+			editor.putInt("versionCode", 17);
 			editor.commit();
 		}
 	}
@@ -368,6 +393,30 @@ public class Quickdroid extends ListActivity {
 	public static final void deactivateQuickLaunch(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(QUICK_LAUNCH_THUMBNAIL_ID);
+	}
+	
+	public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+		ArrayList<Prediction> predictions = mGestureLibrary.recognize(gesture);
+		if (predictions.size() > 0) {
+			Prediction prediction = predictions.get(0);
+			if (prediction.score > 1.0) {
+				Editable searchText = mSearchText.getText();				
+				if ("del_one_char".equals(prediction.name)) {
+					if (searchText.length() > 0) {
+						searchText.delete(searchText.length() - 1, searchText.length());
+					}
+				} else if ("clear_search_text".equals(prediction.name)) {
+					searchText.clear();
+				} else {
+					if (prediction.name.startsWith("=")) {
+						searchText.clear();
+						searchText.append(prediction.name.substring(1));
+					} else {
+						searchText.append(prediction.name);
+					}
+				}
+			}
+		}
 	}
 }
 

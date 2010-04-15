@@ -26,6 +26,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
 	public static final String PREF_MAX_SEARCH_HISTORY_SIZE = "maxSearchHistorySize";
 	public static final String DEFAULT_SEARCH_HISTORY_SIZE = "10";
+	public static final String PREF_GESTURE_RECOGNIZER = "gestureRecognizer";
 	public static boolean SEARCH_LAUNCHER = true;
 	public static boolean DO_NOT_SEARCH_LAUNCHER = false;
 	public static final String PREF_SEARCH_APPS = "searchApps";

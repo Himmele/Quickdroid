@@ -40,6 +40,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -57,9 +58,11 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Quickdroid extends ListActivity implements OnGesturePerformedListener {
 	public static final String LOG_TAG = "Quickdroid";
-	private static final int SETTINGS = Menu.FIRST;
+	private static final int SETTINGS_MENU = Menu.FIRST;
 	private static final int CLEAR_SEARCH_HISTORY = Menu.FIRST + 1;
 	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
+	private static final int SETTINGS = 17;
+	private static final int VOICE_RECOGNIZER = 42;
 	private ArrayList<Launcher> mLaunchers;
 	private SearchResultComposer mSearchResultComposer;
 	private SearchHistoryComposer mSearchHistoryComposer;
@@ -127,6 +130,21 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
         });
         
+        if (settings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
+	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
+	        speechRecognizer.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH); 
+					intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.searchHint)); 
+					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+					intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+					startActivityForResult(intent, VOICE_RECOGNIZER); 
+				}
+	        });
+	        speechRecognizer.setVisibility(View.VISIBLE);
+        }
+        
         ImageButton clearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
         clearSearchText.setOnClickListener(new OnClickListener() {
 			@Override
@@ -150,6 +168,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        if (mGestureLibrary.load()) {
 	        	gestures.addOnGesturePerformedListener(this);
 	        	gestures.setGestureVisible(true);
+	        } else {
+	        	gestures.setGestureVisible(false);
 	        }
         } else {        	
         	gestures.setGestureVisible(false);
@@ -296,19 +316,19 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		menu.clear();
 		if (getListAdapter() == mSearchHistoryComposer) {
 			MenuItem clearSearchHistory = menu.add(0, CLEAR_SEARCH_HISTORY, 0, R.string.clearSearchHistory);
-			clearSearchHistory.setIcon(R.drawable.clear_search_history);
+			clearSearchHistory.setIcon(android.R.drawable.ic_menu_delete);
 		}
-		MenuItem settings = menu.add(0, SETTINGS, 0, R.string.appSettings);
-		settings.setIcon(R.drawable.settings);
+		MenuItem settings = menu.add(0, SETTINGS_MENU, 0, R.string.appSettings);
+		settings.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case SETTINGS:
+			case SETTINGS_MENU:
 				Intent intent = new Intent(this, Preferences.class);
-				startActivityForResult(intent, 42);
+				startActivityForResult(intent, SETTINGS);
 				return true;
 			case CLEAR_SEARCH_HISTORY:
 				mSearchHistoryComposer.clearSearchHistory();
@@ -341,9 +361,18 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 42) {
-			if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {
-				restart();
+		if (resultCode == RESULT_OK) {			
+			if (requestCode == VOICE_RECOGNIZER) { 
+				ArrayList<String> suggestions = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS); 
+				if (suggestions != null && suggestions.size() > 0) {
+					Editable editableText = mSearchText.getEditableText();
+					editableText.clear();
+					editableText.append(suggestions.get(0));
+				}
+			} else if (requestCode == SETTINGS) {
+				if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {
+					restart();
+				}
 			}
 		}
 	}
@@ -355,7 +384,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 17) {
+		if (versionCode < 18) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -374,7 +403,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 17);
+			editor.putInt("versionCode", 18);
 			editor.commit();
 		}
 	}

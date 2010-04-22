@@ -202,5 +202,10 @@
         android:title="@string/gestureRecognizer"
         android:summary="@string/gestureRecognizerSummary"
         android:defaultValue="true"/>
+        
+    <CheckBoxPreference android:key="speechRecognizer"
+        android:title="@string/speechRecognizer"
+        android:summary="@string/speechRecognizerSummary"
+        android:defaultValue="false"/>
 	
 </PreferenceScreen>

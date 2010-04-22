@@ -17,9 +17,9 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingTop="4px"
-    android:paddingLeft="4px"
-    android:paddingRight="4px">
+    android:paddingTop="4dip"
+    android:paddingLeft="4dip"
+    android:paddingRight="4dip">
 	<LinearLayout
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content">
@@ -36,6 +36,11 @@
 				android:imeOptions="actionDone"
 				android:layout_marginRight="4dip"/>
 	    </LinearLayout>
+	    <ImageButton android:id="@+id/speechRecognizer"
+			android:src="@drawable/speech_recognizer"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"/>
 	    <ImageButton android:id="@+id/clearSearchText"
 			android:src="@drawable/clear_search_text"
 			android:layout_width="wrap_content"

@@ -15,8 +15,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="17"
-    android:versionName="2.7">
+    android:versionCode="18"
+    android:versionName="2.7.1">
     <application android:icon="@drawable/app_thumbnail" android:label="@string/appName">
         <activity android:name=".Quickdroid"
             android:label="@string/appName"                  

@@ -201,7 +201,7 @@
     <CheckBoxPreference android:key="clearSearchTextOnResume"
         android:title="@string/clearSearchTextOnResume"
         android:summary="@string/clearSearchTextOnResumeSummary"
-        android:defaultValue="false"/>
+        android:defaultValue="true"/>
         
     <CheckBoxPreference android:key="gestureRecognizer"
         android:title="@string/gestureRecognizer"

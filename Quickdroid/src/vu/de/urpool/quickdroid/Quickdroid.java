@@ -75,6 +75,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private Launchable mActiveLaunchable;
 	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
+	private boolean mAllowClearSearchText = true;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,9 +188,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	@Override
     public void onResume() {
 		super.onResume();
-		if (mSettings.getBoolean(Preferences.PREF_CLEAR_SEARCH_TEXT, false)) {
+		if (mAllowClearSearchText && mSettings.getBoolean(Preferences.PREF_CLEAR_SEARCH_TEXT, true)) {
 			mSearchText.getEditableText().clear();
 		}
+		mAllowClearSearchText = true;
 	}
 	
 	@Override
@@ -384,6 +386,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 					Editable editableText = mSearchText.getEditableText();
 					editableText.clear();
 					editableText.append(suggestions.get(0));
+					mAllowClearSearchText = false;
 				}
 			} else if (requestCode == SETTINGS) {
 				if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {
@@ -400,7 +403,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 19) {
+		if (versionCode < 20) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -419,7 +422,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 19);
+			editor.putInt("versionCode", 20);
 			editor.commit();
 		}
 	}

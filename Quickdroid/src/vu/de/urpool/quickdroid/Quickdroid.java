@@ -18,6 +18,7 @@ package vu.de.urpool.quickdroid;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import vu.de.urpool.quickdroid.apps.AppLauncher;
 import vu.de.urpool.quickdroid.apps.AppProvider;
 import vu.de.urpool.quickdroid.apps.AppSyncer;
@@ -30,6 +31,8 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -135,12 +138,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View view) {
+				public void onClick(View view) {					
 					Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH); 
 					intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.searchHint)); 
 					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 					intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-					startActivityForResult(intent, VOICE_RECOGNIZER); 
+					List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 
+						PackageManager.MATCH_DEFAULT_ONLY);
+					if(list.size() > 0) {
+						startActivityForResult(intent, VOICE_RECOGNIZER);
+					}
 				}
 	        });
 	        speechRecognizer.setVisibility(View.VISIBLE);

@@ -20,6 +20,8 @@
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
+	<string name="clearSearchTextOnResume">Clear search text</string>
+	<string name="clearSearchTextOnResumeSummary">Clear search text whenever resuming Quickdroid</string>
 	<string name="gestureRecognizer">Gesture recognizer</string>
 	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="speechRecognizer">Speech recognizer</string>

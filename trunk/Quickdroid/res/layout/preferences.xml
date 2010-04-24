@@ -198,10 +198,15 @@
         android:summary="@string/quickLaunchSummary"
         android:defaultValue="true"/>
         
+    <CheckBoxPreference android:key="clearSearchTextOnResume"
+        android:title="@string/clearSearchTextOnResume"
+        android:summary="@string/clearSearchTextOnResumeSummary"
+        android:defaultValue="false"/>
+        
     <CheckBoxPreference android:key="gestureRecognizer"
         android:title="@string/gestureRecognizer"
         android:summary="@string/gestureRecognizerSummary"
-        android:defaultValue="true"/>
+        android:defaultValue="false"/>
         
     <CheckBoxPreference android:key="speechRecognizer"
         android:title="@string/speechRecognizer"

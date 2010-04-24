@@ -68,6 +68,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private SearchHistoryComposer mSearchHistoryComposer;
 	private BaseAdapter mListAdapter;
 	private EditText mSearchText;
+	private SharedPreferences mSettings;
 	private Launchable mActiveLaunchable;
 	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
@@ -83,11 +84,11 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
     		LinearLayout.LayoutParams.FILL_PARENT);
         setContentView(rootView, rootLayout);
         
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        checkSettings(settings);
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        checkSettings(mSettings);
         
         mLaunchers = new ArrayList<Launcher>();
-		createLaunchers(settings);
+		createLaunchers(mSettings);
 		
 		mSearchText = (EditText) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
@@ -130,7 +131,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
         });
         
-        if (settings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
+        if (mSettings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
@@ -158,7 +159,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         mSearchText.setOnTouchListener(searchTextViewGestureDetector);
         
         GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
-        if (settings.getBoolean(Preferences.PREF_GESTURE_RECOGNIZER, true)) {
+        if (mSettings.getBoolean(Preferences.PREF_GESTURE_RECOGNIZER, false)) {
 	        File gesturesFile = new File(Environment.getExternalStorageDirectory() + File.separator + "gestures");
 	        if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED) && gesturesFile.exists()) {
 	        	mGestureLibrary = GestureLibraries.fromFile(gesturesFile);
@@ -175,6 +176,21 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         	gestures.setGestureVisible(false);
         }
     }
+	
+	@Override
+    public void onResume() {
+		super.onResume();
+		if (mSettings.getBoolean(Preferences.PREF_CLEAR_SEARCH_TEXT, false)) {
+			mSearchText.getEditableText().clear();
+		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		mSearchHistoryComposer.onDestroy();
+		mSearchResultComposer.onDestroy();
+		super.onDestroy();
+	}
 
 	private void createLaunchers(SharedPreferences settings) {
 		if (settings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
@@ -292,13 +308,6 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		}
 	}
 	
-	@Override
-	public void onDestroy() {
-		mSearchHistoryComposer.onDestroy();
-		mSearchResultComposer.onDestroy();
-		super.onDestroy();
-	}
-	
 	public ArrayList<Launcher> getLaunchers() {
 		return mLaunchers;
 	}
@@ -384,7 +393,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 18) {
+		if (versionCode < 19) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -403,7 +412,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 18);
+			editor.putInt("versionCode", 19);
 			editor.commit();
 		}
 	}

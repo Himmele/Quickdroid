@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 Daniel Himmelein
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:quickdroid="http://schemas.android.com/apk/res/vu.de.urpool.quickdroid">
+        
+    <PreferenceCategory android:title="@string/searchCategories"/>
+    
+    <PreferenceScreen
+	    android:title="@string/appsSettings"
+	    android:summary="@string/appsSettingsSummary"
+	    android:key="appsSettings">
+	    <CheckBoxPreference android:key="searchApps"
+	        android:title="@string/searchApps"
+	        android:defaultValue="true"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="appsNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchApps"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="appsPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchApps"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/contactsSettings"
+	    android:summary="@string/contactsSettingsSummary"
+	    android:key="contactsSettings">
+	    <CheckBoxPreference android:key="searchContacts"
+	        android:title="@string/searchContacts"
+	        android:defaultValue="true"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="contactsNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchContacts"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="contactsPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchContacts"/>
+        <CheckBoxPreference android:key="contactPhotos"
+	        android:title="@string/contactPhotos"
+	        android:summary="@string/contactPhotosSummary"
+	        android:defaultValue="false"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/bookmarksSettings"
+	    android:summary="@string/bookmarksSettingsSummary"
+	    android:key="bookmarksSettings">
+	    <CheckBoxPreference android:key="searchBookmarks"
+	        android:title="@string/searchBookmarks"
+	        android:defaultValue="true"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="bookmarksNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchBookmarks"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="bookmarksPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchBookmarks"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/artistsSettings"
+	    android:summary="@string/artistsSettingsSummary"
+	    android:key="artistsSettings">
+	    <CheckBoxPreference android:key="searchArtists"
+	        android:title="@string/searchArtists"
+	        android:defaultValue="false"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="artistsNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchArtists"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="artistsPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchArtists"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/albumsSettings"
+	    android:summary="@string/albumsSettingsSummary"
+	    android:key="albumsSettings">
+	    <CheckBoxPreference android:key="searchAlbums"
+	        android:title="@string/searchAlbums"
+	        android:defaultValue="false"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="albumsNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchAlbums"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="albumsPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchAlbums"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/songsSettings"
+	    android:summary="@string/songsSettingsSummary"
+	    android:key="songsSettings">
+	    <CheckBoxPreference android:key="searchSongs"
+	        android:title="@string/searchSongs"
+	        android:defaultValue="false"/>
+	    <vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="songsNumSuggestions" 
+            android:title="@string/suggestions"
+            android:summary="@string/maxNumSuggestions"
+            android:singleLine="true"
+            android:defaultValue="4"
+            android:inputType="number"
+            android:dependency="searchSongs"
+            quickdroid:minValue="1"
+            quickdroid:maxValue="100"/>
+        <ListPreference
+            android:key="songsPatternMatchingLevel"
+            android:title="@string/patternMatching"
+            android:summary="@string/patternMatchingSummary"
+            android:defaultValue="2"
+            android:entries="@array/patternMatchingLevels"
+            android:entryValues="@array/patternMatchingLevelValues"
+            android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:dependency="searchSongs"/>
+	</PreferenceScreen>
+	
+	<PreferenceCategory android:title="@string/searchHistory"/>
+	
+	<vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="maxSearchHistorySize" 
+        android:title="@string/recentlyUsedSuggestions"
+        android:summary="@string/maxSearchHistorySize"
+        android:singleLine="true"
+        android:defaultValue="10"
+        android:inputType="number"
+        quickdroid:minValue="0"
+        quickdroid:maxValue="20"/>
+        
+    <PreferenceCategory android:title="@string/miscellaneous"/>
+    
+    <CheckBoxPreference android:key="quickLaunch"
+        android:title="@string/quickLaunch"
+        android:summary="@string/quickLaunchSummary"
+        android:defaultValue="true"/>
+        
+    <CheckBoxPreference android:key="clearSearchTextOnResume"
+        android:title="@string/clearSearchTextOnResume"
+        android:summary="@string/clearSearchTextOnResumeSummary"
+        android:defaultValue="true"/>
+        
+    <CheckBoxPreference android:key="gestureRecognizer"
+        android:title="@string/gestureRecognizer"
+        android:summary="@string/gestureRecognizerSummary"
+        android:defaultValue="false"/>
+        
+    <CheckBoxPreference android:key="speechRecognizer"
+        android:title="@string/speechRecognizer"
+        android:summary="@string/speechRecognizerSummary"
+        android:defaultValue="false"/>
+	
+</PreferenceScreen>

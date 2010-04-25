@@ -207,11 +207,6 @@
         android:summary="@string/clearSearchTextOnResumeSummary"
         android:defaultValue="true"/>
         
-    <CheckBoxPreference android:key="gestureRecognizer"
-        android:title="@string/gestureRecognizer"
-        android:summary="@string/gestureRecognizerSummary"
-        android:defaultValue="false"/>
-        
     <CheckBoxPreference android:key="speechRecognizer"
         android:title="@string/speechRecognizer"
         android:summary="@string/speechRecognizerSummary"

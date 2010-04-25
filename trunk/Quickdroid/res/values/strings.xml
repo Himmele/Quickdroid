@@ -67,4 +67,6 @@
         <item>2</item>
         <item>1</item>
     </string-array>
+    <string name="contactPhotos">Contact photos</string>
+    <string name="contactPhotosSummary">Show contact photos</string>
 </resources>

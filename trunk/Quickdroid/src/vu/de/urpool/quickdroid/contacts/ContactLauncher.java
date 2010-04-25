@@ -21,12 +21,17 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.Contacts;
+import android.provider.Contacts.People;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.Launcher;
+import vu.de.urpool.quickdroid.Preferences;
 import vu.de.urpool.quickdroid.R;
 import vu.de.urpool.quickdroid.PatternMatchingLevel;
 import vu.de.urpool.quickdroid.utils.ThumbnailFactory;
@@ -56,7 +61,8 @@ public class ContactLauncher extends Launcher {
 	private static final Uri MY_CONTACTS = Uri.parse("content://contacts/groups/system_id/" + Contacts.Groups.GROUP_MY_CONTACTS + "/members");
 	
     private Context mContext;
-    private ContentResolver mContentResolver;	
+    private ContentResolver mContentResolver;
+    private boolean mUseContactPhotos;
 	private Drawable mContactDefaultThumbnail;
 	private Drawable mContactInvisibleThumbnail;
 	private Drawable mContactAwayThumbnail;
@@ -66,6 +72,12 @@ public class ContactLauncher extends Launcher {
 	public ContactLauncher(Context context) {
 		mContext = context;
 		mContentResolver = context.getContentResolver();
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		if (settings.getBoolean(Preferences.PREF_CONTACT_PHOTOS, false)) {
+			mUseContactPhotos = true;
+		} else {
+			mUseContactPhotos = false;
+		}
 		mContactDefaultThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_launcher));
 		mContactInvisibleThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_invisible));
 		mContactAwayThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_away));
@@ -171,23 +183,29 @@ public class ContactLauncher extends Launcher {
 	}
     
     public Drawable getThumbnail(ContactLaunchable launchable) {
-		switch (launchable.getPresenceStatus()) {
-		case PresenceStatus.INVISIBLE:
-			return mContactInvisibleThumbnail;
-		case PresenceStatus.AWAY:
-		case PresenceStatus.IDLE:
-			return mContactAwayThumbnail;
-		case PresenceStatus.BUSY:
-			return mContactBusyThumbnail;
-		case PresenceStatus.ONLINE:
-			return mContactOnlineThumbnail;
-		case PresenceStatus.OFFLINE:
-		default:
-			return mContactDefaultThumbnail;
-		}
-		
-    	//Uri contactUri = People.CONTENT_URI; 
-        //contactUri = Uri.withAppendedPath(contactUri, String.valueOf(launchable.getId()));
-    	//return ThumbnailFactory.createThumbnail(mContext, Contacts.People.loadContactPhoto(mContext, contactUri, R.drawable.contact_launcher, null));
+    	if (mUseContactPhotos) {
+    		Uri contactUri = Uri.withAppendedPath(People.CONTENT_URI, String.valueOf(launchable.getId()));
+	        Bitmap contactPhoto = Contacts.People.loadContactPhoto(mContext, contactUri, R.drawable.contact_launcher, null);
+	        if (contactPhoto != null) {
+	        	return ThumbnailFactory.createThumbnail(mContext, contactPhoto);
+	        } else {
+	        	return mContactDefaultThumbnail;
+	        }
+    	} else {
+    		switch (launchable.getPresenceStatus()) {
+			case PresenceStatus.INVISIBLE:
+				return mContactInvisibleThumbnail;
+			case PresenceStatus.AWAY:
+			case PresenceStatus.IDLE:
+				return mContactAwayThumbnail;
+			case PresenceStatus.BUSY:
+				return mContactBusyThumbnail;
+			case PresenceStatus.ONLINE:
+				return mContactOnlineThumbnail;
+			case PresenceStatus.OFFLINE:
+			default:
+				return mContactDefaultThumbnail;
+			}
+    	}
 	}
 }

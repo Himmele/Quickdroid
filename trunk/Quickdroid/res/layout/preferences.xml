@@ -70,6 +70,10 @@
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
             android:dependency="searchContacts"/>
+        <CheckBoxPreference android:key="contactPhotos"
+	        android:title="@string/contactPhotos"
+	        android:summary="@string/contactPhotosSummary"
+	        android:defaultValue="false"/>
 	</PreferenceScreen>
 	
 	<PreferenceScreen

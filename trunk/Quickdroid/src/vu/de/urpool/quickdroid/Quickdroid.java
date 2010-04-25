@@ -61,6 +61,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Quickdroid extends ListActivity implements OnGesturePerformedListener {
 	public static final String LOG_TAG = "Quickdroid";
+	private static final String CLEAR_SEARCH_TEXT_APPROVAL = "clearSearchTextApproval";
 	private static final int SETTINGS_MENU = Menu.FIRST;
 	private static final int CLEAR_SEARCH_HISTORY = Menu.FIRST + 1;
 	private static final int QUICK_LAUNCH_THUMBNAIL_ID = 1;
@@ -75,7 +76,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private Launchable mActiveLaunchable;
 	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
-	private boolean mAllowClearSearchText = true;
+	private boolean mClearSearchTextApproval;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 						PackageManager.MATCH_DEFAULT_ONLY);
 					if(list.size() > 0) {
 						startActivityForResult(intent, VOICE_RECOGNIZER);
+					} else {
+						Toast.makeText(Quickdroid.this, R.string.speechRecognizerError, Toast.LENGTH_SHORT).show();
 					}
 				}
 	        });
@@ -183,15 +186,34 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         } else {        	
         	gestures.setGestureVisible(false);
         }
+        
+        if (savedInstanceState != null) {
+        	if (savedInstanceState.containsKey(CLEAR_SEARCH_TEXT_APPROVAL)) {
+        		mClearSearchTextApproval = savedInstanceState.getBoolean(CLEAR_SEARCH_TEXT_APPROVAL);        		
+        	} else {
+        		mClearSearchTextApproval = true;
+        	}
+		} else {
+			mClearSearchTextApproval = false;
+		}
     }
 	
 	@Override
     public void onResume() {
 		super.onResume();
-		if (mAllowClearSearchText && mSettings.getBoolean(Preferences.PREF_CLEAR_SEARCH_TEXT, true)) {
+		if (mClearSearchTextApproval && mSettings.getBoolean(Preferences.PREF_CLEAR_SEARCH_TEXT, true)) {
 			mSearchText.getEditableText().clear();
 		}
-		mAllowClearSearchText = true;
+		mClearSearchTextApproval = true;
+	}
+	
+	@Override
+    public void onSaveInstanceState(Bundle instanceState) {
+		super.onSaveInstanceState(instanceState);
+		if (getChangingConfigurations() != 0) {
+			mClearSearchTextApproval = false;
+			instanceState.putBoolean(CLEAR_SEARCH_TEXT_APPROVAL, mClearSearchTextApproval);
+		}
 	}
 	
 	@Override
@@ -379,19 +401,19 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {			
-			if (requestCode == VOICE_RECOGNIZER) { 
+		if (requestCode == VOICE_RECOGNIZER) {
+			if (resultCode == RESULT_OK) {
 				ArrayList<String> suggestions = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS); 
 				if (suggestions != null && suggestions.size() > 0) {
 					Editable editableText = mSearchText.getEditableText();
 					editableText.clear();
 					editableText.append(suggestions.get(0));
-					mAllowClearSearchText = false;
+					mClearSearchTextApproval = false;
 				}
-			} else if (requestCode == SETTINGS) {
-				if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {
-					restart();
-				}
+			}
+		} else if (requestCode == SETTINGS) {
+			if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {					
+				restart();
 			}
 		}
 	}
@@ -403,7 +425,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 20) {
+		if (versionCode < 21) {
 			if (versionCode < 8) {
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
@@ -422,7 +444,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			}
 			
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 20);
+			editor.putInt("versionCode", 21);
 			editor.commit();
 		}
 	}

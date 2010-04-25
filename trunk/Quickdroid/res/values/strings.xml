@@ -26,6 +26,7 @@
 	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="speechRecognizer">Speech recognizer</string>
 	<string name="speechRecognizerSummary">Recognize speech input</string>
+	<string name="speechRecognizerError">Speech recognizer not available!</string>
 	<string name="searchHistory">Search history</string>
 	<string name="recentlyUsedSuggestions">Recently used suggestions</string>
 	<string name="maxSearchHistorySize">Set the maximal number of recently used suggestions that are shown as search history</string>

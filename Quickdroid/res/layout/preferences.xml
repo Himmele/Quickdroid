@@ -73,7 +73,8 @@
         <CheckBoxPreference android:key="contactPhotos"
 	        android:title="@string/contactPhotos"
 	        android:summary="@string/contactPhotosSummary"
-	        android:defaultValue="false"/>
+	        android:defaultValue="false"
+	        android:dependency="searchContacts"/>
 	</PreferenceScreen>
 	
 	<PreferenceScreen

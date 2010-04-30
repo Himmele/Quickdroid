@@ -187,14 +187,20 @@
 	
 	<PreferenceCategory android:title="@string/searchHistory"/>
 	
+	<CheckBoxPreference android:key="searchHistory"
+        android:title="@string/searchHistory"
+        android:summary="@string/searchHistorySummary"
+        android:defaultValue="true"/>
+	
 	<vu.de.urpool.quickdroid.utils.NumberPickerPreference android:key="maxSearchHistorySize" 
         android:title="@string/recentlyUsedSuggestions"
         android:summary="@string/maxSearchHistorySize"
         android:singleLine="true"
         android:defaultValue="10"
         android:inputType="number"
-        quickdroid:minValue="0"
-        quickdroid:maxValue="20"/>
+        quickdroid:minValue="1"
+        quickdroid:maxValue="20"
+        android:dependency="searchHistory"/>
         
     <PreferenceCategory android:title="@string/miscellaneous"/>
     

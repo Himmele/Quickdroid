@@ -21,15 +21,16 @@
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
 	<string name="clearSearchTextOnResume">Clear search text</string>
-	<string name="clearSearchTextOnResumeSummary">Clear search text whenever resuming Quickdroid</string>
+	<string name="clearSearchTextOnResumeSummary">Automatically clear the search text whenever Quickdroid is resumed</string>
 	<string name="gestureRecognizer">Gesture recognizer</string>
 	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="speechRecognizer">Speech recognizer</string>
 	<string name="speechRecognizerSummary">Recognize speech input</string>
 	<string name="speechRecognizerError">Speech recognizer not available!</string>
 	<string name="searchHistory">Search history</string>
-	<string name="recentlyUsedSuggestions">Recently used suggestions</string>
-	<string name="maxSearchHistorySize">Set the maximal number of recently used suggestions that are shown as search history</string>
+	<string name="searchHistorySummary">Enable the search history</string>
+	<string name="recentlyUsedSuggestions">Search history size</string>
+	<string name="maxSearchHistorySize">Set the maximal number of stored recently used suggestions</string>
 	<string name="clearSearchHistory">Clear search history</string>
     <string name="searchCategories">Search categories</string>
     <string name="appsSettings">Applications</string>
@@ -51,9 +52,9 @@
     <string name="searchAlbums">Search for albums</string>
     <string name="searchSongs">Search for songs</string>
     <string name="suggestions">Suggestions</string>
-    <string name="maxNumSuggestions">Set the maximal number of suggested items that may show up for this category</string>
+    <string name="maxNumSuggestions">Set the number of suggested items that may show up for this category</string>
     <string name="patternMatching">Search pattern matching</string>
-    <string name="patternMatchingSummary">Set the pattern matching level to be used for all suggestions belonging to this category</string>
+    <string name="patternMatchingSummary">Set the pattern matching level to be used for suggestions of this category</string>
     <string name="patternMatchingDialogTitle">Suggestions need to ...</string>
     <string-array name="patternMatchingLevels">
         <item>... exactly match the search pattern</item>

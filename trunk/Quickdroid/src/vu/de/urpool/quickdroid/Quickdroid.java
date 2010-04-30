@@ -412,8 +412,13 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 			}
 		} else if (requestCode == SETTINGS) {
-			if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {					
-				restart();
+			if (data != null) {
+				if (!data.getBooleanExtra(Preferences.PREF_SEARCH_HISTORY, true)) {
+					mSearchHistoryComposer.clearSearchHistory();
+				}
+				if (data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {			
+					restart();
+				}
 			}
 		}
 	}
@@ -425,9 +430,9 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 21) {
+		if (versionCode < 22) {
+			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
-				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
 				editor.remove(Preferences.PREF_APPS_PATTERN_MATCHING_LEVEL);
 				editor.remove(Preferences.PREF_CONTACTS_PATTERN_MATCHING_LEVEL);
@@ -442,9 +447,22 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 21);
+			if (versionCode < 22) {
+				editor.putInt("versionCode", 22);
+				int searchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+				String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
+					Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+				try {
+					searchHistorySize = Integer.parseInt(strMaxSearchHistorySize);
+		    	} catch (NumberFormatException e) {	
+		    	}
+		    	if (searchHistorySize == 0) {
+		    		editor.putBoolean(Preferences.PREF_SEARCH_HISTORY, false);
+		    		editor.putString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE, Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+		    		editor.commit();
+		    	}
+			}
+			editor.putInt("versionCode", 22);
 			editor.commit();
 		}
 	}

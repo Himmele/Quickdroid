@@ -25,6 +25,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
 	public static final String PREF_CLEAR_SEARCH_TEXT = "clearSearchTextOnResume";
+	public static final String PREF_SEARCH_HISTORY = "searchHistory";
 	public static final String PREF_MAX_SEARCH_HISTORY_SIZE = "maxSearchHistorySize";
 	public static final String DEFAULT_SEARCH_HISTORY_SIZE = "10";
 	public static final String PREF_GESTURE_RECOGNIZER = "gestureRecognizer";
@@ -64,14 +65,18 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+		Intent data = new Intent();
 		if (key.equals(PREF_QUICK_LAUNCH)) {
             if (preferences.getBoolean(key, true)) {
             	Quickdroid.activateQuickLaunch(this);
             } else {
             	Quickdroid.deactivateQuickLaunch(this);
             }
+		} else if (key.equals(PREF_SEARCH_HISTORY)) {
+			if (preferences.getBoolean(key, false)) {
+				data.putExtra(PREF_SEARCH_HISTORY, false);
+			}
 		}
-		Intent data = new Intent();
 		data.putExtra(PREFS_CHANGED, true);
 		setResult(RESULT_OK, data);
 	}

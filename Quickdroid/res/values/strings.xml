@@ -23,7 +23,7 @@
 	<string name="clearSearchTextOnResume">Clear search text</string>
 	<string name="clearSearchTextOnResumeSummary">Automatically clear the search text whenever Quickdroid is resumed</string>
 	<string name="softKeyboard">Soft keyboard</string>
-	<string name="softKeyboardSummary">Do not automatically show the soft keyboard</string>
+	<string name="softKeyboardSummary">Do not show the soft keyboard automatically</string>
 	<string name="gestureRecognizer">Gesture recognizer</string>
 	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="speechRecognizer">Speech recognizer</string>
@@ -54,7 +54,7 @@
     <string name="searchAlbums">Search for albums</string>
     <string name="searchSongs">Search for songs</string>
     <string name="suggestions">Suggestions</string>
-    <string name="maxNumSuggestions">Set the number of suggestions that are shown for this category</string>
+    <string name="maxNumSuggestions">Set the number of suggestions that may show up for this category</string>
     <string name="patternMatching">Search pattern matching</string>
     <string name="patternMatchingSummary">Set the pattern matching level to be used for suggestions of this category</string>
     <string name="patternMatchingDialogTitle">Suggestions need to ...</string>
@@ -72,4 +72,6 @@
     </string-array>
     <string name="contactPhotos">Contact photos</string>
     <string name="contactPhotosSummary">Show contact photos</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

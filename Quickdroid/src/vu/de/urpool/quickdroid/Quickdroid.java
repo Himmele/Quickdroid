@@ -409,7 +409,7 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 23) {
+		if (versionCode < 24) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -446,7 +446,7 @@ public class Quickdroid extends ListActivity {
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 23);
+			editor.putInt("versionCode", 24);
 			editor.commit();
 		}
 	}
@@ -455,7 +455,7 @@ public class Quickdroid extends ListActivity {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);		
 		Notification notification = new Notification(R.drawable.mini_app_thumbnail, null, 0);
 		Intent quickdroidIntent = new Intent(context, Quickdroid.class);
-		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
 		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
 		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, pendingIntent);

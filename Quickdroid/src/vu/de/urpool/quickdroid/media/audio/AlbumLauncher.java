@@ -145,7 +145,7 @@ public class AlbumLauncher extends Launcher {
     		Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
             intent.putExtra("album", String.valueOf(launchable.getId()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             mContext.startActivity(intent);
             return true;
     	}

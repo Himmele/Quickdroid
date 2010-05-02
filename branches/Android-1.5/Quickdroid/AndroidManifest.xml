@@ -15,9 +15,11 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="21"
-    android:versionName="2.7.4">
-    <application android:icon="@drawable/app_thumbnail" android:label="@string/appName">
+    android:versionCode="23"
+    android:versionName="2.8">
+    <application android:icon="@drawable/app_thumbnail"
+    	android:label="@string/appName"
+    	android:debuggable="true">
         <activity android:name=".Quickdroid"
             android:label="@string/appName"                  
             android:launchMode="singleTask"
@@ -43,6 +45,7 @@
             	<action android:name="android.intent.action.PACKAGE_ADDED"/>
             	<action android:name="android.intent.action.PACKAGE_CHANGED"/>
              	<action android:name="android.intent.action.PACKAGE_REMOVED"/>
+             	<action android:name="android.intent.action.LOCALE_CHANGED"/>
              	<data android:scheme="package"/>
             </intent-filter>
         </receiver>

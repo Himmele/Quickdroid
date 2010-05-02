@@ -44,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.GestureDetector;
+import android.view.WindowManager;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -159,6 +160,11 @@ public class Quickdroid extends ListActivity {
         SearchTextGestureDetector searchTextViewGestureDetector = 
         	new SearchTextGestureDetector(mSearchText);
         mSearchText.setOnTouchListener(searchTextViewGestureDetector);
+        
+        if (mSettings.getBoolean(Preferences.PREF_SOFT_KEYBOARD, false)) {
+	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
+	        	WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
         
         if (savedInstanceState != null) {
         	if (savedInstanceState.containsKey(CLEAR_SEARCH_TEXT_APPROVAL)) {
@@ -385,8 +391,13 @@ public class Quickdroid extends ListActivity {
 				}
 			}
 		} else if (requestCode == SETTINGS) {
-			if (data != null && data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {					
-				restart();
+			if (data != null) {
+				if (!data.getBooleanExtra(Preferences.PREF_SEARCH_HISTORY, true)) {
+					mSearchHistoryComposer.clearSearchHistory();
+				}
+				if (data.getBooleanExtra(Preferences.PREFS_CHANGED, false)) {			
+					restart();
+				}
 			}
 		}
 	}
@@ -398,9 +409,9 @@ public class Quickdroid extends ListActivity {
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 21) {
+		if (versionCode < 23) {
+			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
-				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("versionCode", 8);
 				editor.remove(Preferences.PREF_APPS_PATTERN_MATCHING_LEVEL);
 				editor.remove(Preferences.PREF_CONTACTS_PATTERN_MATCHING_LEVEL);
@@ -415,9 +426,27 @@ public class Quickdroid extends ListActivity {
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionCode", 21);
+			if (versionCode < 22) {
+				editor.putInt("versionCode", 22);
+				int searchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+				String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
+					Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+				try {
+					searchHistorySize = Integer.parseInt(strMaxSearchHistorySize);
+		    	} catch (NumberFormatException e) {	
+		    	}
+		    	if (searchHistorySize == 0) {
+		    		editor.putBoolean(Preferences.PREF_SEARCH_HISTORY, false);
+		    		editor.putString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE, Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
+		    		editor.commit();
+		    	}
+		    	
+		    	SharedPreferences appsSettings = getSharedPreferences(AppSyncer.APPS_SETTINGS, 0);
+				SharedPreferences.Editor appsEditor = appsSettings.edit();
+				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
+				appsEditor.commit();
+			}
+			editor.putInt("versionCode", 23);
 			editor.commit();
 		}
 	}

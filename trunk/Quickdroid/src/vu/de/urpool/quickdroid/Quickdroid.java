@@ -52,6 +52,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.GestureDetector;
+import android.view.WindowManager;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -185,6 +186,11 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        }
         } else {        	
         	gestures.setGestureVisible(false);
+        }
+        
+        if (mSettings.getBoolean(Preferences.PREF_SOFT_KEYBOARD, false)) {
+	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
+	        	WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         
         if (savedInstanceState != null) {
@@ -430,7 +436,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 22) {
+		if (versionCode < 23) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -461,8 +467,13 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    		editor.putString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE, Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 		    		editor.commit();
 		    	}
+		    	
+		    	SharedPreferences appsSettings = getSharedPreferences(AppSyncer.APPS_SETTINGS, 0);
+				SharedPreferences.Editor appsEditor = appsSettings.edit();
+				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
+				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 22);
+			editor.putInt("versionCode", 23);
 			editor.commit();
 		}
 	}

@@ -160,6 +160,19 @@ public class AppSyncer extends Service implements Runnable {
 				CharSequence appLabel = ri.activityInfo.loadLabel(pm);
 				if (appLabel != null) {
 					cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
+						"Label != ? AND Package = ? AND Class = ? AND Intent = ? AND Category = ?", 
+						new String[] { appLabel.toString(), ri.activityInfo.packageName, ri.activityInfo.name, Intent.ACTION_MAIN, Intent.CATEGORY_LAUNCHER }, 
+						null);
+					if (cursor != null) {
+						cursor.moveToFirst();
+			 			while(!cursor.isAfterLast()) {			 				
+			 				mContentResolver.delete(AppProvider.APPS_URI, "_ID = ?", new String[] { String.valueOf(cursor.getInt(ID_COLUMN_INDEX)) });
+			 				cursor.moveToNext();
+						}
+						cursor.close();
+					}
+					
+					cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
 						"Label = ? AND Package = ? AND Class = ? AND Intent = ? AND Category = ?", 
 						new String[] { appLabel.toString(), ri.activityInfo.packageName, ri.activityInfo.name, Intent.ACTION_MAIN, Intent.CATEGORY_LAUNCHER }, 
 						null);

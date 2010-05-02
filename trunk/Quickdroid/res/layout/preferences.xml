@@ -214,6 +214,11 @@
         android:summary="@string/clearSearchTextOnResumeSummary"
         android:defaultValue="true"/>
         
+    <CheckBoxPreference android:key="softKeyboard"
+        android:title="@string/softKeyboard"
+        android:summary="@string/softKeyboardSummary"
+        android:defaultValue="false"/>
+        
     <CheckBoxPreference android:key="gestureRecognizer"
         android:title="@string/gestureRecognizer"
         android:summary="@string/gestureRecognizerSummary"

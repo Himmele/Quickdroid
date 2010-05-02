@@ -28,7 +28,7 @@ import android.graphics.Rect;
 import android.content.Context;
 
 public final class ThumbnailFactory {
-	private static final int THUMBNAIL_SIZE = 36;
+	private static final int THUMBNAIL_SIZE = 36; // DIPs
     private static int sThumbnailWidth = -1;
     private static int sThumbnailHeight = -1;
 
@@ -41,56 +41,57 @@ public final class ThumbnailFactory {
     }
 
     public static Drawable createThumbnail(Context context, Drawable drawable) {
-        int width = THUMBNAIL_SIZE;
-        int height = THUMBNAIL_SIZE;
+    	final float scaleFactor = context.getResources().getDisplayMetrics().density;
+    	int width = (int)(THUMBNAIL_SIZE * scaleFactor + 0.5f);
+    	int height = (int)(THUMBNAIL_SIZE * scaleFactor + 0.5f);
     	if (sThumbnailWidth == -1) {
             sThumbnailWidth = width;
             sThumbnailHeight = height;
         }
-
-        final int thumbnailWidth = drawable.getIntrinsicWidth();
-        final int thumbnailHeight = drawable.getIntrinsicHeight();
 
         if (drawable instanceof PaintDrawable) {
             PaintDrawable painter = (PaintDrawable) drawable;
             painter.setIntrinsicWidth(width);
             painter.setIntrinsicHeight(height);
         }
+        
+        final int drawableWidth = drawable.getIntrinsicWidth();
+        final int drawableHeight = drawable.getIntrinsicHeight();
 
         if (width > 0 && height > 0) {
-            if (width < thumbnailWidth || height < thumbnailHeight) {
-                final float ratio = (float) thumbnailWidth / thumbnailHeight;
+            if (width < drawableWidth || height < drawableHeight) {
+                final float ratio = (float) drawableWidth / drawableHeight;
 
-                if (thumbnailWidth > thumbnailHeight) {
+                if (drawableWidth > drawableHeight) {
                     height = (int) (width / ratio);
-                } else if (thumbnailHeight > thumbnailWidth) {
+                } else if (drawableHeight > drawableWidth) {
                     width = (int) (height * ratio);
                 }
 
                 final Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ?
                 	Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
-                final Bitmap thumb = Bitmap.createBitmap(sThumbnailWidth, sThumbnailHeight, config);
+                final Bitmap thumbnail = Bitmap.createBitmap(sThumbnailWidth, sThumbnailHeight, config);            
                 final Canvas canvas = sCanvas;
-                canvas.setBitmap(thumb);
+                canvas.setBitmap(thumbnail);
                 sOldBounds.set(drawable.getBounds());
                 final int x = (sThumbnailWidth - width) / 2;
                 final int y = (sThumbnailHeight - height) / 2;
                 drawable.setBounds(x, y, x + width, y + height);
                 drawable.draw(canvas);
                 drawable.setBounds(sOldBounds);
-                drawable = new BitmapDrawable(thumb);
-            } else if (thumbnailWidth < width && thumbnailHeight < height) {
+                drawable = new BitmapDrawable(thumbnail);
+            } else if (drawableWidth < width && drawableHeight < height) {
                 final Bitmap.Config config = Bitmap.Config.ARGB_8888;
-                final Bitmap thumb = Bitmap.createBitmap(sThumbnailWidth, sThumbnailHeight, config);
+                final Bitmap thumbnail = Bitmap.createBitmap(sThumbnailWidth, sThumbnailHeight, config);
                 final Canvas canvas = sCanvas;
-                canvas.setBitmap(thumb);
+                canvas.setBitmap(thumbnail);
                 sOldBounds.set(drawable.getBounds());
-                final int x = (width - thumbnailWidth) / 2;
-                final int y = (height - thumbnailHeight) / 2;
-                drawable.setBounds(x, y, x + thumbnailWidth, y + thumbnailHeight);
+                final int x = (width - drawableWidth) / 2;
+                final int y = (height - drawableHeight) / 2;
+                drawable.setBounds(x, y, x + drawableWidth, y + drawableHeight);
                 drawable.draw(canvas);
                 drawable.setBounds(sOldBounds);
-                drawable = new BitmapDrawable(thumb);
+                drawable = new BitmapDrawable(thumbnail);
             }
         }
 
@@ -98,6 +99,11 @@ public final class ThumbnailFactory {
     }
     
     public static Drawable createThumbnail(Context context, Bitmap bitmap) {
-    	return new BitmapDrawable(Bitmap.createScaledBitmap(bitmap, THUMBNAIL_SIZE, THUMBNAIL_SIZE, false));
+    	if (sThumbnailWidth == -1) {
+    		final float scaleFactor = context.getResources().getDisplayMetrics().density;
+    		sThumbnailWidth = (int)(THUMBNAIL_SIZE * scaleFactor + 0.5f);
+    		sThumbnailHeight = (int)(THUMBNAIL_SIZE * scaleFactor + 0.5f);
+        }    	
+    	return new BitmapDrawable(Bitmap.createScaledBitmap(bitmap, sThumbnailWidth, sThumbnailHeight, false));
     }
 }

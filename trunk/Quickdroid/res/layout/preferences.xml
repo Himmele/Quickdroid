@@ -32,6 +32,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchApps"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -42,6 +44,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchApps"/>
 	</PreferenceScreen>
 	
@@ -59,6 +62,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchContacts"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -69,6 +74,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchContacts"/>
         <CheckBoxPreference android:key="contactPhotos"
 	        android:title="@string/contactPhotos"
@@ -91,6 +97,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchBookmarks"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -101,6 +109,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchBookmarks"/>
 	</PreferenceScreen>
 	
@@ -118,6 +127,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchArtists"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -128,6 +139,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchArtists"/>
 	</PreferenceScreen>
 	
@@ -145,6 +157,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchAlbums"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -155,6 +169,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchAlbums"/>
 	</PreferenceScreen>
 	
@@ -172,6 +187,8 @@
             android:defaultValue="4"
             android:inputType="number"
             android:dependency="searchSongs"
+            android:positiveButtonText="@string/ok"
+            android:negativeButtonText="@string/cancel"
             quickdroid:minValue="1"
             quickdroid:maxValue="100"/>
         <ListPreference
@@ -182,6 +199,7 @@
             android:entries="@array/patternMatchingLevels"
             android:entryValues="@array/patternMatchingLevelValues"
             android:dialogTitle="@string/patternMatchingDialogTitle"
+            android:negativeButtonText="@string/cancel"
             android:dependency="searchSongs"/>
 	</PreferenceScreen>
 	
@@ -198,6 +216,8 @@
         android:singleLine="true"
         android:defaultValue="10"
         android:inputType="number"
+        android:positiveButtonText="@string/ok"
+        android:negativeButtonText="@string/cancel"
         quickdroid:minValue="1"
         quickdroid:maxValue="20"
         android:dependency="searchHistory"/>

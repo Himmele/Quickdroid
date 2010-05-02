@@ -152,7 +152,7 @@ public class SongLauncher extends Launcher {
     	if (launchable instanceof SongLaunchable) {
     		Intent intent = new Intent(Intent.ACTION_VIEW,
 				ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, launchable.getId()));
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 			List<ResolveInfo> list = mContext.getPackageManager().queryIntentActivities(intent, 
 				PackageManager.MATCH_DEFAULT_ONLY);
 			if(list.size() > 0) {

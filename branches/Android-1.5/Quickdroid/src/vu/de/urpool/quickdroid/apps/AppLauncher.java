@@ -106,7 +106,7 @@ public class AppLauncher extends Launcher {
 					Intent intent = new Intent(Intent.ACTION_MAIN);
 					intent.addCategory(Intent.CATEGORY_LAUNCHER);
 					intent.setClassName(cursor.getString(PACKAGE_COLUMN_INDEX), cursor.getString(CLASS_COLUMN_INDEX));
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 					Drawable thumbnail = getThumbnail(cursor.getInt(ID_COLUMN_INDEX), intent);
 					suggestions.add(new AppLaunchable(this, cursor.getInt(ID_COLUMN_INDEX), cursor.getString(LABEL_COLUMN_INDEX), intent, thumbnail));
 					cursor.moveToNext();
@@ -131,7 +131,7 @@ public class AppLauncher extends Launcher {
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_LAUNCHER);
 				intent.setClassName(cursor.getString(PACKAGE_COLUMN_INDEX), cursor.getString(CLASS_COLUMN_INDEX));
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 				Drawable thumbnail = getThumbnail(cursor.getInt(ID_COLUMN_INDEX), intent);
 				launchable = new AppLaunchable(this, cursor.getInt(ID_COLUMN_INDEX), cursor.getString(LABEL_COLUMN_INDEX), intent, thumbnail); 				
 			}

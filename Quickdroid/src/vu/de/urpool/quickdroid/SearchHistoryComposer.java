@@ -65,7 +65,8 @@ public class SearchHistoryComposer extends BaseAdapter {
 	private final int mNumLaunchers;
 	private final HashMap<Integer, Integer> mLauncherIndexes;
 	private Vector<Launchable> mSuggestions = new Vector<Launchable>();
-	private int mMaxSearchHistorySize = 10;
+	private boolean mEnableSearchHistory = true;
+	private int mMaxSearchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 	private boolean mCancelInitSearchHistory = false;
 	
 	private static class SearchHistoryDatabase extends SQLiteOpenHelper {
@@ -232,8 +233,10 @@ public class SearchHistoryComposer extends BaseAdapter {
 					if(cursor != null) {
 						if(cursor.getCount() >= mMaxSearchHistorySize) {
 							cursor.moveToLast();
-							int id = cursor.getInt(ID_COLUMN_INDEX);
-							db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB + " WHERE _ID < " + id);
+							if (!cursor.isAfterLast()) {
+								int id = cursor.getInt(ID_COLUMN_INDEX);
+								db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB + " WHERE _ID < " + id);
+							}
 						}
 						cursor.close();
 					}
@@ -270,6 +273,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 		}
 		
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(quickdroid);
+		mEnableSearchHistory = settings.getBoolean(Preferences.PREF_SEARCH_HISTORY, true);
 		String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
 			Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 		try {
@@ -285,7 +289,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 	}
 	
 	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateSearchHistory) {
-		if (mMaxSearchHistorySize > 0) {
+		if (mEnableSearchHistory) {
 			for (Launchable l : mSuggestions) {
 				if (launchable.getId() == l.getId() &&
 						launchable.getLauncher().getId() == l.getLauncher().getId()) {

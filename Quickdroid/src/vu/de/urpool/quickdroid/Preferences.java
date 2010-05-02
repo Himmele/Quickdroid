@@ -23,11 +23,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
-	public static final String PREF_CLEAR_SEARCH_TEXT = "clearSearchTextOnResume";
 	public static final String PREF_SEARCH_HISTORY = "searchHistory";
 	public static final String PREF_MAX_SEARCH_HISTORY_SIZE = "maxSearchHistorySize";
 	public static final String DEFAULT_SEARCH_HISTORY_SIZE = "10";
+	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
+	public static final String PREF_CLEAR_SEARCH_TEXT = "clearSearchTextOnResume";
+	public static final String PREF_SOFT_KEYBOARD = "softKeyboard";
 	public static final String PREF_GESTURE_RECOGNIZER = "gestureRecognizer";
 	public static final String PREF_SPEECH_RECOGNIZER = "speechRecognizer";
 	public static final String PREF_CONTACT_PHOTOS = "contactPhotos";

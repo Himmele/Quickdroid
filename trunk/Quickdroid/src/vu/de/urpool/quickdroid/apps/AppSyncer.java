@@ -165,10 +165,16 @@ public class AppSyncer extends Service implements Runnable {
 						null);
 					if (cursor != null) {
 						cursor.moveToFirst();
-			 			while(!cursor.isAfterLast()) {			 				
-			 				mContentResolver.delete(AppProvider.APPS_URI, "_ID = ?", new String[] { String.valueOf(cursor.getInt(ID_COLUMN_INDEX)) });
-			 				cursor.moveToNext();
-						}
+			 			if (cursor.getCount() == 1) {
+			 				ContentValues values = new ContentValues();
+							values.put("Label", appLabel.toString());
+			 				mContentResolver.update(AppProvider.APPS_URI, values, "_ID = ?", new String[] { String.valueOf(cursor.getInt(ID_COLUMN_INDEX)) });
+			 			} else {
+							while(!cursor.isAfterLast()) {
+				 				mContentResolver.delete(AppProvider.APPS_URI, "_ID = ?", new String[] { String.valueOf(cursor.getInt(ID_COLUMN_INDEX)) });
+				 				cursor.moveToNext();
+							}
+			 			}
 						cursor.close();
 					}
 					
@@ -179,11 +185,11 @@ public class AppSyncer extends Service implements Runnable {
 					if (cursor != null) {
 						if (cursor.getCount() == 0) {
 							ContentValues values = new ContentValues();
-							values.put("label", appLabel.toString());
-							values.put("package", ri.activityInfo.packageName);
-							values.put("class", ri.activityInfo.name);
-							values.put("intent", Intent.ACTION_MAIN);
-							values.put("category", Intent.CATEGORY_LAUNCHER);
+							values.put("Label", appLabel.toString());
+							values.put("Package", ri.activityInfo.packageName);
+							values.put("Class", ri.activityInfo.name);
+							values.put("Intent", Intent.ACTION_MAIN);
+							values.put("Category", Intent.CATEGORY_LAUNCHER);
 							apps.add(values);
 							if (apps.size() >= 10) {
 								ContentValues[] contentValues = new ContentValues[apps.size()];

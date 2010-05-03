@@ -175,7 +175,7 @@ public class ContactLauncher extends Launcher {
 	public boolean activate(Launchable launchable) {
     	if(launchable instanceof ContactLaunchable) {
     		Intent intent = new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(Contacts.People.CONTENT_URI, launchable.getId()));
-    		intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     		mContext.startActivity(intent);
 			return true;
     	}

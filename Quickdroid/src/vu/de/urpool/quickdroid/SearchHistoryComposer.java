@@ -19,9 +19,9 @@ package vu.de.urpool.quickdroid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
-import vu.de.urpool.quickdroid.apps.AppSyncer;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -38,6 +38,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import vu.de.urpool.quickdroid.apps.AppSyncer;
 
 public class SearchHistoryComposer extends BaseAdapter {
 	private static final String SEARCH_HISTORY_DB = "SearchHistory";
@@ -64,6 +65,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 	private final ArrayList<Launcher> mLaunchers;
 	private final int mNumLaunchers;
 	private final HashMap<Integer, Integer> mLauncherIndexes;
+	private final LauncherObserver mLauncherObserver;
 	private Vector<Launchable> mSuggestions = new Vector<Launchable>();
 	private boolean mEnableSearchHistory = true;
 	private int mMaxSearchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
@@ -267,9 +269,11 @@ public class SearchHistoryComposer extends BaseAdapter {
 		mLaunchers = mQuickdroid.getLaunchers();
 		mNumLaunchers = mLaunchers.size();
 		mLauncherIndexes = new HashMap<Integer, Integer>(mNumLaunchers);
+		mLauncherObserver = new LauncherObserver(new Handler());
 		
 		for (int i = 0; i < mNumLaunchers; i++) {
 			mLauncherIndexes.put(mLaunchers.get(i).getId(), i);
+			mLaunchers.get(i).registerContentObserver(mLauncherObserver);
 		}
 		
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(quickdroid);
@@ -286,6 +290,9 @@ public class SearchHistoryComposer extends BaseAdapter {
 	
 	public void onDestroy() {
 		mCancelInitSearchHistory = true;
+		for (int i = 0; i < mNumLaunchers; i++) {
+			mLaunchers.get(i).unregisterContentObserver(mLauncherObserver);
+		}
 	}
 	
 	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateSearchHistory) {
@@ -372,5 +379,18 @@ public class SearchHistoryComposer extends BaseAdapter {
         	viewHolder.mInfoText.setVisibility(View.GONE);
         }
         return convertView;
+	}
+	
+	private class LauncherObserver extends ContentObserver {
+		public LauncherObserver(Handler handler) {
+			super(handler);
+		}
+		
+		@Override
+		public void onChange(boolean selfChange) {
+			mSuggestions.clear();
+			notifyDataSetChanged();
+			mSearchHistoryWorker.initSearchHistory();
+		}
 	}
 }

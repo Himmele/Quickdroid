@@ -33,11 +33,11 @@ import android.widget.TextView;
 public class SearchResultComposer extends BaseAdapter {
 	private final Quickdroid mQuickdroid;
 	private final LayoutInflater mLayoutInflater;
-	private final LauncherObserver mLauncherObserver;
 	private final ArrayList<Searcher> mSearchers;
 	private final ArrayList<Launcher> mLaunchers;
 	private final int mNumLaunchers;
 	private final HashMap<Integer, Integer> mLauncherIndexes;
+	private final LauncherObserver mLauncherObserver;
 	private Vector<Launchable> mSuggestions;
 	private String mSearchText = null;
 	private boolean mClearSuggestions = false;
@@ -47,10 +47,10 @@ public class SearchResultComposer extends BaseAdapter {
 	public SearchResultComposer(Quickdroid quickdroid) {
 		mQuickdroid = quickdroid;
 		mLayoutInflater = LayoutInflater.from(mQuickdroid);
-		mLauncherObserver = new LauncherObserver(new Handler());
 		mLaunchers = mQuickdroid.getLaunchers();
 		mNumLaunchers = mLaunchers.size();
 		mLauncherIndexes = new HashMap<Integer, Integer>(mNumLaunchers);
+		mLauncherObserver = new LauncherObserver(new Handler());
 		mSearchers = new ArrayList<Searcher>();
 		for (int i = 0; i < mNumLaunchers; i++) {
 			mLauncherIndexes.put(mLaunchers.get(i).getId(), i);
@@ -193,7 +193,7 @@ public class SearchResultComposer extends BaseAdapter {
 		}
 		
 		@Override
-		public void onChange (boolean selfChange) {
+		public void onChange(boolean selfChange) {
 			if (mSearchText != null && mSearchText.length() > 0) {
 				search(mSearchText);				
 			}

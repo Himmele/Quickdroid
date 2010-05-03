@@ -147,7 +147,7 @@ public class BookmarkLauncher extends Launcher {
 	public boolean activate(Launchable launchable) {
     	if(launchable instanceof BookmarkLaunchable) {
     		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((BookmarkLaunchable) launchable).getUrl()));
-    		intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     		mContext.startActivity(intent);
 			return true;
     	}

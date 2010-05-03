@@ -123,8 +123,15 @@ public class AppProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-		return 0;
+	public int update(Uri uri, ContentValues values, String whereClause, String[] whereArgs) {
+		if (URI_MATCHER.match(uri) == APPS) {
+			SQLiteDatabase db = mAppDatabase.getWritableDatabase();
+			int numRows = db.update(APPS_TABLE, values, whereClause, whereArgs);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return numRows;
+		} else {
+			return 0;
+		}
 	}
 	
 	@Override
@@ -140,25 +147,25 @@ public class AppProvider extends ContentProvider {
 	}
 	
 	private void insert(SQLiteDatabase db, ContentValues values) {
-		Object object = values.get("label");
+		Object object = values.get("Label");
 		String appLabel = (object == null ? "" : object.toString().replace("'", "''")); // escape apostrophes inside of SQL strings
-		values.remove("label");
+		values.remove("Label");
 		
-		object = values.get("package");
+		object = values.get("Package");
 		String appPackage = (object == null ? "" : object.toString());
-		values.remove("package");
+		values.remove("Package");
 		
-		object = values.get("class");
+		object = values.get("Class");
 		String appClass = (object == null ? "" : object.toString());
-		values.remove("class");
+		values.remove("Class");
 		
-		object = values.get("intent");
+		object = values.get("Intent");
 		String appIntent = (object == null ? "" : object.toString());
-		values.remove("intent");
+		values.remove("Intent");
 		
-		object = values.get("category");
+		object = values.get("Category");
 		String appCategory = (object == null ? "" : object.toString());
-		values.remove("category");
+		values.remove("Category");
 		
 		db.execSQL("INSERT INTO " + APPS_TABLE + " (Label, Package, Class, Intent, Category) VALUES "
 			+ "('" + appLabel + "', '"

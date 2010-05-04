@@ -141,7 +141,7 @@ public class ArtistLauncher extends Launcher {
     		Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/album");
             intent.putExtra("artist", String.valueOf(launchable.getId()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             mContext.startActivity(intent);
 			return true;
     	}

@@ -397,7 +397,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 		public LauncherObserver(Handler handler) {
 			super(handler);
 		}
-
+		
 		@Override
 		public void onChange(boolean selfChange) {
 			mSearchHistoryWorker.initSearchHistory(true);

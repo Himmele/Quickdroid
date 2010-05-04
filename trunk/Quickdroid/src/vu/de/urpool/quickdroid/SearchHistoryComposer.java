@@ -101,166 +101,6 @@ public class SearchHistoryComposer extends BaseAdapter {
 		}
 	}
 	
-	private class SearchHistoryWorker extends Handler {
-		private final AsyncSearchHistoryWorker mAsyncSearchHistoryWorker;
-		private final SearchHistoryDatabase mSearchHistoryDatabase;
-		
-		public SearchHistoryWorker(Context context) {
-			synchronized (SearchHistoryWorker.class) {
-	            if (sHandlerThread == null) {
-	            	sHandlerThread = new HandlerThread("SearchHistoryWorker");
-	            	sHandlerThread.start();
-	            }
-			}
-			mAsyncSearchHistoryWorker = new AsyncSearchHistoryWorker(sHandlerThread.getLooper());
-			mSearchHistoryDatabase = new SearchHistoryDatabase(context);
-		}
-		
-		public void initSearchHistory() {
-			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-			msg.arg1 = EVENT_ARG_INIT_SEARCH_HISTORY;
-			msg.obj = this;
-			mAsyncSearchHistoryWorker.sendMessage(msg);
-		}
-		
-		public void addLaunchableToSearchHistory(Launchable launchable) {
-			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY;
-	        msg.obj = launchable;
-	        mAsyncSearchHistoryWorker.sendMessage(msg);
-		}
-		
-		public void clearSearchHistory() {
-			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;
-	        mAsyncSearchHistoryWorker.sendMessage(msg);
-		}
-		
-		@Override
-        public void handleMessage(Message msg) {
-			int event = msg.arg1;
-			Launchable launchable = (Launchable) msg.obj;
-	        switch (event) {
-	            case EVENT_ARG_INIT_SEARCH_HISTORY:
-	            	addLaunchable(launchable, false, false);
-	            	break;
-	        }
-		}
-		
-		private class AsyncSearchHistoryWorker extends Handler {
-			public AsyncSearchHistoryWorker(Looper looper) {
-				super(looper);
-	        }
-	
-			@Override	
-	        public void handleMessage(Message msg) {
-				int event = msg.arg1;
-	            switch (event) {
-	                case EVENT_ARG_INIT_SEARCH_HISTORY:
-	                {
-	                	initSearchHistory(msg);
-	                	break;
-	                }
-	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
-	                {
-	                	addLaunchableToSearchHistory(msg);
-	                	break;
-	                }
-	                case EVENT_ARG_CLEAR_SEARCH_HISTORY:
-	                {
-	                	clearSearchHistory();
-	                	break;
-	                }
-	            }
-			}
-
-			private void initSearchHistory(Message msg) {
-				Handler handler = (Handler) msg.obj;
-				SQLiteDatabase db;
-				try {
-					db = mSearchHistoryDatabase.getWritableDatabase();
-				} catch (SQLiteException e) {
-					db = null;
-				}
-				if (db != null) {
-					Cursor cursor = db.rawQuery("SELECT _ID, LauncherID, LaunchableID FROM " + SEARCH_HISTORY_DB
-						+ " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
-					if(cursor != null) {
-						if(cursor.getCount() > 0) {
-							cursor.moveToFirst();
-							while(!cursor.isAfterLast() && !mCancelInitSearchHistory) {
-								int launcherId = cursor.getInt(LAUNCHER_ID_COLUMN_INDEX);
-								int launchableId = cursor.getInt(LAUNCHABLE_ID_COLUMN_INDEX);
-								Integer launcherIndex = mLauncherIndexes.get(launcherId);
-								if (launcherIndex != null) {	
-									Launchable launchable = mLaunchers.get(launcherIndex).getLaunchable(launchableId);							
-									if (launchable != null) {
-										Message reply = handler.obtainMessage();
-							            reply.arg1 = msg.arg1;
-							            reply.obj = launchable;
-							            reply.sendToTarget();							
-									}
-								}
-								cursor.moveToNext();
-							}
-						}
-						cursor.close();
-					}
-					db.close();
-				}
-				
-				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
-        		boolean quickLaunch = settings.getBoolean(Preferences.PREF_QUICK_LAUNCH, true);
-        		if (quickLaunch) {
-        			Quickdroid.activateQuickLaunch(mContext);
-        		}
-        		AppSyncer.start(mContext);
-			}
-			
-			private void addLaunchableToSearchHistory(Message msg) {
-				Launchable launchable = (Launchable) msg.obj;
-				SQLiteDatabase db;
-				try {
-					db = mSearchHistoryDatabase.getWritableDatabase();
-				} catch (SQLiteException e) {
-					db = null;
-				}
-				if (db != null) {
-					db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB
-						+ " WHERE LauncherID = " + launchable.getLauncher().getId() + " AND LaunchableID = " + launchable.getId());
-					db.execSQL("INSERT INTO " + SEARCH_HISTORY_DB + " (LauncherID, LaunchableID) VALUES "
-						+ "('" + launchable.getLauncher().getId() + "', '" 
-						+ launchable.getId() + "');");
-					Cursor cursor = db.rawQuery("SELECT _ID FROM " + SEARCH_HISTORY_DB + " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
-					if(cursor != null) {
-						if(cursor.getCount() >= mMaxSearchHistorySize) {
-							cursor.moveToLast();
-							if (!cursor.isAfterLast()) {
-								int id = cursor.getInt(ID_COLUMN_INDEX);
-								db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB + " WHERE _ID < " + id);
-							}
-						}
-						cursor.close();
-					}
-					db.close();
-				}
-			}
-			
-			private void clearSearchHistory() {
-				SQLiteDatabase db;
-				try {
-					db = mSearchHistoryDatabase.getWritableDatabase();
-				} catch (SQLiteException e) {
-					db = null;
-				}
-				if (db != null) {
-					db.delete(SEARCH_HISTORY_DB, null, null);					
-					db.close();
-				}
-			}
-		}
-	}
-	
 	public SearchHistoryComposer(Quickdroid quickdroid) {
 		mQuickdroid = quickdroid;
 		mContext = quickdroid;
@@ -285,7 +125,7 @@ public class SearchHistoryComposer extends BaseAdapter {
     	} catch (NumberFormatException e) {	
     	}
     	
-    	mSearchHistoryWorker.initSearchHistory();
+    	mSearchHistoryWorker.initSearchHistory(false);
 	}
 	
 	public void onDestroy() {
@@ -314,15 +154,17 @@ public class SearchHistoryComposer extends BaseAdapter {
 			}
 			notifyDataSetChanged();
 			if (updateSearchHistory) {
-				mSearchHistoryWorker.addLaunchableToSearchHistory(launchable);			
+				mSearchHistoryWorker.addLaunchable(launchable);			
 			}
 		}
 	}
 	
-	public void clearSearchHistory() {
+	public void clearSearchHistory(boolean clearSearchHistoryDatabase) {
 		mSuggestions.clear();
 		notifyDataSetChanged();
-		mSearchHistoryWorker.clearSearchHistory();
+		if (clearSearchHistoryDatabase) {
+			mSearchHistoryWorker.clearSearchHistory();			
+		}
 	}
 	
 	@Override
@@ -381,6 +223,176 @@ public class SearchHistoryComposer extends BaseAdapter {
         return convertView;
 	}
 	
+	private class SearchHistoryWorker extends Handler {
+		private final AsyncSearchHistoryWorker mAsyncSearchHistoryWorker;
+		private final SearchHistoryDatabase mSearchHistoryDatabase;
+		
+		public SearchHistoryWorker(Context context) {
+			synchronized (SearchHistoryWorker.class) {
+	            if (sHandlerThread == null) {
+	            	sHandlerThread = new HandlerThread("SearchHistoryWorker");
+	            	sHandlerThread.start();
+	            }
+			}
+			mAsyncSearchHistoryWorker = new AsyncSearchHistoryWorker(sHandlerThread.getLooper());
+			mSearchHistoryDatabase = new SearchHistoryDatabase(context);
+		}
+		
+		public void initSearchHistory(boolean clearSearchHistory) {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+			msg.arg1 = EVENT_ARG_INIT_SEARCH_HISTORY;
+			msg.arg2 = clearSearchHistory ? 1 : 0;
+			msg.obj = this;
+			mAsyncSearchHistoryWorker.sendMessage(msg);
+		}
+		
+		public void addLaunchable(Launchable launchable) {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+	        msg.arg1 = EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY;
+	        msg.obj = launchable;
+	        mAsyncSearchHistoryWorker.sendMessage(msg);
+		}
+		
+		public void clearSearchHistory() {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+	        msg.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;
+	        mAsyncSearchHistoryWorker.sendMessage(msg);
+		}
+		
+		@Override
+        public void handleMessage(Message msg) {
+			int event = msg.arg1;
+			Launchable launchable = (Launchable) msg.obj;
+	        switch (event) {
+	            case EVENT_ARG_INIT_SEARCH_HISTORY:
+	            	SearchHistoryComposer.this.addLaunchable(launchable, false, false);
+	            	break;
+	            case EVENT_ARG_CLEAR_SEARCH_HISTORY:
+	            	SearchHistoryComposer.this.clearSearchHistory(false);
+	            	break;
+	        }
+		}
+		
+		private class AsyncSearchHistoryWorker extends Handler {
+			public AsyncSearchHistoryWorker(Looper looper) {
+				super(looper);
+	        }
+	
+			@Override	
+	        public void handleMessage(Message msg) {
+				int event = msg.arg1;
+	            switch (event) {
+	                case EVENT_ARG_INIT_SEARCH_HISTORY:
+	                {
+	                	initSearchHistory(msg);
+	                	break;
+	                }
+	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
+	                {
+	                	addLaunchable(msg);
+	                	break;
+	                }
+	                case EVENT_ARG_CLEAR_SEARCH_HISTORY:
+	                {
+	                	clearSearchHistory();
+	                	break;
+	                }
+	            }
+			}
+
+			private void initSearchHistory(Message msg) {
+				Handler handler = (Handler) msg.obj;
+				boolean clearSearchHistory = (msg.arg2 != 0) ? true : false;
+            	if (clearSearchHistory) {
+            		Message reply = handler.obtainMessage();
+		            reply.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;		            
+		            reply.sendToTarget();
+            	}
+				SQLiteDatabase db;
+				try {
+					db = mSearchHistoryDatabase.getWritableDatabase();
+				} catch (SQLiteException e) {
+					db = null;
+				}
+				if (db != null) {
+					Cursor cursor = db.rawQuery("SELECT _ID, LauncherID, LaunchableID FROM " + SEARCH_HISTORY_DB
+						+ " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
+					if(cursor != null) {
+						if(cursor.getCount() > 0) {
+							cursor.moveToFirst();
+							while(!cursor.isAfterLast() && !mCancelInitSearchHistory) {
+								int launcherId = cursor.getInt(LAUNCHER_ID_COLUMN_INDEX);
+								int launchableId = cursor.getInt(LAUNCHABLE_ID_COLUMN_INDEX);
+								Integer launcherIndex = mLauncherIndexes.get(launcherId);
+								if (launcherIndex != null) {	
+									Launchable launchable = mLaunchers.get(launcherIndex).getLaunchable(launchableId);							
+									if (launchable != null) {
+										Message reply = handler.obtainMessage();
+							            reply.arg1 = msg.arg1;
+							            reply.obj = launchable;
+							            reply.sendToTarget();
+									}
+								}
+								cursor.moveToNext();
+							}
+						}
+						cursor.close();
+					}
+					db.close();
+				}
+				
+				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+        		boolean quickLaunch = settings.getBoolean(Preferences.PREF_QUICK_LAUNCH, true);
+        		if (quickLaunch) {
+        			Quickdroid.activateQuickLaunch(mContext);
+        		}
+        		AppSyncer.start(mContext);
+			}
+			
+			private void addLaunchable(Message msg) {
+				Launchable launchable = (Launchable) msg.obj;
+				SQLiteDatabase db;
+				try {
+					db = mSearchHistoryDatabase.getWritableDatabase();
+				} catch (SQLiteException e) {
+					db = null;
+				}
+				if (db != null) {
+					db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB
+						+ " WHERE LauncherID = " + launchable.getLauncher().getId() + " AND LaunchableID = " + launchable.getId());
+					db.execSQL("INSERT INTO " + SEARCH_HISTORY_DB + " (LauncherID, LaunchableID) VALUES "
+						+ "('" + launchable.getLauncher().getId() + "', '" 
+						+ launchable.getId() + "');");
+					Cursor cursor = db.rawQuery("SELECT _ID FROM " + SEARCH_HISTORY_DB + " ORDER BY _ID DESC LIMIT " + mMaxSearchHistorySize, null);
+					if(cursor != null) {
+						if(cursor.getCount() >= mMaxSearchHistorySize) {
+							cursor.moveToLast();
+							if (!cursor.isAfterLast()) {
+								int id = cursor.getInt(ID_COLUMN_INDEX);
+								db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB + " WHERE _ID < " + id);
+							}
+						}
+						cursor.close();
+					}
+					db.close();
+				}
+			}
+			
+			private void clearSearchHistory() {
+				SQLiteDatabase db;
+				try {
+					db = mSearchHistoryDatabase.getWritableDatabase();
+				} catch (SQLiteException e) {
+					db = null;
+				}
+				if (db != null) {
+					db.delete(SEARCH_HISTORY_DB, null, null);					
+					db.close();
+				}
+			}
+		}
+	}
+	
 	private class LauncherObserver extends ContentObserver {
 		public LauncherObserver(Handler handler) {
 			super(handler);
@@ -388,9 +400,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 		
 		@Override
 		public void onChange(boolean selfChange) {
-			mSuggestions.clear();
-			notifyDataSetChanged();
-			mSearchHistoryWorker.initSearchHistory();
+			mSearchHistoryWorker.initSearchHistory(true);
 		}
 	}
 }

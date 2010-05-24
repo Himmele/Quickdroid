@@ -56,6 +56,7 @@ import android.view.WindowManager;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -75,6 +76,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private EditText mSearchText;
 	private SharedPreferences mSettings;
 	private Launchable mActiveLaunchable;
+	private InputMethodManager mInputMethodManager;
 	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
 	private boolean mClearSearchTextApproval;
@@ -134,6 +136,15 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				if(launchable != null) {
 					activateLaunchable(launchable);		
 				}
+			}
+        });
+        
+        mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        getListView().setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
+				return false;
 			}
         });
         
@@ -436,7 +447,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 25) {
+		if (versionCode < 26) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -473,7 +484,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 25);
+			editor.putInt("versionCode", 26);
 			editor.commit();
 		}
 	}

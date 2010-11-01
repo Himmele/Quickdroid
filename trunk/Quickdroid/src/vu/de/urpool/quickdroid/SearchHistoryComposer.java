@@ -54,7 +54,8 @@ public class SearchHistoryComposer extends BaseAdapter {
 	
 	private static final int EVENT_ARG_INIT_SEARCH_HISTORY = 1;
     private static final int EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY = 2;
-    private static final int EVENT_ARG_CLEAR_SEARCH_HISTORY = 3;
+    private static final int EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY = 3;
+    private static final int EVENT_ARG_CLEAR_SEARCH_HISTORY = 4;
 	
 	private static HandlerThread sHandlerThread = null;
 	
@@ -159,6 +160,20 @@ public class SearchHistoryComposer extends BaseAdapter {
 		}
 	}
 	
+	public void removeLaunchable(Launchable launchable) {
+		if (mEnableSearchHistory) {
+			for (Launchable l : mSuggestions) {
+				if (launchable.getId() == l.getId() &&
+						launchable.getLauncher().getId() == l.getLauncher().getId()) {
+					mSuggestions.remove(l);
+					break;
+				}
+			}			
+			notifyDataSetChanged();
+			mSearchHistoryWorker.removeLaunchable(launchable);
+		}
+	}
+	
 	public void clearSearchHistory(boolean clearSearchHistoryDatabase) {
 		mSuggestions.clear();
 		notifyDataSetChanged();
@@ -253,6 +268,13 @@ public class SearchHistoryComposer extends BaseAdapter {
 	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
+		public void removeLaunchable(Launchable launchable) {
+			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
+	        msg.arg1 = EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY;
+	        msg.obj = launchable;
+	        mAsyncSearchHistoryWorker.sendMessage(msg);
+		}
+		
 		public void clearSearchHistory() {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
 	        msg.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;
@@ -290,6 +312,11 @@ public class SearchHistoryComposer extends BaseAdapter {
 	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
 	                {
 	                	addLaunchable(msg);
+	                	break;
+	                }
+	                case EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY:
+	                {
+	                	removeLaunchable(msg);
 	                	break;
 	                }
 	                case EVENT_ARG_CLEAR_SEARCH_HISTORY:
@@ -374,6 +401,21 @@ public class SearchHistoryComposer extends BaseAdapter {
 						}
 						cursor.close();
 					}
+					db.close();
+				}
+			}
+			
+			private void removeLaunchable(Message msg) {
+				Launchable launchable = (Launchable) msg.obj;
+				SQLiteDatabase db;
+				try {
+					db = mSearchHistoryDatabase.getWritableDatabase();
+				} catch (SQLiteException e) {
+					db = null;
+				}
+				if (db != null) {
+					db.execSQL("DELETE FROM " + SEARCH_HISTORY_DB
+						+ " WHERE LauncherID = " + launchable.getLauncher().getId() + " AND LaunchableID = " + launchable.getId());
 					db.close();
 				}
 			}

@@ -29,6 +29,7 @@ import vu.de.urpool.quickdroid.media.audio.ArtistLauncher;
 import vu.de.urpool.quickdroid.media.audio.SongLauncher;
 import android.app.*;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -60,6 +61,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class Quickdroid extends ListActivity implements OnGesturePerformedListener {
 	public static final String LOG_TAG = "Quickdroid";
@@ -106,7 +108,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		mSearchResultComposer = new SearchResultComposer(this);
 		mSearchHistoryComposer = new SearchHistoryComposer(this);
 		setListAdapter(mSearchHistoryComposer);
-        
+		
         mSearchText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable searchText) {
@@ -138,6 +140,27 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 			}
         });
+        
+        getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+				if (mListAdapter == mSearchHistoryComposer) {
+					final Launchable launchable = (Launchable) mListAdapter.getItem(position);
+					AlertDialog.Builder builder = new AlertDialog.Builder(Quickdroid.this);
+					builder.setTitle(launchable.getLabel());					
+					builder.setItems(new CharSequence[] { getResources().getString(R.string.removeFromList) }, new DialogInterface.OnClickListener() {
+					    public void onClick(DialogInterface dialog, int pos) {					    	
+					    	mSearchHistoryComposer.removeLaunchable(launchable);
+					    }
+					});
+					builder.setNegativeButton(R.string.cancel, null);
+					AlertDialog dialog = builder.create();
+					dialog.show();					
+					return true;
+				}
+				return false;
+			}
+		});
         
         mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         getListView().setOnTouchListener(new OnTouchListener() {

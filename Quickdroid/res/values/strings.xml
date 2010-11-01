@@ -74,4 +74,5 @@
     <string name="contactPhotosSummary">Show contact photos</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="removeFromList">Remove from list</string>
 </resources>

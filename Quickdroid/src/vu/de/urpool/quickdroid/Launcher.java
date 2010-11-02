@@ -18,6 +18,7 @@ package vu.de.urpool.quickdroid;
 
 import java.util.ArrayList;
 import android.database.ContentObserver;
+import android.view.View;
 
 public abstract class Launcher {
 	private int mId;
@@ -40,7 +41,15 @@ public abstract class Launcher {
 		return false;
 	}
 	
+	public boolean activateBadge(Launchable launchable, View badgeParent) {
+		return activate(launchable);
+	}
+	
 	public void deactivate(Launchable launchable) {
+	}
+	
+	public void deactivateBadge(Launchable launchable, View badgeParent) {
+		deactivate(launchable);
 	}
 	
 	public int getId() {

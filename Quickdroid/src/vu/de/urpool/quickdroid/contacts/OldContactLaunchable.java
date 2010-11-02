@@ -1,7 +1,7 @@
 package vu.de.urpool.quickdroid.contacts;
 
 /*
- * Copyright (C) 2010 Daniel Himmelein
+ * Copyright (C) 2009 Daniel Himmelein
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,17 @@ package vu.de.urpool.quickdroid.contacts;
  */
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.Launcher;
 
-public class ContactLaunchable extends Launchable {
-	private final ContactLauncher mContactLauncher;
+public class OldContactLaunchable extends Launchable {
+	private final OldContactLauncher mContactLauncher;
 	private int mPresenceStatus;
-	private Uri mLookupUri;
 	
-	public ContactLaunchable(Launcher launcher, int id, String label, int presenceStatus, Uri lookupUri) {
+	public OldContactLaunchable(Launcher launcher, int id, String label, int presenceStatus) {
 		super(launcher, id, label);
 		mPresenceStatus = presenceStatus;
-		mLookupUri = lookupUri;
-		mContactLauncher = (ContactLauncher) launcher;
+		mContactLauncher = (OldContactLauncher) launcher;
 	}
 	
 	@Override
@@ -40,9 +37,5 @@ public class ContactLaunchable extends Launchable {
 	
 	public int getPresenceStatus() {
 		return mPresenceStatus;
-	}
-	
-	public Uri getLookupUri() {
-		return mLookupUri;
 	}
 }

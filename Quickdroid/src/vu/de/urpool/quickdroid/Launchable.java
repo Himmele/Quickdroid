@@ -17,12 +17,14 @@ package vu.de.urpool.quickdroid;
  */
 
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 public class Launchable {
 	private Launcher mLauncher;
 	private int mId;
 	private String mLabel;
 	private String mInfoText;
+	private View mBadgeParent;
 	
 	public Launchable(Launcher launcher, int id, String label) {
 		mLauncher = launcher;
@@ -61,7 +63,23 @@ public class Launchable {
 		return mLauncher.activate(this);
 	}
 	
+	public boolean activateBadge() {
+		return mLauncher.activateBadge(this, mBadgeParent);
+	}
+	
 	public void deactivate() {
 		mLauncher.deactivate(this);
+	}
+	
+	public void deactivateBadge() {
+		mLauncher.deactivateBadge(this, mBadgeParent);
+	}
+
+	public View getBadgeParent() {
+		return mBadgeParent;
+	}
+
+	public void setBadgeParent(View badgeParent) {
+		mBadgeParent = badgeParent;
 	}
 }

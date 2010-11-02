@@ -224,8 +224,14 @@ public class SearchHistoryComposer extends BaseAdapter {
         Launchable launchable = mSuggestions.get(position);
         if(launchable.getThumbnail() != null) {
         	viewHolder.mThumbnail.setImageDrawable(launchable.getThumbnail());
+        	launchable.setBadgeParent(viewHolder.mThumbnail);
+        	viewHolder.mThumbnail.setTag(position);
+        	viewHolder.mThumbnail.setOnClickListener(mQuickdroid.getOnThumbnailClickListener());
         	viewHolder.mThumbnail.setVisibility(View.VISIBLE);
         } else {
+        	launchable.setBadgeParent(null);
+        	viewHolder.mThumbnail.setTag(null);
+        	viewHolder.mThumbnail.setOnClickListener(null);
         	viewHolder.mThumbnail.setVisibility(View.GONE);
         }
         viewHolder.mLabel.setText(launchable.getLabel());

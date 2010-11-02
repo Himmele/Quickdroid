@@ -108,8 +108,14 @@ public class SearchResultComposer extends BaseAdapter {
         viewHolder.mThumbnail.setImageDrawable(mQuickdroid.getResources().getDrawable(R.drawable.app_thumbnail));
         if(launchable.getThumbnail() != null) {
         	viewHolder.mThumbnail.setImageDrawable(launchable.getThumbnail().getCurrent());
+        	launchable.setBadgeParent(viewHolder.mThumbnail);
+        	viewHolder.mThumbnail.setTag(position);
+        	viewHolder.mThumbnail.setOnClickListener(mQuickdroid.getOnThumbnailClickListener());
         	viewHolder.mThumbnail.setVisibility(View.VISIBLE);
         } else {
+        	launchable.setBadgeParent(null);
+        	viewHolder.mThumbnail.setTag(null);
+        	viewHolder.mThumbnail.setOnClickListener(null);
         	viewHolder.mThumbnail.setVisibility(View.GONE);
         }
         viewHolder.mLabel.setText(launchable.getLabel());

@@ -24,6 +24,7 @@ import vu.de.urpool.quickdroid.apps.AppProvider;
 import vu.de.urpool.quickdroid.apps.AppSyncer;
 import vu.de.urpool.quickdroid.browser.BookmarkLauncher;
 import vu.de.urpool.quickdroid.contacts.ContactLauncher;
+import vu.de.urpool.quickdroid.contacts.OldContactLauncher;
 import vu.de.urpool.quickdroid.media.audio.AlbumLauncher;
 import vu.de.urpool.quickdroid.media.audio.ArtistLauncher;
 import vu.de.urpool.quickdroid.media.audio.SongLauncher;
@@ -82,6 +83,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
 	private boolean mClearSearchTextApproval;
+	private OnClickListener mOnThumbnailClickListener;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +138,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 				Launchable launchable = (Launchable) mListAdapter.getItem(position);
 				if(launchable != null) {
-					activateLaunchable(launchable);		
+					activateLaunchable(launchable);
 				}
 			}
         });
@@ -161,6 +163,17 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				return false;
 			}
 		});
+        
+        mOnThumbnailClickListener = new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				int position = (Integer) view.getTag();
+				Launchable launchable = (Launchable) mListAdapter.getItem(position);
+				if (launchable.activateBadge()) {
+					mSearchHistoryComposer.addLaunchable(launchable, true, true);
+				}
+			}
+        };
         
         mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         getListView().setOnTouchListener(new OnTouchListener() {
@@ -284,7 +297,12 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		}
 		
 		if (settings.getBoolean(Preferences.PREF_SEARCH_CONTACTS, Preferences.SEARCH_LAUNCHER)) {
-			ContactLauncher contactLauncher = new ContactLauncher(this);
+			Launcher contactLauncher;
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR) {
+				contactLauncher = new OldContactLauncher(this);
+			} else {
+				contactLauncher = new ContactLauncher(this);
+			}
 			String strNumSuggestions = settings.getString(Preferences.PREF_CONTACTS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
@@ -470,7 +488,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 26) {
+		if (versionCode < 27) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -507,7 +525,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 26);
+			editor.putInt("versionCode", 27);
 			editor.commit();
 		}
 	}
@@ -550,6 +568,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 			}
 		}
+	}
+	
+	public OnClickListener getOnThumbnailClickListener() {
+		return mOnThumbnailClickListener;
 	}
 }
 

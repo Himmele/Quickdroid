@@ -68,9 +68,10 @@ public class SearchHistoryComposer extends BaseAdapter {
 	private final HashMap<Integer, Integer> mLauncherIndexes;
 	private final LauncherObserver mLauncherObserver;
 	private Vector<Launchable> mSuggestions = new Vector<Launchable>();
-	private boolean mEnableSearchHistory = true;
+	private boolean mSearchHistoryEnabled = true;
 	private int mMaxSearchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 	private boolean mCancelInitSearchHistory = false;
+	private boolean mPendingListUpdate = false;
 	
 	private static class SearchHistoryDatabase extends SQLiteOpenHelper {
 		private static final String DB_NAME = "SearchHistory.db";
@@ -118,7 +119,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 		}
 		
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(quickdroid);
-		mEnableSearchHistory = settings.getBoolean(Preferences.PREF_SEARCH_HISTORY, true);
+		mSearchHistoryEnabled = settings.getBoolean(Preferences.PREF_SEARCH_HISTORY, true);
 		String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
 			Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 		try {
@@ -136,8 +137,18 @@ public class SearchHistoryComposer extends BaseAdapter {
 		}
 	}
 	
-	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateSearchHistory) {
-		if (mEnableSearchHistory) {
+	@Override
+	public void notifyDataSetChanged() {
+		mPendingListUpdate = false;
+		super.notifyDataSetChanged();
+	}
+	
+	public boolean isListUpdatePending() {
+		return mPendingListUpdate;
+	}
+	
+	public void addLaunchable(Launchable launchable, boolean topOfList, boolean updateList, boolean updateDatabase) {
+		if (mSearchHistoryEnabled) {
 			for (Launchable l : mSuggestions) {
 				if (launchable.getId() == l.getId() &&
 						launchable.getLauncher().getId() == l.getLauncher().getId()) {
@@ -153,15 +164,19 @@ public class SearchHistoryComposer extends BaseAdapter {
 			if (mSuggestions.size() > mMaxSearchHistorySize) {
 				mSuggestions.setSize(mMaxSearchHistorySize);
 			}
-			notifyDataSetChanged();
-			if (updateSearchHistory) {
+			if (updateList) {
+				notifyDataSetChanged();
+			} else {
+				mPendingListUpdate = true;
+			}
+			if (updateDatabase) {
 				mSearchHistoryWorker.addLaunchable(launchable);			
 			}
 		}
 	}
 	
 	public void removeLaunchable(Launchable launchable) {
-		if (mEnableSearchHistory) {
+		if (mSearchHistoryEnabled) {
 			for (Launchable l : mSuggestions) {
 				if (launchable.getId() == l.getId() &&
 						launchable.getLauncher().getId() == l.getLauncher().getId()) {
@@ -293,7 +308,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 			Launchable launchable = (Launchable) msg.obj;
 	        switch (event) {
 	            case EVENT_ARG_INIT_SEARCH_HISTORY:
-	            	SearchHistoryComposer.this.addLaunchable(launchable, false, false);
+	            	SearchHistoryComposer.this.addLaunchable(launchable, false, true, false);
 	            	break;
 	            case EVENT_ARG_CLEAR_SEARCH_HISTORY:
 	            	SearchHistoryComposer.this.clearSearchHistory(false);

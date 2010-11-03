@@ -170,7 +170,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				int position = (Integer) view.getTag();
 				Launchable launchable = (Launchable) mListAdapter.getItem(position);
 				if (launchable.activateBadge()) {
-					mSearchHistoryComposer.addLaunchable(launchable, true, true);
+					mSearchHistoryComposer.addLaunchable(launchable, true, false, true);					
 				}
 			}
         };
@@ -258,6 +258,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mSearchText.getEditableText().clear();
 		}
 		mClearSearchTextApproval = true;
+		
+		if (mSearchHistoryComposer.isListUpdatePending()) {			
+			mSearchHistoryComposer.notifyDataSetChanged();
+		}
 	}
 	
 	@Override
@@ -438,7 +442,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	public void activateLaunchable(Launchable launchable) {
 		mActiveLaunchable = launchable;
 		if (mActiveLaunchable.activate()) {
-			mSearchHistoryComposer.addLaunchable(launchable, true, true);
+			mSearchHistoryComposer.addLaunchable(launchable, true, true, true);
 		}
 	}
 	
@@ -488,7 +492,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 27) {
+		if (versionCode < 28) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -525,7 +529,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 27);
+			editor.putInt("versionCode", 28);
 			editor.commit();
 		}
 	}

@@ -16,7 +16,7 @@
 <resources>
     <string name="appName">Quickdroid</string>
     <string name="appSettings">Settings</string>
-    <string name="searchHint">Quickdroid Search</string>
+    <string name="searchHint">Type to search</string>
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>

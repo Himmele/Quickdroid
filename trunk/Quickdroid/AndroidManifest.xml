@@ -54,4 +54,4 @@
 	<uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
 	<uses-sdk android:minSdkVersion="4"/>
-</manifest> 
+</manifest>

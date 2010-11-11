@@ -97,10 +97,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         setContentView(rootView, rootLayout);
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        checkSettings(mSettings);
+        checkSettings();
         
         mLaunchers = new ArrayList<Launcher>();
-		createLaunchers(mSettings);
+		createLaunchers();
 		
 		mSearchText = (EditText) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
@@ -278,17 +278,17 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		super.onDestroy();
 	}
 
-	private void createLaunchers(SharedPreferences settings) {
-		if (settings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
+	private void createLaunchers() {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
 	    	AppLauncher appLauncher = new AppLauncher(this);
-	    	String strNumSuggestions = settings.getString(Preferences.PREF_APPS_NUM_SUGGESTIONS,
+	    	String strNumSuggestions = mSettings.getString(Preferences.PREF_APPS_NUM_SUGGESTIONS,
 		    	Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 	    	try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		appLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_APPS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_APPS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -298,21 +298,21 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    	mLaunchers.add(mLauncherIndex++, appLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_CONTACTS, Preferences.SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_CONTACTS, Preferences.SEARCH_LAUNCHER)) {
 			Launcher contactLauncher;
 			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR) {
 				contactLauncher = new OldContactLauncher(this);
 			} else {
 				contactLauncher = new ContactLauncher(this);
 			}
-			String strNumSuggestions = settings.getString(Preferences.PREF_CONTACTS_NUM_SUGGESTIONS,
+			String strNumSuggestions = mSettings.getString(Preferences.PREF_CONTACTS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		contactLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_CONTACTS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_CONTACTS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -322,16 +322,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, contactLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_BOOKMARKS, Preferences.SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_BOOKMARKS, Preferences.SEARCH_LAUNCHER)) {
 			BookmarkLauncher bookmarkLauncher = new BookmarkLauncher(this);
-			String strNumSuggestions = settings.getString(Preferences.PREF_BOOKMARKS_NUM_SUGGESTIONS,
+			String strNumSuggestions = mSettings.getString(Preferences.PREF_BOOKMARKS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		bookmarkLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_BOOKMARKS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_BOOKMARKS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -341,16 +341,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, bookmarkLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			ArtistLauncher artistLauncher = new ArtistLauncher(this);
-			String strNumSuggestions = settings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
+			String strNumSuggestions = mSettings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		artistLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_ARTISTS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ARTISTS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -360,16 +360,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, artistLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			AlbumLauncher albumLauncher = new AlbumLauncher(this);
-			String strNumSuggestions = settings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
+			String strNumSuggestions = mSettings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		albumLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_ALBUMS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ALBUMS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -379,16 +379,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, albumLauncher);
 		}
 		
-		if (settings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			SongLauncher songLauncher = new SongLauncher(this);
-			String strNumSuggestions = settings.getString(Preferences.PREF_SONGS_NUM_SUGGESTIONS,
+			String strNumSuggestions = mSettings.getString(Preferences.PREF_SONGS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		songLauncher.setMaxSuggestions(numSuggestions);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	String strPatternMatchingLevel = settings.getString(Preferences.PREF_SONGS_PATTERN_MATCHING_LEVEL,
+	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_SONGS_PATTERN_MATCHING_LEVEL,
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
@@ -488,10 +488,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		startActivity(getIntent());
 	}
 	
-	private void checkSettings(SharedPreferences settings) {
-		int versionCode = settings.getInt("versionCode", 7);
+	private void checkSettings() {
+		int versionCode = mSettings.getInt("versionCode", 7);
 		if (versionCode < 29) {
-			SharedPreferences.Editor editor = settings.edit();
+			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
 				editor.remove(Preferences.PREF_APPS_PATTERN_MATCHING_LEVEL);
@@ -510,7 +510,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			if (versionCode < 22) {
 				editor.putInt("versionCode", 22);
 				int searchHistorySize = Integer.parseInt(Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
-				String strMaxSearchHistorySize = settings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
+				String strMaxSearchHistorySize = mSettings.getString(Preferences.PREF_MAX_SEARCH_HISTORY_SIZE,
 					Preferences.DEFAULT_SEARCH_HISTORY_SIZE);
 				try {
 					searchHistorySize = Integer.parseInt(strMaxSearchHistorySize);

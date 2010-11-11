@@ -104,8 +104,6 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		
 		mSearchText = (EditText) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
-        mSearchText.setCompoundDrawablePadding(4);
-        mSearchText.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.search), null);
 		
 		mSearchResultComposer = new SearchResultComposer(this);
 		mSearchHistoryComposer = new SearchHistoryComposer(this);
@@ -492,7 +490,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings(SharedPreferences settings) {
 		int versionCode = settings.getInt("versionCode", 7);
-		if (versionCode < 28) {
+		if (versionCode < 29) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -529,7 +527,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 28);
+			editor.putInt("versionCode", 29);
 			editor.commit();
 		}
 	}

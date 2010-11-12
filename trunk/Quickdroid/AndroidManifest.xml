@@ -32,6 +32,10 @@
                 <!-- <category android:name="android.intent.category.HOME"/> -->
                 <!-- <category android:name="android.intent.category.DEFAULT"/> -->
             </intent-filter>
+            <intent-filter>
+		        <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		    </intent-filter>
         </activity>
         <activity android:name=".Preferences" android:label="@string/appSettings"/>
         <receiver android:name =".AutoStarter">

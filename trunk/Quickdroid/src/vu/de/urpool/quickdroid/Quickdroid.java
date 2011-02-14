@@ -49,20 +49,24 @@ import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.GestureDetector;
 import android.view.WindowManager;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.TextView.OnEditorActionListener;
 
 public class Quickdroid extends ListActivity implements OnGesturePerformedListener {
 	public static final String LOG_TAG = "Quickdroid";
@@ -87,7 +91,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);        
+        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getWindow().setGravity(Gravity.TOP);
         
@@ -128,6 +132,33 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 					setListAdapter(mSearchHistoryComposer);
 					mSearchResultComposer.search(null);
 				}
+			}
+        });
+        mSearchText.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_ENTER || 
+						keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					Launchable launchable = (Launchable) mListAdapter.getItem(0);
+					if(launchable != null) {
+						activateLaunchable(launchable);
+					}
+					return true;
+				}
+				return false;
+			}
+        });
+        mSearchText.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_GO) {
+					Launchable launchable = (Launchable) mListAdapter.getItem(0);
+					if(launchable != null) {
+						activateLaunchable(launchable);
+					}
+					return true;
+				}
+				return false;
 			}
         });
         
@@ -490,7 +521,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 31) {
+		if (versionCode < 32) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -527,7 +558,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 31);
+			editor.putInt("versionCode", 32);
 			editor.commit();
 		}
 	}

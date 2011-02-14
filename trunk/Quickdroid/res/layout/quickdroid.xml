@@ -33,7 +33,7 @@
 			    android:layout_height="wrap_content"		    
 	            android:layout_weight="1"
 	            android:singleLine="true"
-				android:imeOptions="actionDone"
+				android:imeOptions="actionGo"
 				android:layout_marginRight="4dip"/>
 	    </LinearLayout>
 	    <ImageButton android:id="@+id/speechRecognizer"

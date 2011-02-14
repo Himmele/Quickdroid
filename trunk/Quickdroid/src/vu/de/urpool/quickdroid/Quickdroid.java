@@ -113,6 +113,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		mSearchHistoryComposer = new SearchHistoryComposer(this);
 		setListAdapter(mSearchHistoryComposer);
 		
+		mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		
         mSearchText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable searchText) {
@@ -141,6 +143,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 						keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
+						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
 						activateLaunchable(launchable);
 					}
 					return true;
@@ -154,6 +157,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				if (actionId == EditorInfo.IME_ACTION_GO) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
+						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
 						activateLaunchable(launchable);
 					}
 					return true;
@@ -171,7 +175,6 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 			}
         });
-        
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -192,6 +195,13 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				return false;
 			}
 		});
+        getListView().setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
+				return false;
+			}
+        });
         
         mOnThumbnailClickListener = new OnClickListener() {
 			@Override
@@ -203,15 +213,6 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 			}
         };
-        
-        mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        getListView().setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent event) {
-				mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
-				return false;
-			}
-        });
         
         if (mSettings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
@@ -521,7 +522,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 32) {
+		if (versionCode < 33) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -558,7 +559,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 32);
+			editor.putInt("versionCode", 33);
 			editor.commit();
 		}
 	}

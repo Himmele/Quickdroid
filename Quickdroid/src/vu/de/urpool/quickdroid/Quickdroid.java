@@ -376,6 +376,11 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		boolean defEnableSearchCategory = (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR) ? false : true;
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, defEnableSearchCategory)) {
+			if (!mSettings.contains(Preferences.PREF_SEARCH_ARTISTS)) {
+				SharedPreferences.Editor editor = mSettings.edit();
+				editor.putBoolean(Preferences.PREF_SEARCH_ARTISTS, defEnableSearchCategory);
+				editor.commit();
+			}
 			ArtistLauncher artistLauncher = new ArtistLauncher(this);
 			String strNumSuggestions = mSettings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
@@ -395,6 +400,11 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, defEnableSearchCategory)) {
+			if (!mSettings.contains(Preferences.PREF_SEARCH_ALBUMS)) {
+				SharedPreferences.Editor editor = mSettings.edit();
+				editor.putBoolean(Preferences.PREF_SEARCH_ALBUMS, defEnableSearchCategory);
+				editor.commit();
+			}
 			AlbumLauncher albumLauncher = new AlbumLauncher(this);
 			String strNumSuggestions = mSettings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
 				Preferences.DEFAULT_NUM_SUGGESTIONS_2);

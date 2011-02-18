@@ -18,10 +18,10 @@ package vu.de.urpool.quickdroid;
 
 public class PatternMatchingLevel {
 	public static final int NONE = 0;
-	public static final int LOW = 1; // contains each char of the search pattern
-	public static final int MIDDLE = 2; // contains the search pattern
-	public static final int HIGH = 3; // starts with the search pattern
-	public static final int TOP = 4; // exactly matches the search pattern
+	public static final int LOW = 1; // contain each char of the search text
+	public static final int MIDDLE = 2; // contain the search text
+	public static final int HIGH = 3; // start at some place with the search text
+	public static final int TOP = 4; // start with the search text
 	public static final int NUM_LEVELS = 4;
 
 	public static int nextLowerLevel(int level) {

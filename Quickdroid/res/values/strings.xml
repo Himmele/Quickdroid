@@ -59,10 +59,10 @@
     <string name="patternMatchingSummary">Set the pattern matching level to be used for suggestions of this category</string>
     <string name="patternMatchingDialogTitle">Suggestions need to ...</string>
     <string-array name="patternMatchingLevels">
-        <item>... exactly match the search pattern</item>
-        <item>... start with the search pattern</item>
-        <item>... contain the search pattern</item>
-        <item>... contain each char of the search pattern</item>
+        <item>... start with the search text</item>
+        <item>... start at some place with the search text</item>
+        <item>... contain the search text</item>
+        <item>... contain each char of the search text</item>
     </string-array>
     <string-array name="patternMatchingLevelValues">
         <item>4</item>

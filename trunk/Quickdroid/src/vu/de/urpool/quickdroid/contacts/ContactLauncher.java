@@ -103,26 +103,26 @@ public class ContactLauncher extends Launcher {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
 			case PatternMatchingLevel.TOP:
-				cursor = mContentResolver.query(MY_CONTACTS, 
-					CONTACTS_PROJECTION,
+				cursor = mContentResolver.query(MY_CONTACTS,
+					CONTACTS_PROJECTION, 
 					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ?", 
-					new String[] { searchText }, 
+					new String[] { searchText + "%" },
 					ContactsContract.Contacts.DISPLAY_NAME + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MY_CONTACTS,
 					CONTACTS_PROJECTION, 
-					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ? AND length("
-						+ ContactsContract.Contacts.DISPLAY_NAME + ") > " + searchText.length(), 
-					new String[] { searchText + "%" }, 
+					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ?", 
+					new String[] { "% " + searchText + "%" },
 					ContactsContract.Contacts.DISPLAY_NAME + " ASC");
 				break;
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MY_CONTACTS,
 					CONTACTS_PROJECTION,
-					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ? AND LOWER("
-						+ ContactsContract.Contacts.DISPLAY_NAME + ") NOT LIKE ?",
-					new String[] { "%" + searchText + "%", searchText + "%" },
+					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ?" +
+						" AND LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") NOT LIKE ?" +
+						" AND LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") NOT LIKE ?",
+					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 					ContactsContract.Contacts.DISPLAY_NAME + " ASC");
 				break;
 			case PatternMatchingLevel.LOW:
@@ -133,8 +133,8 @@ public class ContactLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MY_CONTACTS, 
 					CONTACTS_PROJECTION,
-					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ? AND LOWER("
-						+ ContactsContract.Contacts.DISPLAY_NAME + ") NOT LIKE ?",
+					"LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") LIKE ?" +
+						" AND LOWER(" + ContactsContract.Contacts.DISPLAY_NAME + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" },  
 					ContactsContract.Contacts.DISPLAY_NAME + " ASC");
 				break;
@@ -161,7 +161,7 @@ public class ContactLauncher extends Launcher {
  					cursor.moveToNext();
  				}
  			}
- 			cursor.close(); 			
+ 			cursor.close();
  		}
 		return suggestions;
 	}

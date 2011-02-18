@@ -63,25 +63,26 @@ public class AlbumLauncher extends Launcher {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
 			case PatternMatchingLevel.TOP:
-				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
 					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?",
-					new String[] { searchText },
+					new String[] { searchText + "%" },
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND length("
-						+ MediaStore.Audio.Albums.ALBUM + ") > " + searchText.length(),
-					new String[] { searchText + "%" },
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?",
+					new String[] { "% " + searchText + "%" },
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND LOWER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
-					new String[] { "%" + searchText + "%", searchText + "%" }, 
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
+					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" }, 
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;
 			case PatternMatchingLevel.LOW:
@@ -92,8 +93,8 @@ public class AlbumLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 					ALBUMS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ? AND LOWER(" 
-						+ MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
+					"LOWER(" + MediaStore.Audio.Albums.ALBUM + ") LIKE ?" + 
+						" AND LOWER(" + MediaStore.Audio.Albums.ALBUM + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" },
 					MediaStore.Audio.Albums.ALBUM + " ASC");
 				break;

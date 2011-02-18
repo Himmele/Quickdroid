@@ -64,22 +64,23 @@ public class ArtistLauncher extends Launcher {
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
 					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?",
-					new String[] { searchText },
+					new String[] { searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ? AND length("
-						+ MediaStore.Audio.Artists.ARTIST + ") > " + searchText.length(),							
-					new String[] { searchText + "%" },
+					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?",
+					new String[] { "% " + searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ? AND LOWER(" + MediaStore.Audio.Artists.ARTIST + ") NOT LIKE ?",
-					new String[] { "%" + searchText + "%", searchText + "%" },
+					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Artists.ARTIST + ") NOT LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Artists.ARTIST + ") NOT LIKE ?",
+					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
 			case PatternMatchingLevel.LOW:
@@ -90,8 +91,8 @@ public class ArtistLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
-					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ? AND LOWER("
-						+ MediaStore.Audio.Artists.ARTIST + ") NOT LIKE ?", 
+					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Artists.ARTIST + ") NOT LIKE ?", 
 					new String[] { searchPattern, "%" + searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;

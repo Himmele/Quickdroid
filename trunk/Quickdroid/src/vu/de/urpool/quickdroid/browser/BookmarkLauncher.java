@@ -64,27 +64,27 @@ public class BookmarkLauncher extends Launcher {
 			case PatternMatchingLevel.TOP:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI, 
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER(" 
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ?", 
-					new String[] { searchText }, 
+					Browser.BookmarkColumns.BOOKMARK + " == 1" + 
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") LIKE ?", 
+					new String[] { searchText + "%" },
 					Browser.BookmarkColumns.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI,
 					BOOKMARKS_PROJECTION, 
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER(" 
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND length("
-						+ Browser.BookmarkColumns.TITLE + ") > " + searchText.length(), 
-					new String[] { searchText + "%" }, 
+					Browser.BookmarkColumns.BOOKMARK + " == 1" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") LIKE ?", 
+					new String[] { "% " + searchText + "%" },
 					Browser.BookmarkColumns.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI,
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER("
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND LOWER("
-						+ Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
-					new String[] { "%" + searchText + "%", searchText + "%" }, 
+					Browser.BookmarkColumns.BOOKMARK + " == 1" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") LIKE ?" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") NOT LIKE ?" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
+					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" }, 
 					Browser.BookmarkColumns.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.LOW:
@@ -95,9 +95,9 @@ public class BookmarkLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(Browser.BOOKMARKS_URI, 
 					BOOKMARKS_PROJECTION,
-					Browser.BookmarkColumns.BOOKMARK + " == 1 AND LOWER("
-						+ Browser.BookmarkColumns.TITLE + ") LIKE ? AND LOWER("
-						+ Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
+					Browser.BookmarkColumns.BOOKMARK + " == 1" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") LIKE ?" +
+						" AND LOWER(" + Browser.BookmarkColumns.TITLE + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" }, 
 					Browser.BookmarkColumns.TITLE + " ASC");
 				break;

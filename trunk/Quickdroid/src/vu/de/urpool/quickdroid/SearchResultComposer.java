@@ -131,12 +131,13 @@ public class SearchResultComposer extends BaseAdapter {
 	public final void search(final String searchText) {		
 		resetSearchResultPositions();
 		mSearchText = searchText;
-		if (searchText != null && searchText.length() > 0) {
+		if (mSearchText != null && mSearchText.trim().length() > 0) {
+			mSearchText = mSearchText.trim();
 			mQuickdroid.setProgressBarIndeterminateVisibility(true);
 			mClearSuggestions = true;
 			mNumDoneSearchers = 0;
 			for (int i = 0; i < mNumLaunchers; i++) {
-				mSearchers.get(i).search(searchText.toLowerCase());
+				mSearchers.get(i).search(mSearchText.toLowerCase());
 			}			
 		} else {
 			mSuggestions.clear();

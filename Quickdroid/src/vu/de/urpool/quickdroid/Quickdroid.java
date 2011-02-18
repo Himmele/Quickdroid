@@ -373,10 +373,12 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, bookmarkLauncher);
 		}
 		
-		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+		boolean defEnableSearchCategory = (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR) ? false : true;
+		
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, defEnableSearchCategory)) {
 			ArtistLauncher artistLauncher = new ArtistLauncher(this);
 			String strNumSuggestions = mSettings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
+				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		artistLauncher.setMaxSuggestions(numSuggestions);
@@ -392,10 +394,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, artistLauncher);
 		}
 		
-		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, defEnableSearchCategory)) {
 			AlbumLauncher albumLauncher = new AlbumLauncher(this);
 			String strNumSuggestions = mSettings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
+				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		albumLauncher.setMaxSuggestions(numSuggestions);
@@ -414,7 +416,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
 			SongLauncher songLauncher = new SongLauncher(this);
 			String strNumSuggestions = mSettings.getString(Preferences.PREF_SONGS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_4);
+				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
 			try {
 	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
 	    		songLauncher.setMaxSuggestions(numSuggestions);

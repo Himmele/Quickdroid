@@ -40,6 +40,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String PREF_SEARCH_ARTISTS = "searchArtists";
 	public static final String PREF_SEARCH_ALBUMS = "searchAlbums";
 	public static final String PREF_SEARCH_SONGS = "searchSongs";
+	public static final String DEFAULT_NUM_SUGGESTIONS_2 = "2";
 	public static final String DEFAULT_NUM_SUGGESTIONS_4 = "4";
 	public static final String DEFAULT_NUM_SUGGESTIONS_10 = "10";
 	public static final String PREF_APPS_NUM_SUGGESTIONS = "appsNumSuggestions";

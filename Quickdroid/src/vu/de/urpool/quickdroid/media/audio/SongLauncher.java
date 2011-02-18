@@ -70,26 +70,27 @@ public class SongLauncher extends Launcher {
 			case PatternMatchingLevel.TOP:
 				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					SONG_PROJECTION,
-					MediaStore.Audio.Media.IS_MUSIC + " = 1 AND LOWER(" 
-						+ MediaStore.Audio.Media.TITLE + ") LIKE ?",
-					new String[] { searchText },
+					MediaStore.Audio.Media.IS_MUSIC + " = 1" +
+					 " AND LOWER(" + MediaStore.Audio.Media.TITLE + ") LIKE ?",
+					new String[] { searchText + "%" },
 					MediaStore.Audio.Media.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.HIGH:
 				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					SONG_PROJECTION,
-					MediaStore.Audio.Media.IS_MUSIC + " = 1 AND LOWER(" 
-						+ MediaStore.Audio.Media.TITLE + ") LIKE ? AND length("
-						+ MediaStore.Audio.Media.TITLE + ") > " + searchText.length(),
-					new String[] { searchText + "%" },
+					MediaStore.Audio.Media.IS_MUSIC + " = 1" +
+					 " AND LOWER(" + MediaStore.Audio.Media.TITLE + ") LIKE ?",
+					new String[] { "% " + searchText + "%" },
 					MediaStore.Audio.Media.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.MIDDLE:
 				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					SONG_PROJECTION,
-					MediaStore.Audio.Media.IS_MUSIC + " = 1 AND LOWER(" 
-						+ MediaStore.Audio.Media.TITLE + ") LIKE ? AND LOWER(" + MediaStore.Audio.Media.TITLE + ") NOT LIKE ?", 
-					new String[] { "%" + searchText + "%", searchText + "%" },
+					MediaStore.Audio.Media.IS_MUSIC + " = 1" +
+						" AND LOWER(" + MediaStore.Audio.Media.TITLE + ") LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Media.TITLE + ") NOT LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Media.TITLE + ") NOT LIKE ?", 
+					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 					MediaStore.Audio.Media.TITLE + " ASC");
 				break;
 			case PatternMatchingLevel.LOW:
@@ -100,9 +101,9 @@ public class SongLauncher extends Launcher {
 				searchPattern += "%";
 				cursor = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					SONG_PROJECTION,
-					MediaStore.Audio.Media.IS_MUSIC + " = 1 AND LOWER("
-						+ MediaStore.Audio.Media.TITLE + ") LIKE ? AND LOWER(" 
-						+ MediaStore.Audio.Media.TITLE + ") NOT LIKE ?",
+					MediaStore.Audio.Media.IS_MUSIC + " = 1" +
+						" AND LOWER(" + MediaStore.Audio.Media.TITLE + ") LIKE ?" +
+						" AND LOWER(" + MediaStore.Audio.Media.TITLE + ") NOT LIKE ?",
 					new String[] { searchPattern, "%" + searchText + "%" }, 
 					MediaStore.Audio.Media.TITLE + " ASC");
 				break;

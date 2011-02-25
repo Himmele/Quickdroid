@@ -33,6 +33,8 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
 public class SongLauncher extends Launcher {
 	public static final String NAME = "SongLauncher";
@@ -157,7 +159,12 @@ public class SongLauncher extends Launcher {
 			List<ResolveInfo> list = mContext.getPackageManager().queryIntentActivities(intent, 
 				PackageManager.MATCH_DEFAULT_ONLY);
 			if(list.size() > 0) {
-				mContext.startActivity(intent);
+				try {
+	            	mContext.startActivity(intent);
+	            } catch (Exception e) {
+	            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+	            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage()); 
+	            }
 			}
 			return true;
     	}

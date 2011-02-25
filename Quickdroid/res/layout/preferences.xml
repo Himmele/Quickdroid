@@ -14,7 +14,8 @@
      limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:quickdroid="http://schemas.android.com/apk/res/vu.de.urpool.quickdroid">
+	xmlns:quickdroid="http://schemas.android.com/apk/res/vu.de.urpool.quickdroid"
+	android:key="preferences">
         
     <PreferenceCategory android:title="@string/searchCategories"/>
     

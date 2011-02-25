@@ -27,9 +27,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.widget.Toast;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.PatternMatchingLevel;
+import vu.de.urpool.quickdroid.R;
 
 public class AppLauncher extends Launcher {
 	private static final String NAME = "AppLauncher";
@@ -149,9 +152,14 @@ public class AppLauncher extends Launcher {
 			List<ResolveInfo> list = mContext.getPackageManager().queryIntentActivities(appLaunchable.getIntent(), 
 				PackageManager.MATCH_DEFAULT_ONLY);
 			if(list.size() > 0) {
-				mContext.startActivity(appLaunchable.getIntent());
+				try {
+	            	mContext.startActivity(appLaunchable.getIntent());
+	            } catch (Exception e) {
+	            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+	            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());	
+	            }
 				return true;
-			}			
+			}
 		}
 		return false;
 	}

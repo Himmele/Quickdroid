@@ -30,6 +30,8 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
 public class AlbumLauncher extends Launcher {
 	public static final String NAME = "AlbumLauncher";
@@ -147,7 +149,12 @@ public class AlbumLauncher extends Launcher {
             intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
             intent.putExtra("album", String.valueOf(launchable.getId()));
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            mContext.startActivity(intent);
+            try {
+            	mContext.startActivity(intent);
+            } catch (Exception e) {
+            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());	
+            }
             return true;
     	}
     	return false;

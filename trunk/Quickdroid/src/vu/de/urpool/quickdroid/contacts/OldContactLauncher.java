@@ -29,6 +29,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Contacts;
 import android.provider.Contacts.People;
+import android.util.Log;
+import android.widget.Toast;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.Preferences;
@@ -177,7 +179,12 @@ public class OldContactLauncher extends Launcher {
     	if(launchable instanceof OldContactLaunchable) {
     		Intent intent = new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(Contacts.People.CONTENT_URI, launchable.getId()));
     		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    		mContext.startActivity(intent);
+    		try {
+            	mContext.startActivity(intent);
+            } catch (Exception e) {
+            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());	
+            }
 			return true;
     	}
     	return false;

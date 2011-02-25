@@ -25,6 +25,8 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Browser;
+import android.util.Log;
+import android.widget.Toast;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.PatternMatchingLevel;
@@ -148,7 +150,12 @@ public class BookmarkLauncher extends Launcher {
     	if(launchable instanceof BookmarkLaunchable) {
     		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((BookmarkLaunchable) launchable).getUrl()));
     		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    		mContext.startActivity(intent);
+    		try {
+            	mContext.startActivity(intent);
+            } catch (Exception e) {
+            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());	
+            }
 			return true;
     	}
     	return true;

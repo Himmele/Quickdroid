@@ -63,6 +63,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.layout.preferences);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+        	findPreference("artistsSettings").setSummary(R.string.searchCategoryUnavailable);
+        	findPreference("artistsSettings").setEnabled(false);
+        	findPreference("albumsSettings").setSummary(R.string.searchCategoryUnavailable);
+        	findPreference("albumsSettings").setEnabled(false);
+        }
     }
 
 	@Override

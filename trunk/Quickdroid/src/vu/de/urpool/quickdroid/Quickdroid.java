@@ -373,42 +373,54 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			mLaunchers.add(mLauncherIndex++, bookmarkLauncher);
 		}
 		
-		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {			
-			ArtistLauncher artistLauncher = new ArtistLauncher(this);
-			String strNumSuggestions = mSettings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
-			try {
-	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
-	    		artistLauncher.setMaxSuggestions(numSuggestions);
-	    	} catch (NumberFormatException e) {	
-	    	}
-	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ARTISTS_PATTERN_MATCHING_LEVEL,
-		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
-	    	try {
-	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		artistLauncher.setPatternMatchingLevel(patternMatchingLevel);
-	    	} catch (NumberFormatException e) {	
-	    	}
-			mLaunchers.add(mLauncherIndex++, artistLauncher);
+		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+				SharedPreferences.Editor editor = mSettings.edit();
+				editor.putBoolean(Preferences.PREF_SEARCH_ARTISTS, false);
+				editor.commit();
+			} else {
+				ArtistLauncher artistLauncher = new ArtistLauncher(this);
+				String strNumSuggestions = mSettings.getString(Preferences.PREF_ARTISTS_NUM_SUGGESTIONS,
+					Preferences.DEFAULT_NUM_SUGGESTIONS_2);
+				try {
+		    		int numSuggestions = Integer.parseInt(strNumSuggestions);
+		    		artistLauncher.setMaxSuggestions(numSuggestions);
+		    	} catch (NumberFormatException e) {	
+		    	}
+		    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ARTISTS_PATTERN_MATCHING_LEVEL,
+			    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
+		    	try {
+		    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
+		    		artistLauncher.setPatternMatchingLevel(patternMatchingLevel);
+		    	} catch (NumberFormatException e) {	
+		    	}
+				mLaunchers.add(mLauncherIndex++, artistLauncher);
+			}
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
-			AlbumLauncher albumLauncher = new AlbumLauncher(this);
-			String strNumSuggestions = mSettings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
-				Preferences.DEFAULT_NUM_SUGGESTIONS_2);
-			try {
-	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
-	    		albumLauncher.setMaxSuggestions(numSuggestions);
-	    	} catch (NumberFormatException e) {	
-	    	}
-	    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ALBUMS_PATTERN_MATCHING_LEVEL,
-		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
-	    	try {
-	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		albumLauncher.setPatternMatchingLevel(patternMatchingLevel);
-	    	} catch (NumberFormatException e) {	
-	    	}
-			mLaunchers.add(mLauncherIndex++, albumLauncher);
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+				SharedPreferences.Editor editor = mSettings.edit();
+				editor.putBoolean(Preferences.PREF_SEARCH_ALBUMS, false);
+				editor.commit();
+			} else {
+				AlbumLauncher albumLauncher = new AlbumLauncher(this);
+				String strNumSuggestions = mSettings.getString(Preferences.PREF_ALBUMS_NUM_SUGGESTIONS,
+					Preferences.DEFAULT_NUM_SUGGESTIONS_2);
+				try {
+		    		int numSuggestions = Integer.parseInt(strNumSuggestions);
+		    		albumLauncher.setMaxSuggestions(numSuggestions);
+		    	} catch (NumberFormatException e) {	
+		    	}
+		    	String strPatternMatchingLevel = mSettings.getString(Preferences.PREF_ALBUMS_PATTERN_MATCHING_LEVEL,
+			    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
+		    	try {
+		    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
+		    		albumLauncher.setPatternMatchingLevel(patternMatchingLevel);
+		    	} catch (NumberFormatException e) {	
+		    	}
+				mLaunchers.add(mLauncherIndex++, albumLauncher);
+			}
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
@@ -522,7 +534,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 35) {
+		if (versionCode < 36) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -559,18 +571,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			if (versionCode < 35) {
-				boolean enableSearchCategory = (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.GINGERBREAD) ? true : false;				
-				if (mSettings.getBoolean(Preferences.PREF_SEARCH_ARTISTS, false)) {
-					editor.putBoolean(Preferences.PREF_SEARCH_ARTISTS, enableSearchCategory);
-					editor.commit();
-				}
-				if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, false)) {					
-					editor.putBoolean(Preferences.PREF_SEARCH_ALBUMS, enableSearchCategory);
-					editor.commit();
-				}
-			}
-			editor.putInt("versionCode", 35);
+			editor.putInt("versionCode", 36);
 			editor.commit();
 		}
 	}

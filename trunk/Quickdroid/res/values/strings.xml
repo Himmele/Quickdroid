@@ -75,5 +75,4 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="removeFromList">Remove from list</string>
-    <string name="searchCategoryUnavailable">Unfortunately, this search category is not available for your device</string>
 </resources>

@@ -163,7 +163,8 @@ public class SongLauncher extends Launcher {
 	            	mContext.startActivity(intent);
 	            } catch (Exception e) {
 	            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
-	            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage()); 
+	            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());
+	            	return false;
 	            }
 			}
 			return true;

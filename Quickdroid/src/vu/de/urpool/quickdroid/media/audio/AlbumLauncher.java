@@ -22,6 +22,7 @@ import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.R;
 import vu.de.urpool.quickdroid.PatternMatchingLevel;
 import vu.de.urpool.quickdroid.utils.ThumbnailFactory;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -145,19 +146,48 @@ public class AlbumLauncher extends Launcher {
     @Override
 	public boolean activate(Launchable launchable) {
     	if (launchable instanceof AlbumLaunchable) {
-    		Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
-            intent.putExtra("album", String.valueOf(launchable.getId()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            try {
-            	mContext.startActivity(intent);
-            } catch (Exception e) {
-            	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
-            	Log.e(mContext.getResources().getString(R.string.appName), e.getMessage());	
-            }
-            return true;
+	    	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {   	
+	    		return activateByMediaSearchIntent(launchable);
+	    	} else {
+	    		return activateByPickIntent(launchable);
+	    	}
     	}
     	return false;
+	}
+
+	private boolean activateByMediaSearchIntent(Launchable launchable) {
+		Intent intent;		
+		String query = "";    		          
+		intent = new Intent();
+		intent.setAction(MediaStore.INTENT_ACTION_MEDIA_SEARCH);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); 	
+		query = launchable.getLabel();
+		intent.putExtra(MediaStore.EXTRA_MEDIA_ALBUM, launchable.getLabel());
+		query = query + " " + launchable.getInfoText();
+		intent.putExtra(MediaStore.EXTRA_MEDIA_ARTIST, launchable.getInfoText());
+		intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE);
+		intent.putExtra(SearchManager.QUERY, query);
+		try {
+			mContext.startActivity(intent);
+		} catch (Exception ex) {
+			Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();
+			Log.e(mContext.getResources().getString(R.string.appName), ex.getMessage());
+			return false;
+		}	    		
+		return true;
+	}
+
+	private boolean activateByPickIntent(Launchable launchable) {
+		Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/track");
+        intent.putExtra("album", String.valueOf(launchable.getId()));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        try {
+        	mContext.startActivity(intent);
+        } catch (Exception e) {
+        	return activateByMediaSearchIntent(launchable);
+        }
+        return true;
 	}
     
     public Drawable getThumbnail(Launchable launchable) {

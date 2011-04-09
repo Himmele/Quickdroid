@@ -106,12 +106,12 @@ public class AlbumLauncher extends Launcher {
 		}
 		
 		ArrayList<Launchable> suggestions = new ArrayList<Launchable>();
- 		if(cursor != null) {
- 			if(cursor.getCount() > offset) {
+ 		if (cursor != null) {
+ 			if (cursor.getCount() > offset) {
  				cursor.moveToFirst();
  				cursor.move(offset);
  				int i = 0;
- 				while(!cursor.isAfterLast() && i++ < limit) {
+ 				while (!cursor.isAfterLast() && i++ < limit) {
  					AlbumLaunchable launchable = new AlbumLaunchable(this,
  						cursor.getInt(ID_COLUMN_INDEX),
  						cursor.getString(ALBUM_COLUMN_INDEX),

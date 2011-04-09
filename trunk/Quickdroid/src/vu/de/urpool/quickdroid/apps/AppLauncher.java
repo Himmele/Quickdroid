@@ -102,12 +102,12 @@ public class AppLauncher extends Launcher {
 		}
 		
 		ArrayList<Launchable> suggestions = new ArrayList<Launchable>();
-		if(cursor != null) {
-			if(cursor.getCount() > offset) {
+		if (cursor != null) {
+			if (cursor.getCount() > offset) {
 				cursor.moveToFirst();
 				cursor.move(offset);
 				int i = 0;
-				while(!cursor.isAfterLast() && i++ < limit) {
+				while (!cursor.isAfterLast() && i++ < limit) {
 					Intent intent = new Intent(Intent.ACTION_MAIN);
 					intent.addCategory(Intent.CATEGORY_LAUNCHER);
 					intent.setClassName(cursor.getString(PACKAGE_COLUMN_INDEX), cursor.getString(CLASS_COLUMN_INDEX));

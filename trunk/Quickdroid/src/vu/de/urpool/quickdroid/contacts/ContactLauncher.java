@@ -145,12 +145,12 @@ public class ContactLauncher extends Launcher {
 		}
 		
 		ArrayList<Launchable> suggestions = new ArrayList<Launchable>();
- 		if(cursor != null) {
- 			if(cursor.getCount() > offset) {
+ 		if (cursor != null) {
+ 			if (cursor.getCount() > offset) {
  				cursor.moveToFirst();
  				cursor.move(offset);
  				int i = 0;
- 				while(!cursor.isAfterLast() && i++ < limit) {
+ 				while (!cursor.isAfterLast() && i < limit) {
  					if (cursor.getInt(VISIBILITY_COLUMN_INDEX) != 0) {
 	 					ContactLaunchable contactLaunchable = new ContactLaunchable(this,
 	 						cursor.getInt(ID_COLUMN_INDEX),
@@ -159,6 +159,7 @@ public class ContactLauncher extends Launcher {
 	 						ContactsContract.Contacts.getLookupUri(cursor.getInt(ID_COLUMN_INDEX),
 	 							cursor.getString(LOOKUP_KEY_COLUMN_INDEX)));
 	 					suggestions.add(contactLaunchable);
+	 					i++;
  					}
  					cursor.moveToNext();
  				}

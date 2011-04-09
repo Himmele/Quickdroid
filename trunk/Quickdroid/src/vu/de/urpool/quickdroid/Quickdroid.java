@@ -154,7 +154,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         mSearchText.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_GO) {
+				if (actionId == EditorInfo.IME_ACTION_GO ||
+						(event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
 						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);

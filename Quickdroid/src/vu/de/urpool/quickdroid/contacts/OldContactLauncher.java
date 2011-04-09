@@ -137,12 +137,12 @@ public class OldContactLauncher extends Launcher {
 		}
 		
 		ArrayList<Launchable> suggestions = new ArrayList<Launchable>();
- 		if(cursor != null) {
- 			if(cursor.getCount() > offset) {
+ 		if (cursor != null) {
+ 			if (cursor.getCount() > offset) {
  				cursor.moveToFirst();
  				cursor.move(offset);
  				int i = 0;
- 				while(!cursor.isAfterLast() && i++ < limit) {
+ 				while (!cursor.isAfterLast() && i++ < limit) {
  					OldContactLaunchable contactLaunchable = new OldContactLaunchable(this,
  						cursor.getInt(ID_COLUMN_INDEX),
  						cursor.getString(NAME_COLUMN_INDEX),

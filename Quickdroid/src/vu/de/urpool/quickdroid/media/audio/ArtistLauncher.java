@@ -104,12 +104,12 @@ public class ArtistLauncher extends Launcher {
 		}
 		
 		ArrayList<Launchable> suggestions = new ArrayList<Launchable>();
- 		if(cursor != null) {
- 			if(cursor.getCount() > offset) {
+ 		if (cursor != null) {
+ 			if (cursor.getCount() > offset) {
  				cursor.moveToFirst();
  				cursor.move(offset);
  				int i = 0;
- 				while(!cursor.isAfterLast() && i++ < limit) {
+ 				while (!cursor.isAfterLast() && i++ < limit) {
  					ArtistLaunchable launchable = new ArtistLaunchable(this,
  						cursor.getInt(ID_COLUMN_INDEX),
  						cursor.getString(ARTIST_COLUMN_INDEX));

@@ -84,7 +84,6 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private SharedPreferences mSettings;
 	private Launchable mActiveLaunchable;
 	private InputMethodManager mInputMethodManager;
-	private int mLauncherIndex = 0;
 	private GestureLibrary mGestureLibrary;
 	private boolean mClearSearchTextApproval;
 	private OnClickListener mOnThumbnailClickListener;
@@ -312,6 +311,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	}
 
 	private void createLaunchers() {
+		int launcherIndex = 0;
+		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
 	    	AppLauncher appLauncher = new AppLauncher(this);
 	    	String strNumSuggestions = mSettings.getString(Preferences.PREF_APPS_NUM_SUGGESTIONS,
@@ -328,7 +329,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		appLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-	    	mLaunchers.add(mLauncherIndex++, appLauncher);
+	    	mLaunchers.add(launcherIndex++, appLauncher);
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_CONTACTS, Preferences.SEARCH_LAUNCHER)) {
@@ -352,7 +353,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		contactLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-			mLaunchers.add(mLauncherIndex++, contactLauncher);
+			mLaunchers.add(launcherIndex++, contactLauncher);
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_BOOKMARKS, Preferences.SEARCH_LAUNCHER)) {
@@ -371,7 +372,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		bookmarkLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-			mLaunchers.add(mLauncherIndex++, bookmarkLauncher);
+			mLaunchers.add(launcherIndex++, bookmarkLauncher);
 		}
 		
 		boolean defEnableSearchCategory = (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR) ? false : true;
@@ -397,7 +398,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		artistLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-			mLaunchers.add(mLauncherIndex++, artistLauncher);
+			mLaunchers.add(launcherIndex++, artistLauncher);
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_ALBUMS, defEnableSearchCategory)) {
@@ -421,7 +422,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		albumLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-			mLaunchers.add(mLauncherIndex++, albumLauncher);
+			mLaunchers.add(launcherIndex++, albumLauncher);
 		}
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_SONGS, Preferences.DO_NOT_SEARCH_LAUNCHER)) {
@@ -440,7 +441,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    		songLauncher.setPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
-			mLaunchers.add(mLauncherIndex++, songLauncher);
+			mLaunchers.add(launcherIndex++, songLauncher);
 		}
 	}
 	

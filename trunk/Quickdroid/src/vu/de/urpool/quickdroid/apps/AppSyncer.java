@@ -156,7 +156,7 @@ public class AppSyncer extends Service implements Runnable {
 			if (mSyncThread.isInterrupted()) {
 				return false;
 			}
-			if (ri != null && ri.activityInfo != null && ri.activityInfo.targetActivity == null) {
+			if (ri != null && ri.activityInfo != null) {
 				CharSequence appLabel = ri.activityInfo.loadLabel(pm);
 				if (appLabel != null) {
 					cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,

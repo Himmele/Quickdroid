@@ -32,4 +32,8 @@ public class SongLaunchable extends Launchable {
 	public Drawable getThumbnail() {
 		return mSongLauncher.getThumbnail(this);
 	}
+	
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 }

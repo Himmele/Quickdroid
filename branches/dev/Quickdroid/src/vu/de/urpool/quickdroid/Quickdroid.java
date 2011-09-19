@@ -25,10 +25,14 @@ import vu.de.urpool.quickdroid.apps.AppSyncer;
 import vu.de.urpool.quickdroid.browser.BookmarkLauncher;
 import vu.de.urpool.quickdroid.contacts.ContactLauncher;
 import vu.de.urpool.quickdroid.contacts.OldContactLauncher;
+import vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsLauncher;
+import vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsProvider;
 import vu.de.urpool.quickdroid.media.audio.AlbumLauncher;
 import vu.de.urpool.quickdroid.media.audio.ArtistLauncher;
 import vu.de.urpool.quickdroid.media.audio.SongLauncher;
 import android.app.*;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -88,6 +92,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private GestureLibrary mGestureLibrary;
 	private boolean mClearSearchTextApproval;
 	private OnClickListener mOnThumbnailClickListener;
+	private ContentResolver mContentResolver;
+	private FavoriteItemsLauncher mFavoriteItemsLauncher;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,11 +106,16 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
     		LinearLayout.LayoutParams.FILL_PARENT);
         setContentView(rootView, rootLayout);
         
+        mContentResolver = getContentResolver();
+        
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         checkSettings();
         
         mLaunchers = new ArrayList<Launcher>();
 		createLaunchers();
+		if (mFavoriteItemsLauncher != null) {
+			mFavoriteItemsLauncher.init();
+		}
 		
 		mSearchText = (EditText) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
@@ -267,7 +278,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        } else {
 	        	gestures.setGestureVisible(false);
 	        }
-        } else {        	
+        } else {
         	gestures.setGestureVisible(false);
         }
         
@@ -318,6 +329,23 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 
 	private void createLaunchers() {
 		int launcherIndex = 0;
+		
+	    if (mSettings.getBoolean(Preferences.PREF_SEARCH_FAVORITE_ITEMS, Preferences.SEARCH_LAUNCHER)) {
+	    	mFavoriteItemsLauncher = new FavoriteItemsLauncher(this);
+	    	String strNumSuggestions = Preferences.DEFAULT_NUM_SUGGESTIONS_4;
+	    	try {
+	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
+	    		mFavoriteItemsLauncher.setMaxSuggestions(numSuggestions);
+	    	} catch (NumberFormatException e) {	
+	    	}
+	    	String strPatternMatchingLevel = Preferences.DEFAULT_PATTERN_MATCHING_LEVEL;
+	    	try {
+	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
+	    		mFavoriteItemsLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    	} catch (NumberFormatException e) {	
+	    	}
+	    	mLaunchers.add(launcherIndex++, mFavoriteItemsLauncher);
+	    }
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
 	    	AppLauncher appLauncher = new AppLauncher(this);
@@ -493,6 +521,15 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		mActiveLaunchable = launchable;
 		if (mActiveLaunchable.activate()) {
 			mSearchHistoryComposer.addLaunchable(launchable, true, true, true);
+			
+			if ((mFavoriteItemsLauncher != null) && (mSearchText.getText().length() > 0)) {
+				// TODO: AsyncTask
+				ContentValues values = new ContentValues();
+				values.put("SearchText", mSearchText.getText().toString());
+				values.put("LauncherID", launchable.getLauncher().getId());
+				values.put("LaunchableID", launchable.getId());		
+				mContentResolver.insert(FavoriteItemsProvider.FAVORITE_ITEMS_URI, values);
+			}
 		}
 	}
 	
@@ -626,6 +663,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	public OnClickListener getOnThumbnailClickListener() {
 		return mOnThumbnailClickListener;
+	}
+	
+	public FavoriteItemsLauncher getFavoriteItemsLauncher() {
+		return mFavoriteItemsLauncher;
 	}
 }
 

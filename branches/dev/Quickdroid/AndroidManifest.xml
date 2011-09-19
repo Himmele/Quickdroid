@@ -54,6 +54,7 @@
              	<data android:scheme="package"/>
             </intent-filter>
         </receiver>
+        <provider android:name=".favoriteitems.FavoriteItemsProvider" android:authorities="vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsProvider" android:multiprocess="false"/>
     </application>
 	<uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>

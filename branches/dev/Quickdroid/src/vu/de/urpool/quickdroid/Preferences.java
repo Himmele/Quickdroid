@@ -34,6 +34,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String PREF_CONTACT_PHOTOS = "contactPhotos";
 	public static boolean SEARCH_LAUNCHER = true;
 	public static boolean DO_NOT_SEARCH_LAUNCHER = false;
+	public static final String PREF_SEARCH_FAVORITE_ITEMS = "searchFavoriteItems";
 	public static final String PREF_SEARCH_APPS = "searchApps";
 	public static final String PREF_SEARCH_CONTACTS = "searchContacts";
 	public static final String PREF_SEARCH_BOOKMARKS = "searchBookmarks";

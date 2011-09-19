@@ -38,4 +38,8 @@ public class BookmarkLaunchable extends Launchable {
 	public String getUrl() {
 		return mUrl;
 	}
+	
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 }

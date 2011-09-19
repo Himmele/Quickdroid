@@ -32,4 +32,8 @@ public class ArtistLaunchable extends Launchable {
 	public Drawable getThumbnail() {
 		return mArtistLauncher.getThumbnail(this);
 	}
+	
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 }

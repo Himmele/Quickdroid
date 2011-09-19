@@ -17,6 +17,7 @@ package vu.de.urpool.quickdroid;
  */
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -39,10 +40,12 @@ public class SearchResultComposer extends BaseAdapter {
 	private final HashMap<Integer, Integer> mLauncherIndexes;
 	private final LauncherObserver mLauncherObserver;
 	private Vector<Launchable> mSuggestions;
+	private Vector<Launchable> mViewableSuggestions;
 	private String mSearchText = null;
 	private boolean mClearSuggestions = false;
 	private int mNumDoneSearchers = 0;
 	private int[] mSearchResultPos;
+	private Launcher mFavoriteItemsLauncher;
 	
 	public SearchResultComposer(Quickdroid quickdroid) {
 		mQuickdroid = quickdroid;
@@ -57,7 +60,13 @@ public class SearchResultComposer extends BaseAdapter {
 			mLaunchers.get(i).registerContentObserver(mLauncherObserver);
 			mSearchers.add(new Searcher(mLaunchers.get(i), this));
 		}
+		mFavoriteItemsLauncher = mQuickdroid.getFavoriteItemsLauncher();
 		mSuggestions = new Vector<Launchable>();
+		if (mFavoriteItemsLauncher != null) {
+			mViewableSuggestions = new Vector<Launchable>();
+		} else {
+			mViewableSuggestions = mSuggestions;
+		}
 		mSearchResultPos = new int[mNumLaunchers * PatternMatchingLevel.NUM_LEVELS];
 	}
 	
@@ -70,19 +79,23 @@ public class SearchResultComposer extends BaseAdapter {
 	}
 	
 	public int getCount() {
-		return mSuggestions.size();
+		return mViewableSuggestions.size();
 	}
 	
 	public Object getItem(int position) {
-		if (position < mSuggestions.size()) {
-			return mSuggestions.get(position);
+		if (position < mViewableSuggestions.size()) {
+			return mViewableSuggestions.get(position);
 		} else {
 			return null;
 		}
 	}
 	
 	public long getItemId(int position) {
-		return mSuggestions.get(position).getId();
+		if (position < mViewableSuggestions.size()) {
+			return mViewableSuggestions.get(position).getId();
+		} else {
+			return -1;
+		}
 	}
 	
 	private class ViewHolder {
@@ -104,7 +117,7 @@ public class SearchResultComposer extends BaseAdapter {
         } else {                
         	viewHolder = (ViewHolder) convertView.getTag();
         }     
-        Launchable launchable = mSuggestions.get(position);
+        Launchable launchable = mViewableSuggestions.get(position);
         viewHolder.mThumbnail.setImageDrawable(mQuickdroid.getResources().getDrawable(R.drawable.app_thumbnail));
         if(launchable.getThumbnail() != null) {
         	viewHolder.mThumbnail.setImageDrawable(launchable.getThumbnail().getCurrent());
@@ -141,6 +154,7 @@ public class SearchResultComposer extends BaseAdapter {
 			}			
 		} else {
 			mSuggestions.clear();
+			mViewableSuggestions.clear();
 			notifyDataSetChanged();
 			mQuickdroid.setProgressBarIndeterminateVisibility(false);
 		}
@@ -152,7 +166,35 @@ public class SearchResultComposer extends BaseAdapter {
 				mClearSuggestions = false;
 				mSuggestions.clear();
 			}
-			 
+			
+			if (mFavoriteItemsLauncher != null) {
+				if (launcher != mFavoriteItemsLauncher) {
+					for (Launchable launchable : mSuggestions) {
+						int i = 0;
+						for (i = 0; i < suggestions.size(); i++) {						
+							if ((launchable != null) && (launchable.equals(suggestions.get(i)))) {
+								break;
+							}					
+						}
+						if (i < suggestions.size()) {
+							suggestions.remove(i);
+						}
+					}
+				} else {
+					for (Launchable launchable : suggestions) {
+						int i = 0;
+						for (i = 0; i < mSuggestions.size(); i++) {						
+							if ((mSuggestions.get(i) != null) && (launchable.equals(mSuggestions.get(i)))) {
+								break;
+							}					
+						}
+						if (i < mSuggestions.size()) {
+							mSuggestions.set(i, null);
+						}
+					}					
+				}
+			}
+			
 			// flattened 2 dimensional array that holds the positions to insert new suggestions for each Launcher depending on its pattern matching level
 			int insertPos = 0;
 			Integer launcherIndex = mLauncherIndexes.get(launcher.getId());
@@ -160,15 +202,25 @@ public class SearchResultComposer extends BaseAdapter {
 				insertPos += mSearchResultPos[mNumLaunchers * i - 1];
 			}
 			insertPos += mSearchResultPos[(PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex];
+			
 			mSuggestions.addAll(insertPos, suggestions);
 			int pos = (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex; 
 			for (int i = pos; i < pos + mNumLaunchers - launcherIndex; i++) {
 				mSearchResultPos[i] += suggestions.size();
 			}
 			
+			if (mFavoriteItemsLauncher != null) {
+				mViewableSuggestions.setSize(mSuggestions.size());
+				Collections.copy(mViewableSuggestions, mSuggestions);				
+				for (int i = 0; i < mViewableSuggestions.size(); i++) {
+					if (!mViewableSuggestions.remove(null)) {
+						break;
+					}
+				}				
+			}			
 			if (mQuickdroid.getListView().getItemAtPosition(0) != null) {
 				mQuickdroid.getListView().setSelection(0);
-			}	
+			}
 			notifyDataSetChanged();
 		}			
    	}
@@ -179,6 +231,7 @@ public class SearchResultComposer extends BaseAdapter {
 			if (mClearSuggestions) {
 				mClearSuggestions = false;
 				mSuggestions.clear();
+				mViewableSuggestions.clear();
 				notifyDataSetChanged();
 			}
 			mQuickdroid.setProgressBarIndeterminateVisibility(false);
@@ -187,7 +240,7 @@ public class SearchResultComposer extends BaseAdapter {
 	}
 	
 	public boolean hasSuggestions() {
-		return (!mSuggestions.isEmpty());
+		return (!mViewableSuggestions.isEmpty());
 	}
 	
 	private final void resetSearchResultPositions() {

@@ -45,4 +45,8 @@ public class ContactLaunchable extends Launchable {
 	public Uri getLookupUri() {
 		return mLookupUri;
 	}
+	
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 }

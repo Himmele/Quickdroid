@@ -39,6 +39,7 @@
 			    android:layout_gravity="right|center_vertical"
 			    android:layout_marginRight="10dip"
 			    android:layout_marginBottom="1dip">
+			    <!-- EditText has some transparent pixels underneath it -> 1dip margin -->
 			    <View android:id="@+id/speechRecognizer"
 				    android:layout_width="32dip"
 				    android:layout_height="32dip"
@@ -60,7 +61,7 @@
 	    android:gestureStrokeType="multiple"
 	    android:eventsInterceptionEnabled="true"
 	    android:orientation="vertical">    
-		<vu.de.urpool.quickdroid.BouncingListView android:id="@android:id/list"
+		<ListView android:id="@android:id/list"
 		    android:layout_width="fill_parent"
 		    android:layout_height="fill_parent" 
 		    android:drawSelectorOnTop="false"

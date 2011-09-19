@@ -163,8 +163,6 @@ public class AlbumLauncher extends Launcher {
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); 	
 		query = launchable.getLabel();
 		intent.putExtra(MediaStore.EXTRA_MEDIA_ALBUM, launchable.getLabel());
-		query = query + " " + launchable.getInfoText();
-		intent.putExtra(MediaStore.EXTRA_MEDIA_ARTIST, launchable.getInfoText());
 		intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE);
 		intent.putExtra(SearchManager.QUERY, query);
 		try {

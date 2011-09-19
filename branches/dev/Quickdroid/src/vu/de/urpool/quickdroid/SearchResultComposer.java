@@ -167,6 +167,8 @@ public class SearchResultComposer extends BaseAdapter {
 				mSuggestions.clear();
 			}
 			
+			Integer launcherIndex = mLauncherIndexes.get(launcher.getId());
+			
 			if (mFavoriteItemsLauncher != null) {
 				if (launcher != mFavoriteItemsLauncher) {
 					// do not add suggestions if they are already available as favorite items
@@ -182,8 +184,9 @@ public class SearchResultComposer extends BaseAdapter {
 						}
 					}
 				} else {
-					// do not add duplicate favorite items 
-					for (int i = 0; i < mSearchResultPos[1]; i++) {
+					// do not add duplicate favorite items
+					int nextFavoriteItemPos = mSearchResultPos[(PatternMatchingLevel.NUM_LEVELS - PatternMatchingLevel.LOW) * mNumLaunchers + launcherIndex];
+					for (int i = 0; i < nextFavoriteItemPos; i++) {
 						Launchable launchable = mSuggestions.get(i);
 						int j = 0;
 						for (j = 0; j < suggestions.size(); j++) {						
@@ -213,7 +216,6 @@ public class SearchResultComposer extends BaseAdapter {
 			
 			// flattened 2 dimensional array that holds the positions to insert new suggestions for each Launcher depending on its pattern matching level
 			int insertPos = 0;
-			Integer launcherIndex = mLauncherIndexes.get(launcher.getId());
 			for (int i = 1; i <= (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel); i++) {
 				insertPos += mSearchResultPos[mNumLaunchers * i - 1];
 			}

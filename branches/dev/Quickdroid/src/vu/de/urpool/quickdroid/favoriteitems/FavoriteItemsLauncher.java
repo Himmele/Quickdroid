@@ -116,7 +116,7 @@ public class FavoriteItemsLauncher extends Launcher {
 					Integer launcherIndex = mLauncherIndexes.get(launcherID);
 					if (launcherIndex != null) {
 						Launchable launchable = mLaunchers.get(launcherIndex).getLaunchable(cursor.getInt(LAUNCHABLE_ID_COLUMN_INDEX));
-						if (launchable != null) {
+						if ((launchable != null) && !suggestions.contains(launchable)) {
 							suggestions.add(launchable);
 						}
 					}

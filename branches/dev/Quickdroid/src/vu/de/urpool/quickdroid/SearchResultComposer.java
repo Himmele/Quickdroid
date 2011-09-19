@@ -169,6 +169,7 @@ public class SearchResultComposer extends BaseAdapter {
 			
 			if (mFavoriteItemsLauncher != null) {
 				if (launcher != mFavoriteItemsLauncher) {
+					// do not add suggestions if they are already available as favorite items
 					for (Launchable launchable : mSuggestions) {
 						int i = 0;
 						for (i = 0; i < suggestions.size(); i++) {						
@@ -181,6 +182,21 @@ public class SearchResultComposer extends BaseAdapter {
 						}
 					}
 				} else {
+					// do not add duplicate favorite items 
+					for (int i = 0; i < mSearchResultPos[1]; i++) {
+						Launchable launchable = mSuggestions.get(i);
+						int j = 0;
+						for (j = 0; j < suggestions.size(); j++) {						
+							if ((launchable != null) && (launchable.equals(suggestions.get(j)))) {
+								break;
+							}					
+						}
+						if (j < suggestions.size()) {
+							suggestions.remove(j);
+						}
+					}
+					
+					// remove normal items in favor of the same higher ranked favorite items
 					for (Launchable launchable : suggestions) {
 						int i = 0;
 						for (i = 0; i < mSuggestions.size(); i++) {						

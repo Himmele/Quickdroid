@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 Daniel Himmelein
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="appName">Quickdroid</string>
+    <string name="appSettings">Settings</string>
+    <string name="searchHint">Type to search</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="quickLaunch">Quick launch</string>
+	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
+	<string name="clearSearchTextOnResume">Clear search text</string>
+	<string name="clearSearchTextOnResumeSummary">Automatically clear the search text whenever Quickdroid is resumed</string>
+	<string name="softKeyboard">Soft keyboard</string>
+	<string name="softKeyboardSummary">Do not show the soft keyboard automatically</string>
+	<string name="gestureRecognizer">Gesture recognizer</string>
+	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
+	<string name="speechRecognizer">Speech recognizer</string>
+	<string name="speechRecognizerSummary">Recognize speech input</string>
+	<string name="speechRecognizerError">Speech recognizer not available!</string>
+	<string name="searchHistory">Search history</string>
+	<string name="searchHistorySummary">Enable the search history</string>
+	<string name="recentlyUsedSuggestions">Search history size</string>
+	<string name="maxSearchHistorySize">Set the search history size</string>
+	<string name="clearSearchHistory">Clear search history</string>
+    <string name="searchCategories">Search categories</string>
+    <string name="appsSettings">Applications</string>
+    <string name="appsSettingsSummary"></string>
+    <string name="contactsSettings">Contacts</string>
+    <string name="contactsSettingsSummary"></string>
+    <string name="bookmarksSettings">Bookmarks</string>
+    <string name="bookmarksSettingsSummary"></string>
+    <string name="artistsSettings">Artists</string>
+    <string name="artistsSettingsSummary"></string>
+    <string name="albumsSettings">Albums</string>
+    <string name="albumsSettingsSummary"></string>
+    <string name="songsSettings">Songs</string>
+    <string name="songsSettingsSummary"></string>
+    <string name="searchApps">Search for applications</string>
+    <string name="searchContacts">Search for contacts</string>
+    <string name="searchBookmarks">Search for bookmarks</string>
+    <string name="searchArtists">Search for artists</string>
+    <string name="searchAlbums">Search for albums</string>
+    <string name="searchSongs">Search for songs</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="maxNumSuggestions">Set the number of suggestions that may show up for this category</string>
+    <string name="patternMatching">Search pattern matching</string>
+    <string name="patternMatchingSummary">Set the pattern matching level to be used for suggestions of this category</string>
+    <string name="patternMatchingDialogTitle">Suggestions need to ...</string>
+    <string-array name="patternMatchingLevels">
+        <item>start with the search text</item>
+        <item>contain a word that starts with the search text</item>
+        <item>contain the search text</item>
+        <item>contain each char of the search text</item>
+    </string-array>
+    <string-array name="patternMatchingLevelValues">
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </string-array>
+    <string name="contactPhotos">Contact photos</string>
+    <string name="contactPhotosSummary">Show contact photos</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="removeFromList">Remove from list</string>
+</resources>

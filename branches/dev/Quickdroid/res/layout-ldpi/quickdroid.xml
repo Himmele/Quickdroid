@@ -26,20 +26,21 @@
         android:layout_height="wrap_content">
         <FrameLayout
         	android:layout_width="fill_parent"
-		    android:layout_height="wrap_content">
+		    android:layout_height="wrap_content">		    
 			<EditText android:id = "@+id/searchText"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 	            android:singleLine="true"
-				android:imeOptions="actionGo"/>
+				android:imeOptions="actionGo"
+				android:layout_gravity="center_vertical"
+				android:layout_marginBottom="2dip"/>
+			<!-- EditText has some transparent pixels underneath it -> 2dip bottom margin -->		
 			<LinearLayout
 			    android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 			    android:layout_gravity="right|center_vertical"
-			    android:layout_marginRight="10dip"
-			    android:layout_marginBottom="1dip">
-			    <!-- EditText has some transparent pixels underneath it -> 1dip margin -->
+			    android:layout_marginRight="10dip">			    
 			    <View android:id="@+id/speechRecognizer"
 				    android:layout_width="32dip"
 				    android:layout_height="32dip"
@@ -49,7 +50,7 @@
 					android:layout_width="32dip"
 				    android:layout_height="32dip"
 				    android:visibility="gone"
-				    android:layout_marginLeft="4dip"
+				    android:layout_marginLeft="4dip"				    
 					android:background="@drawable/clear_search_text"/>
 			</LinearLayout>
 		</FrameLayout>

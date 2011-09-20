@@ -39,6 +39,10 @@ public class OldContactLaunchable extends Launchable {
 		return mPresenceStatus;
 	}
 	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}

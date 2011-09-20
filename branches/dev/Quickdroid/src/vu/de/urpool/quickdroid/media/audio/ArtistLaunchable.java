@@ -33,6 +33,10 @@ public class ArtistLaunchable extends Launchable {
 		return mArtistLauncher.getThumbnail(this);
 	}
 	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}

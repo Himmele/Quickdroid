@@ -39,6 +39,10 @@ public class BookmarkLaunchable extends Launchable {
 		return mUrl;
 	}
 	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}

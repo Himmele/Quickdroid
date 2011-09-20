@@ -40,6 +40,10 @@ public class AppLaunchable extends Launchable {
 		return mIntent;
 	}
 	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}

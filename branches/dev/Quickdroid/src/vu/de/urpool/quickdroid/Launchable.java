@@ -83,6 +83,10 @@ public class Launchable {
 		mBadgeParent = badgeParent;
 	}
 	
+	public int hashCode() {
+		return mId + (mLauncher != null ? mLauncher.getId() : 0);
+	}
+	
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

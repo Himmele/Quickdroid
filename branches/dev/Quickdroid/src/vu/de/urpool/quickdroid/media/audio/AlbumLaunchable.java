@@ -33,6 +33,10 @@ public class AlbumLaunchable extends Launchable {
 		return mMusicLauncher.getThumbnail(this);
 	}
 	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}

@@ -126,6 +126,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		
 		mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		
+		mSearchText.setOnEditTextBackPressedListener(this);
         mSearchText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable searchText) {
@@ -152,11 +153,11 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         mSearchText.setOnKeyListener(new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
 				if (keyCode == KeyEvent.KEYCODE_ENTER || 
 						keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
-						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
 						activateLaunchable(launchable);
 					}
 					return true;
@@ -546,6 +547,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			super.setListAdapter(mListAdapter);
 	        mSearchText.requestFocus();
 		}
+	}
+	
+	public void onEditTextBackPressed() {
+		finish();
 	}
 	
 	@Override

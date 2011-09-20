@@ -27,7 +27,7 @@
         <FrameLayout
         	android:layout_width="fill_parent"
 		    android:layout_height="wrap_content">
-			<EditText android:id = "@+id/searchText"
+			<vu.de.urpool.quickdroid.EditText android:id = "@+id/searchText"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 	            android:singleLine="true"

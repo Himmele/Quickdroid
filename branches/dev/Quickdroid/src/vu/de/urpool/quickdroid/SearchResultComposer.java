@@ -211,13 +211,13 @@ public class SearchResultComposer extends BaseAdapter {
 			}
 			
 			// The mSearchResultInsertPositions array holds the insert positions for new suggestions -> sort order: pattern matching level, launcher ID
-			int insertPos = 0;
+			int insertPosition = 0;
 			for (int i = 1; i <= (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel); i++) {
-				insertPos += mSearchResultInsertPositions[mNumLaunchers * i - 1];
+				insertPosition += mSearchResultInsertPositions[mNumLaunchers * i - 1];
 			}
-			insertPos += mSearchResultInsertPositions[(PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex];
+			insertPosition += mSearchResultInsertPositions[(PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex];
 			
-			mSuggestions.addAll(insertPos, suggestions);
+			mSuggestions.addAll(insertPosition, suggestions);
 			int pos = (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex; 
 			for (int i = pos; i < pos + mNumLaunchers - launcherIndex; i++) {
 				mSearchResultInsertPositions[i] += suggestions.size();

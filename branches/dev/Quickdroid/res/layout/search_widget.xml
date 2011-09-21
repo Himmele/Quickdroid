@@ -55,7 +55,7 @@
             android:clickable="true"
             android:inputType="none"
             android:background="@drawable/search_text_background"
-            android:hint="@string/searchHint"
+            android:hint="@string/appName"
             android:textSize="18sp"
             android:textStyle="normal"
             android:textColor="@android:color/primary_text_light"

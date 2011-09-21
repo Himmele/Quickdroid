@@ -663,7 +663,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	public static final void activateQuickLaunch(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);		
-		Notification notification = new Notification(R.drawable.mini_app_thumbnail, null, 0);
+		Notification notification = new Notification(R.drawable.app_thumbnail, null, 0);
 		Intent quickdroidIntent = new Intent(context, Quickdroid.class);
 		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);

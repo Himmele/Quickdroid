@@ -34,7 +34,7 @@
 		    android:scaleType="centerInside"
 		    android:focusable="true"
 		    android:clickable="true"	    
-		    android:src="@drawable/app_thumbnail"
+		    android:src="@drawable/android_with_black_skateboard"
 		    android:background="@drawable/search_widget_thumbnail_background" />
        	<TextView
             android:id="@+id/search_widget_text"

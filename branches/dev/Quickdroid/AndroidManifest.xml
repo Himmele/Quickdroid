@@ -17,7 +17,7 @@
     package="vu.de.urpool.quickdroid"
     android:versionCode="40"
     android:versionName="4.0">
-    <application android:icon="@drawable/app_thumbnail"
+    <application android:icon="@drawable/android_with_white_skateboard"
     	android:label="@string/appName"
     	android:debuggable="true">
         <activity android:name=".Quickdroid"

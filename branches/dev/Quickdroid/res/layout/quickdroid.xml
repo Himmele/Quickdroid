@@ -26,7 +26,8 @@
         android:layout_height="wrap_content">
         <FrameLayout
         	android:layout_width="fill_parent"
-		    android:layout_height="wrap_content">
+		    android:layout_height="wrap_content"
+		    android:measureAllChildren="true">
 		    <vu.de.urpool.quickdroid.SearchTextView
 				android:id = "@+id/searchText"
 			    android:layout_width="fill_parent"
@@ -44,14 +45,16 @@
 			    <ImageButton android:id="@+id/speechRecognizer"
 			    	android:src="@drawable/speech_recognizer"
 				    android:layout_width="32dip"
-					android:layout_height="wrap_content"				
-					android:visibility="gone"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:clickable="false"
 					android:background="@drawable/transparent_background_image"/>
 				<ImageButton android:id="@+id/clearSearchText"
 					android:src="@drawable/clear_search_text"
 					android:layout_width="32dip"
 					android:layout_height="wrap_content"
-				    android:visibility="gone"				    
+					android:layout_marginLeft="4dip"
+				    android:visibility="gone"
 				    android:background="@drawable/transparent_background_image"/>
 			</LinearLayout>
 		</FrameLayout>

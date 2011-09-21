@@ -258,7 +258,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View view) {					
+				public void onClick(View view) {
 					Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH); 
 					intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.searchHint)); 
 					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
@@ -272,6 +272,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 					}
 				}
 	        });
+	        speechRecognizer.setClickable(true);
 	        speechRecognizer.setVisibility(View.VISIBLE);
 	        mSearchText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.placeholder2, 0);
         } else {

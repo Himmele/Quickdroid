@@ -18,36 +18,24 @@ package vu.de.urpool.quickdroid;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-public class SearchWidgetProvider extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {        
-        String action = intent.getAction();
-        if (AppWidgetManager.ACTION_APPWIDGET_ENABLED.equals(action)) {
-        	updateWidget(context);
-        } else if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(action)) {
-        	updateWidget(context);
-        }
-    }   
-    
-    public void updateWidget(Context context) {        
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.search_widget);        
-        Intent intent = new Intent(context, Quickdroid.class);        
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);       
-//        setOnClickActivityIntent(context, views, R.id.search_widget_text, intent);
-//        setOnClickActivityIntent(context, views, R.id.search_widget_thumbnail, intent);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        appWidgetManager.updateAppWidget(0, views);
-    }
-    
-    private void setOnClickActivityIntent(Context context, RemoteViews views, int viewId, Intent intent) {
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(viewId, pendingIntent);
+public class SearchWidgetProvider extends AppWidgetProvider {
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    	for (int i = 0; i < appWidgetIds.length; i++) {
+    		int appWidgetId = appWidgetIds[i];
+	        Intent intent = new Intent(context, Quickdroid.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);       
+	        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+	        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.search_widget);
+	        views.setOnClickPendingIntent(R.id.search_widget_thumbnail, pendingIntent);
+	        views.setOnClickPendingIntent(R.id.search_widget_text, pendingIntent);
+	        appWidgetManager.updateAppWidget(appWidgetId, views);
+    	}
     }
 }

@@ -29,8 +29,10 @@
         android:background="@drawable/search_widget_background">
         <ImageButton		    
 		    android:id="@+id/search_widget_thumbnail"
-		    android:layout_width="48dip"
+		    android:layout_width="50dip"
 		    android:layout_height="match_parent"
+		    android:paddingTop="0dip"
+            android:paddingBottom="0dip"
 		    android:scaleType="centerInside"
 		    android:focusable="true"
 		    android:clickable="true"	    

@@ -584,8 +584,15 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		}
 	}
 	
-	public void onInterceptBackKey() {
-		finish();
+	public boolean onInterceptBackKey() {
+		InputMethodManager imm = Quickdroid.this.getInputMethodManager();
+		if (imm != null) {
+			if (!imm.isFullscreenMode()) {
+				finish();
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

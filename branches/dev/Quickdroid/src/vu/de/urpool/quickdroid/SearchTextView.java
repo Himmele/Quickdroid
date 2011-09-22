@@ -67,8 +67,9 @@ public class SearchTextView extends EditText {
 					} else if (event.getAction() == KeyEvent.ACTION_UP
 							&& !event.isCanceled() && state.isTracking(event)) {
 						if (mQuickdroid != null) {
-							mQuickdroid.onInterceptBackKey();
-							return true;
+							if (mQuickdroid.onInterceptBackKey()) {
+								return true;
+							}
 						}
 					}
 				}			

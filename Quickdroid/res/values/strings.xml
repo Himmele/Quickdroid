@@ -15,6 +15,7 @@
 -->
 <resources>
     <string name="appName">Quickdroid</string>
+    <string name="appDesc">Quickly search, find and launch apps, contacts, bookmarks and music</string>
     <string name="appSettings">Settings</string>
     <string name="searchHint">Type to search</string>
     <string name="miscellaneous">Miscellaneous</string>
@@ -33,6 +34,8 @@
 	<string name="searchHistorySummary">Enable the search history</string>
 	<string name="recentlyUsedSuggestions">Search history size</string>
 	<string name="maxSearchHistorySize">Set the search history size</string>
+	<string name="favoriteItems">Learning aptitude</string>
+	<string name="favoriteItemsSummary">Give the user\&apos;s favorite items a high ranking within the search results</string>
 	<string name="clearSearchHistory">Clear search history</string>
     <string name="searchCategories">Search categories</string>
     <string name="appsSettings">Applications</string>

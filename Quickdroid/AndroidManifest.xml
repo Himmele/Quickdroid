@@ -15,9 +15,9 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="39"
-    android:versionName="3.0.2">
-    <application android:icon="@drawable/app_thumbnail"
+    android:versionCode="40"
+    android:versionName="4.0">
+    <application android:icon="@drawable/android_with_white_skateboard"
     	android:label="@string/appName"
     	android:debuggable="true">
         <activity android:name=".Quickdroid"
@@ -37,13 +37,16 @@
 		        <category android:name="android.intent.category.DEFAULT" />
 		    </intent-filter>
         </activity>
-        <activity android:name=".Preferences" android:label="@string/appSettings"/>
+        <activity android:name=".Preferences"
+        	android:label="@string/appSettings"/>
         <receiver android:name =".AutoStarter">
             <intent-filter>
             	<action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        <provider android:name=".apps.AppProvider" android:authorities="quickdroid" android:multiprocess="false"/>
+        <provider android:name=".apps.AppProvider"
+        	android:authorities="quickdroid"
+        	android:multiprocess="false"/>
         <service android:name=".apps.AppSyncer"/>
         <receiver android:name =".apps.AppSyncStateManager">
             <intent-filter>
@@ -53,6 +56,16 @@
              	<action android:name="android.intent.action.LOCALE_CHANGED"/>
              	<data android:scheme="package"/>
             </intent-filter>
+        </receiver>
+        <provider android:name=".favoriteitems.FavoriteItemsProvider"
+        	android:authorities="vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsProvider"
+        	android:multiprocess="false"/>
+        <receiver android:name=".SearchWidgetProvider" android:label="@string/appName">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+            	android:resource="@xml/search_widget_info" />
         </receiver>
     </application>
 	<uses-permission android:name="android.permission.READ_CONTACTS"/>

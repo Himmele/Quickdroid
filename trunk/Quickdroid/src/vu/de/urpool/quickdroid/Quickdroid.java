@@ -25,10 +25,14 @@ import vu.de.urpool.quickdroid.apps.AppSyncer;
 import vu.de.urpool.quickdroid.browser.BookmarkLauncher;
 import vu.de.urpool.quickdroid.contacts.ContactLauncher;
 import vu.de.urpool.quickdroid.contacts.OldContactLauncher;
+import vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsLauncher;
+import vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsProvider;
 import vu.de.urpool.quickdroid.media.audio.AlbumLauncher;
 import vu.de.urpool.quickdroid.media.audio.ArtistLauncher;
 import vu.de.urpool.quickdroid.media.audio.SongLauncher;
 import android.app.*;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,6 +48,7 @@ import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
@@ -53,11 +58,10 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.Window;
-import android.view.GestureDetector;
 import android.view.WindowManager;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
@@ -80,13 +84,17 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private SearchResultComposer mSearchResultComposer;
 	private SearchHistoryComposer mSearchHistoryComposer;
 	private BaseAdapter mListAdapter;
-	private EditText mSearchText;
+	private SearchTextView mSearchText;
+	private ImageButton mClearSearchText;
 	private SharedPreferences mSettings;
 	private Launchable mActiveLaunchable;
-	private InputMethodManager mInputMethodManager;
 	private GestureLibrary mGestureLibrary;
 	private boolean mClearSearchTextApproval;
 	private OnClickListener mOnThumbnailClickListener;
+	private ContentResolver mContentResolver;
+	private FavoriteItemsLauncher mFavoriteItemsLauncher;
+	private Handler mHandler = new Handler();
+	private boolean mNoSoftKeyboard = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,21 +107,25 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
     		LinearLayout.LayoutParams.FILL_PARENT);
         setContentView(rootView, rootLayout);
         
+        mContentResolver = getContentResolver();
+        
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         checkSettings();
         
         mLaunchers = new ArrayList<Launcher>();
 		createLaunchers();
+		if (mFavoriteItemsLauncher != null) {
+			mFavoriteItemsLauncher.init();
+		}
 		
-		mSearchText = (EditText) findViewById(R.id.searchText);
+		mSearchText = (SearchTextView) findViewById(R.id.searchText);
         mSearchText.setHint(R.string.searchHint);
 		
 		mSearchResultComposer = new SearchResultComposer(this);
 		mSearchHistoryComposer = new SearchHistoryComposer(this);
 		setListAdapter(mSearchHistoryComposer);
 		
-		mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		
+		mSearchText.setOnBackKeyInterceptor(this);
         mSearchText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable searchText) {
@@ -128,10 +140,12 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				deactivateLaunchable();
 				if (searchText.length() > 0) {
 					setListAdapter(mSearchResultComposer);
-					mSearchResultComposer.search(mSearchText.getText().toString());	
+					mSearchResultComposer.search(mSearchText.getText().toString());
+					mClearSearchText.setVisibility(View.VISIBLE);
 				} else {
 					setListAdapter(mSearchHistoryComposer);
 					mSearchResultComposer.search(null);
+					mClearSearchText.setVisibility(View.GONE);
 				}
 			}
         });
@@ -142,7 +156,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 						keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
-						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
+						InputMethodManager imm = Quickdroid.this.getInputMethodManager();
+						if (imm != null) {
+							imm.hideSoftInputFromWindow(mSearchText.getWindowToken(), 0);
+						}
 						activateLaunchable(launchable);
 					}
 					return true;
@@ -157,7 +174,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 						(event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 					Launchable launchable = (Launchable) mListAdapter.getItem(0);
 					if(launchable != null) {
-						mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
+						InputMethodManager imm = Quickdroid.this.getInputMethodManager();
+						if (imm != null) {
+							imm.hideSoftInputFromWindow(mSearchText.getWindowToken(), 0);
+						}
 						activateLaunchable(launchable);
 					}
 					return true;
@@ -165,6 +185,14 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				return false;
 			}
         });
+        mSearchText.setOnFocusChangeListener(new OnFocusChangeListener() {			
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+				if (hasFocus && !mNoSoftKeyboard) {					
+					mHandler.postDelayed(mShowInputMethodTask, 0);
+				}
+			}
+		});        
         
         getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -198,10 +226,22 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         getListView().setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				mInputMethodManager.hideSoftInputFromWindow(mSearchText.getApplicationWindowToken(), 0);
+				InputMethodManager imm = getInputMethodManager();
+				if (imm != null) {
+					imm.hideSoftInputFromWindow(mSearchText.getWindowToken(), 0);
+				}
 				return false;
 			}
         });
+        getListView().setOnFocusChangeListener(new OnFocusChangeListener() {			
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+				InputMethodManager imm = getInputMethodManager();
+				if (imm != null) {
+					imm.hideSoftInputFromWindow(mSearchText.getWindowToken(), 0);
+				}
+			}
+		});
         
         mOnThumbnailClickListener = new OnClickListener() {
 			@Override
@@ -218,7 +258,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View view) {					
+				public void onClick(View view) {
 					Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH); 
 					intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.searchHint)); 
 					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
@@ -232,11 +272,15 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 					}
 				}
 	        });
+	        speechRecognizer.setClickable(true);
 	        speechRecognizer.setVisibility(View.VISIBLE);
+	        mSearchText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.placeholder2, 0);
+        } else {
+        	mSearchText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.placeholder1, 0);
         }
         
-        ImageButton clearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
-        clearSearchText.setOnClickListener(new OnClickListener() {
+        mClearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
+        mClearSearchText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				mSearchText.setText("");
@@ -261,11 +305,12 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	        } else {
 	        	gestures.setGestureVisible(false);
 	        }
-        } else {        	
+        } else {
         	gestures.setGestureVisible(false);
         }
         
-        if (mSettings.getBoolean(Preferences.PREF_SOFT_KEYBOARD, false)) {
+        mNoSoftKeyboard = mSettings.getBoolean(Preferences.PREF_SOFT_KEYBOARD, false);
+        if (mNoSoftKeyboard) {
 	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
 	        	WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
@@ -309,9 +354,34 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		mSearchResultComposer.onDestroy();
 		super.onDestroy();
 	}
+	
+	@Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && !mNoSoftKeyboard) {        	
+            mHandler.postDelayed(mShowInputMethodTask, 0);
+        }
+    }
 
 	private void createLaunchers() {
 		int launcherIndex = 0;
+		
+	    if (mSettings.getBoolean(Preferences.PREF_SEARCH_FAVORITE_ITEMS, Preferences.SEARCH_LAUNCHER)) {
+	    	mFavoriteItemsLauncher = new FavoriteItemsLauncher(this);
+	    	String strNumSuggestions = Preferences.DEFAULT_NUM_SUGGESTIONS_4;
+	    	try {
+	    		int numSuggestions = Integer.parseInt(strNumSuggestions);
+	    		mFavoriteItemsLauncher.setMaxSuggestions(numSuggestions);
+	    	} catch (NumberFormatException e) {	
+	    	}
+	    	String strPatternMatchingLevel = Preferences.DEFAULT_PATTERN_MATCHING_LEVEL;
+	    	try {
+	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
+	    		mFavoriteItemsLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    	} catch (NumberFormatException e) {	
+	    	}
+	    	mLaunchers.add(launcherIndex++, mFavoriteItemsLauncher);
+	    }
 		
 		if (mSettings.getBoolean(Preferences.PREF_SEARCH_APPS, Preferences.SEARCH_LAUNCHER)) {
 	    	AppLauncher appLauncher = new AppLauncher(this);
@@ -487,6 +557,15 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		mActiveLaunchable = launchable;
 		if (mActiveLaunchable.activate()) {
 			mSearchHistoryComposer.addLaunchable(launchable, true, true, true);
+			
+			if ((mFavoriteItemsLauncher != null) && (mSearchText.getText().length() > 0)) {
+				// TODO: AsyncTask
+				ContentValues values = new ContentValues();
+				values.put("SearchText", mSearchText.getText().toString());
+				values.put("LauncherID", launchable.getLauncher().getId());
+				values.put("LaunchableID", launchable.getId());		
+				mContentResolver.insert(FavoriteItemsProvider.FAVORITE_ITEMS_URI, values);
+			}
 		}
 	}
 	
@@ -503,6 +582,17 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 			super.setListAdapter(mListAdapter);
 	        mSearchText.requestFocus();
 		}
+	}
+	
+	public boolean onInterceptBackKey() {
+		InputMethodManager imm = Quickdroid.this.getInputMethodManager();
+		if (imm != null) {
+			if (!imm.isFullscreenMode()) {
+				finish();
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -536,7 +626,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 39) {
+		if (versionCode < 40) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -573,19 +663,19 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 39);
+			editor.putInt("versionCode", 40);
 			editor.commit();
 		}
 	}
 	
 	public static final void activateQuickLaunch(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);		
-		Notification notification = new Notification(R.drawable.mini_app_thumbnail, null, 0);
+		Notification notification = new Notification(R.drawable.app_thumbnail, null, 0);
 		Intent quickdroidIntent = new Intent(context, Quickdroid.class);
 		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
 		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
-		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, pendingIntent);
+		notification.setLatestEventInfo(context, context.getText(R.string.appName), context.getText(R.string.appDesc), pendingIntent);
 		notificationManager.notify(QUICK_LAUNCH_THUMBNAIL_ID, notification);
 	}
 	
@@ -621,53 +711,21 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	public OnClickListener getOnThumbnailClickListener() {
 		return mOnThumbnailClickListener;
 	}
-}
-
-class SearchTextGestureDetector implements OnTouchListener, OnGestureListener {
-	private final EditText mSearchText;
-	private GestureDetector mGestureDetector;
-
-	SearchTextGestureDetector(EditText searchText) {
-		mSearchText = searchText;
-		mGestureDetector = new GestureDetector(this);
+	
+	public FavoriteItemsLauncher getFavoriteItemsLauncher() {
+		return mFavoriteItemsLauncher;
 	}
 	
-	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
-	}
-
-	@Override
-	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-		float distX = event2.getX() - event1.getX();
-		if(Math.abs(distX) >= mSearchText.getWidth() / 4) {
-			mSearchText.clearFocus();
-			mSearchText.setText("");
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent event) {
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX, float distanceY) {
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent event) {
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent event) {
-		return false;
-	}
-
-	@Override
-	public boolean onTouch(View view, MotionEvent event) {
-		return mGestureDetector.onTouchEvent(event);
-	}
+	private InputMethodManager getInputMethodManager() {
+        return (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+	
+	private final Runnable mShowInputMethodTask = new Runnable() {
+        public void run() {
+        	InputMethodManager imm = getInputMethodManager();
+			if (imm != null) {
+				imm.showSoftInput(mSearchText, 0);
+			}
+        }
+    };
 }

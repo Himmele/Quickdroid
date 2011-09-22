@@ -230,6 +230,11 @@
         android:summary="@string/quickLaunchSummary"
         android:defaultValue="true"/>
         
+    <CheckBoxPreference android:key="searchFavoriteItems"
+        android:title="@string/favoriteItems"
+        android:summary="@string/favoriteItemsSummary"
+        android:defaultValue="true"/>
+        
     <CheckBoxPreference android:key="clearSearchTextOnResume"
         android:title="@string/clearSearchTextOnResume"
         android:summary="@string/clearSearchTextOnResumeSummary"

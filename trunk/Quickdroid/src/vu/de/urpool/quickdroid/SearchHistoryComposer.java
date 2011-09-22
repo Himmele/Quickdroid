@@ -52,10 +52,10 @@ public class SearchHistoryComposer extends BaseAdapter {
 	private static final int LAUNCHER_ID_COLUMN_INDEX = 1;
 	private static final int LAUNCHABLE_ID_COLUMN_INDEX = 2;
 	
-	private static final int EVENT_ARG_INIT_SEARCH_HISTORY = 1;
-    private static final int EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY = 2;
-    private static final int EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY = 3;
-    private static final int EVENT_ARG_CLEAR_SEARCH_HISTORY = 4;
+	private static final int MSG_INIT_SEARCH_HISTORY = 1;
+    private static final int MSG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY = 2;
+    private static final int MSG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY = 3;
+    private static final int MSG_CLEAR_SEARCH_HISTORY = 4;
 	
 	private static HandlerThread sHandlerThread = null;
 	
@@ -170,7 +170,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 				mPendingListUpdate = true;
 			}
 			if (updateDatabase) {
-				mSearchHistoryWorker.addLaunchable(launchable);			
+				mSearchHistoryWorker.addLaunchable(launchable);
 			}
 		}
 	}
@@ -276,43 +276,43 @@ public class SearchHistoryComposer extends BaseAdapter {
 		
 		public void initSearchHistory(boolean clearSearchHistory) {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-			msg.arg1 = EVENT_ARG_INIT_SEARCH_HISTORY;
-			msg.arg2 = clearSearchHistory ? 1 : 0;
+			msg.what = MSG_INIT_SEARCH_HISTORY;
+			msg.arg1 = clearSearchHistory ? 1 : 0;
 			msg.obj = this;
 			mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
 		public void addLaunchable(Launchable launchable) {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY;
+	        msg.what = MSG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY;
 	        msg.obj = launchable;
 	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
 		public void removeLaunchable(Launchable launchable) {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY;
+	        msg.what = MSG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY;
 	        msg.obj = launchable;
 	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
 		public void clearSearchHistory() {
 			Message msg = mAsyncSearchHistoryWorker.obtainMessage();
-	        msg.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;
+	        msg.what = MSG_CLEAR_SEARCH_HISTORY;
 	        mAsyncSearchHistoryWorker.sendMessage(msg);
 		}
 		
 		@Override
         public void handleMessage(Message msg) {
-			int event = msg.arg1;
-			Launchable launchable = (Launchable) msg.obj;
+			int event = msg.what;
 	        switch (event) {
-	            case EVENT_ARG_INIT_SEARCH_HISTORY:
-	            	SearchHistoryComposer.this.addLaunchable(launchable, false, true, false);
-	            	break;
-	            case EVENT_ARG_CLEAR_SEARCH_HISTORY:
-	            	SearchHistoryComposer.this.clearSearchHistory(false);
-	            	break;
+	            case MSG_INIT_SEARCH_HISTORY: {
+	            	Launchable launchable = (Launchable) msg.obj;
+	            	SearchHistoryComposer.this.addLaunchable(launchable, false, true, false);	            	
+	            } break;
+	            case MSG_CLEAR_SEARCH_HISTORY: {
+	            	SearchHistoryComposer.this.clearSearchHistory(false);	            	
+	            } break;
 	        }
 		}
 		
@@ -323,37 +323,31 @@ public class SearchHistoryComposer extends BaseAdapter {
 	
 			@Override	
 	        public void handleMessage(Message msg) {
-				int event = msg.arg1;
+				int event = msg.what;
 	            switch (event) {
-	                case EVENT_ARG_INIT_SEARCH_HISTORY:
-	                {
-	                	initSearchHistory(msg);
-	                	break;
-	                }
-	                case EVENT_ARG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY:
-	                {
-	                	addLaunchable(msg);
-	                	break;
-	                }
-	                case EVENT_ARG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY:
-	                {
-	                	removeLaunchable(msg);
-	                	break;
-	                }
-	                case EVENT_ARG_CLEAR_SEARCH_HISTORY:
-	                {
+	                case MSG_INIT_SEARCH_HISTORY: {
+	                	Handler handler = (Handler) msg.obj;
+	    				boolean clearSearchHistory = (msg.arg1 != 0) ? true : false;
+	                	initSearchHistory(handler, clearSearchHistory);
+	                } break;
+	                case MSG_ADD_LAUNCHABLE_TO_SEARCH_HISTORY: {
+	                	Launchable launchable = (Launchable) msg.obj;
+	                	addLaunchable(launchable);	                	
+	                } break;
+	                case MSG_REMOVE_LAUNCHABLE_FROM_SEARCH_HISTORY: {
+	                	Launchable launchable = (Launchable) msg.obj;
+	                	removeLaunchable(launchable);	
+	                } break;
+	                case MSG_CLEAR_SEARCH_HISTORY: {
 	                	clearSearchHistory();
-	                	break;
-	                }
+	                } break;
 	            }
 			}
 
-			private void initSearchHistory(Message msg) {
-				Handler handler = (Handler) msg.obj;
-				boolean clearSearchHistory = (msg.arg2 != 0) ? true : false;
+			private void initSearchHistory(Handler handler, boolean clearSearchHistory) {				
             	if (clearSearchHistory) {
             		Message reply = handler.obtainMessage();
-		            reply.arg1 = EVENT_ARG_CLEAR_SEARCH_HISTORY;		            
+		            reply.what = MSG_CLEAR_SEARCH_HISTORY;		            
 		            reply.sendToTarget();
             	}
 				SQLiteDatabase db;
@@ -376,7 +370,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 									Launchable launchable = mLaunchers.get(launcherIndex).getLaunchable(launchableId);							
 									if (launchable != null) {
 										Message reply = handler.obtainMessage();
-							            reply.arg1 = msg.arg1;
+							            reply.what = MSG_INIT_SEARCH_HISTORY;
 							            reply.obj = launchable;
 							            reply.sendToTarget();
 									}
@@ -397,8 +391,7 @@ public class SearchHistoryComposer extends BaseAdapter {
         		AppSyncer.start(mContext);
 			}
 			
-			private void addLaunchable(Message msg) {
-				Launchable launchable = (Launchable) msg.obj;
+			private void addLaunchable(Launchable launchable) {
 				SQLiteDatabase db;
 				try {
 					db = mSearchHistoryDatabase.getWritableDatabase();
@@ -426,8 +419,7 @@ public class SearchHistoryComposer extends BaseAdapter {
 				}
 			}
 			
-			private void removeLaunchable(Message msg) {
-				Launchable launchable = (Launchable) msg.obj;
+			private void removeLaunchable(Launchable launchable) {
 				SQLiteDatabase db;
 				try {
 					db = mSearchHistoryDatabase.getWritableDatabase();

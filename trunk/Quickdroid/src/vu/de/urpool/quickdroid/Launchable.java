@@ -82,4 +82,17 @@ public class Launchable {
 	public void setBadgeParent(View badgeParent) {
 		mBadgeParent = badgeParent;
 	}
+	
+	public int hashCode() {
+		return mId + (mLauncher != null ? mLauncher.getId() : 0);
+	}
+	
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Launchable launchable = (Launchable) o;
+		if (mLauncher != null ? mLauncher.getId() != launchable.getLauncher().getId() : launchable.getLauncher() != null) return false;
+		if (mId != launchable.mId) return false;
+		return true;
+	}
 }

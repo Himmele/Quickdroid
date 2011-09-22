@@ -32,4 +32,12 @@ public class ArtistLaunchable extends Launchable {
 	public Drawable getThumbnail() {
 		return mArtistLauncher.getThumbnail(this);
 	}
+	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
 }

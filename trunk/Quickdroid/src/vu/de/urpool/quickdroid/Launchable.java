@@ -84,7 +84,10 @@ public class Launchable {
 	}
 	
 	public int hashCode() {
-		return mId + (mLauncher != null ? mLauncher.getId() : 0);
+		int hashCode = 17;
+		hashCode = hashCode * 31 + mId;
+		hashCode = hashCode * 31 + (mLauncher != null ? mLauncher.getId() : 0);
+		return hashCode;
 	}
 	
 	public boolean equals(Object o) {

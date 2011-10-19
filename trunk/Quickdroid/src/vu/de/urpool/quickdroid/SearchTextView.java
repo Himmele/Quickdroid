@@ -63,7 +63,7 @@ public class SearchTextView extends EditText {
 					if (event.getAction() == KeyEvent.ACTION_DOWN
 							&& event.getRepeatCount() == 0) {
 						state.startTracking(event, this);
-						return true;
+						return false;
 					} else if (event.getAction() == KeyEvent.ACTION_UP
 							&& !event.isCanceled() && state.isTracking(event)) {
 						if (mQuickdroid != null) {

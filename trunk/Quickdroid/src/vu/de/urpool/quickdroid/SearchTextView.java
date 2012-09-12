@@ -24,9 +24,10 @@ import android.widget.EditText;
 public class SearchTextView extends EditText {
 	private Quickdroid mQuickdroid;
 	private PreImeKeyInterceptor mPreImeKeyInterceptor;
+	private int mDefaultTextColor = getTextColors().getDefaultColor();
 
 	public SearchTextView(Context context) {
-		super(context);		
+		super(context);
 	}
 
 	public SearchTextView(Context context, AttributeSet attrs) {
@@ -35,6 +36,10 @@ public class SearchTextView extends EditText {
 
 	public SearchTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+	}
+	
+	public int getDefaultTextColor() {
+		return mDefaultTextColor;
 	}
 
 	void setOnBackKeyInterceptor(Quickdroid quickdroid) {

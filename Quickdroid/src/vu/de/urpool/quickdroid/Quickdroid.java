@@ -45,7 +45,6 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -521,9 +520,9 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	public void updateSearchTextColor() {
 		if (mSearchText.getText().length() == 0 || mSearchResultComposer.hasSuggestions()) {
-			mSearchText.setTextColor(Color.BLACK);
+			mSearchText.setTextColor(mSearchText.getDefaultTextColor());
 		} else {
-			mSearchText.setTextColor(Color.GRAY);
+			mSearchText.setTextColor(mSearchText.getCurrentHintTextColor());
 		}
 	}
 	

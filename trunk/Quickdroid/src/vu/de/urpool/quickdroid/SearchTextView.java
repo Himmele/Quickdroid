@@ -28,14 +28,23 @@ public class SearchTextView extends EditText {
 
 	public SearchTextView(Context context) {
 		super(context);
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			setTextSize(20);
+		}
 	}
 
 	public SearchTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			setTextSize(20);
+		}
 	}
 
 	public SearchTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			setTextSize(20);
+		}
 	}
 	
 	public int getDefaultTextColor() {

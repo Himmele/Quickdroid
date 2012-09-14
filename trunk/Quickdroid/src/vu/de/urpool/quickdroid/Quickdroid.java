@@ -255,6 +255,9 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         
         if (mSettings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
 	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
+	        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+	            speechRecognizer.setImageResource(R.drawable.speech_recognizer2);
+	        }
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -279,6 +282,9 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         }
         
         mClearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            mClearSearchText.setImageResource(R.drawable.clear_search_text2);
+        }
         mClearSearchText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -625,7 +631,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 42) {
+		if (versionCode < 43) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -662,7 +668,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 42);
+			editor.putInt("versionCode", 43);
 			editor.commit();
 		}
 	}

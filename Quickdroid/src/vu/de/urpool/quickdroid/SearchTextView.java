@@ -16,6 +16,7 @@ package vu.de.urpool.quickdroid;
  * limitations under the License.
  */
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -70,6 +71,7 @@ public class SearchTextView extends EditText {
 	
 	// PreImeKeyInterceptor contains features that are only available since Android 2.0
 	class PreImeKeyInterceptor {
+		@TargetApi(5)
 		public boolean onKeyPreIme(int keyCode, KeyEvent event) {
 			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {			
 				KeyEvent.DispatcherState state = getKeyDispatcherState();

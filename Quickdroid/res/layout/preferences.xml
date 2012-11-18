@@ -234,12 +234,22 @@
         android:title="@string/favoriteItems"
         android:summary="@string/favoriteItemsSummary"
         android:defaultValue="true"/>
-        
+
+    <CheckBoxPreference android:key="taskStackBehavior"
+        android:title="@string/taskStackBehavior"
+        android:summary="@string/taskStackBehaviorSummary"
+        android:defaultValue="true"/>
+    
     <CheckBoxPreference android:key="clearSearchTextOnResume"
         android:title="@string/clearSearchTextOnResume"
         android:summary="@string/clearSearchTextOnResumeSummary"
         android:defaultValue="true"/>
-        
+    
+    <CheckBoxPreference android:key="backKeyHandling"
+        android:title="@string/backKeyHandling"
+        android:summary="@string/backKeyHandlingSummary"
+        android:defaultValue="true"/>
+    
     <CheckBoxPreference android:key="softKeyboard"
         android:title="@string/softKeyboard"
         android:summary="@string/softKeyboardSummary"

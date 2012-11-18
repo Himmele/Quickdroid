@@ -571,6 +571,10 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				values.put("LaunchableID", launchable.getId());		
 				mContentResolver.insert(FavoriteItemsProvider.FAVORITE_ITEMS_URI, values);
 			}
+			
+			if (mSettings.getBoolean(Preferences.PREF_TASK_STACK_BEHAVIOR, true)) {
+				finish();
+			}
 		}
 	}
 	
@@ -590,11 +594,13 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	}
 	
 	public boolean onInterceptBackKey() {
-		InputMethodManager imm = Quickdroid.this.getInputMethodManager();
-		if (imm != null) {
-			if (!imm.isFullscreenMode()) {
-				finish();
-				return true;
+		if (mSettings.getBoolean(Preferences.PREF_BACK_KEY_HANDLING, true)) {
+			InputMethodManager imm = Quickdroid.this.getInputMethodManager();
+			if (imm != null) {
+				if (!imm.isFullscreenMode()) {
+					finish();
+					return true;
+				}
 			}
 		}
 		return false;
@@ -631,7 +637,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 43) {
+		if (versionCode < 44) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -668,7 +674,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 43);
+			editor.putInt("versionCode", 44);
 			editor.commit();
 		}
 	}

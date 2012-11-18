@@ -234,27 +234,7 @@
         android:title="@string/favoriteItems"
         android:summary="@string/favoriteItemsSummary"
         android:defaultValue="true"/>
-
-    <CheckBoxPreference android:key="taskStackBehavior"
-        android:title="@string/taskStackBehavior"
-        android:summary="@string/taskStackBehaviorSummary"
-        android:defaultValue="true"/>
     
-    <CheckBoxPreference android:key="clearSearchTextOnResume"
-        android:title="@string/clearSearchTextOnResume"
-        android:summary="@string/clearSearchTextOnResumeSummary"
-        android:defaultValue="true"/>
-    
-    <CheckBoxPreference android:key="backKeyHandling"
-        android:title="@string/backKeyHandling"
-        android:summary="@string/backKeyHandlingSummary"
-        android:defaultValue="true"/>
-    
-    <CheckBoxPreference android:key="softKeyboard"
-        android:title="@string/softKeyboard"
-        android:summary="@string/softKeyboardSummary"
-        android:defaultValue="false"/>
-        
     <CheckBoxPreference android:key="gestureRecognizer"
         android:title="@string/gestureRecognizer"
         android:summary="@string/gestureRecognizerSummary"
@@ -264,5 +244,25 @@
         android:title="@string/speechRecognizer"
         android:summary="@string/speechRecognizerSummary"
         android:defaultValue="false"/>
-	
+
+    <CheckBoxPreference android:key="clearSearchTextOnResume"
+        android:title="@string/clearSearchTextOnResume"
+        android:summary="@string/clearSearchTextOnResumeSummary"
+        android:defaultValue="true"/>
+    
+    <CheckBoxPreference android:key="softKeyboard"
+        android:title="@string/softKeyboard"
+        android:summary="@string/softKeyboardSummary"
+        android:defaultValue="false"/>
+    
+    <CheckBoxPreference android:key="backStackBehavior"
+        android:title="@string/backStackBehavior"
+        android:summary="@string/backStackBehaviorSummary"
+        android:defaultValue="true"/>
+    
+    <CheckBoxPreference android:key="backKeyHandling"
+        android:title="@string/backKeyHandling"
+        android:summary="@string/backKeyHandlingSummary"
+        android:defaultValue="true"/>
+        
 </PreferenceScreen>

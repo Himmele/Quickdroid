@@ -28,7 +28,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String DEFAULT_SEARCH_HISTORY_SIZE = "10";
 	public static final String PREF_QUICK_LAUNCH = "quickLaunch";
 	public static final String PREF_CLEAR_SEARCH_TEXT = "clearSearchTextOnResume";
-	public static final String PREF_TASK_STACK_BEHAVIOR = "taskStackBehavior";
+	public static final String PREF_BACK_STACK_BEHAVIOR = "backStackBehavior";
 	public static final String PREF_SOFT_KEYBOARD = "softKeyboard";
 	public static final String PREF_BACK_KEY_HANDLING = "backKeyHandling";
 	public static final String PREF_GESTURE_RECOGNIZER = "gestureRecognizer";

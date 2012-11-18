@@ -21,10 +21,10 @@
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
-	<string name="taskStackBehavior">Task stack behavior</string>
-	<string name="taskStackBehaviorSummary">Keep Quickdroid in the back stack</string>
+	<string name="backStackBehavior">Task and back stack behavior</string>
+	<string name="backStackBehaviorSummary">Keep Quickdroid in the back stack</string>
 	<string name="backKeyHandling">Back key handling</string>
-	<string name="backKeyHandlingSummary">Always exit Quickdroid by pressing the back key once</string>
+	<string name="backKeyHandlingSummary">Exit Quickdroid by pressing the back key once</string>
 	<string name="clearSearchTextOnResume">Clear search text</string>
 	<string name="clearSearchTextOnResumeSummary">Automatically clear the search text whenever Quickdroid is resumed</string>
 	<string name="softKeyboard">Soft keyboard</string>

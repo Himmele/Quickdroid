@@ -572,7 +572,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				mContentResolver.insert(FavoriteItemsProvider.FAVORITE_ITEMS_URI, values);
 			}
 			
-			if (mSettings.getBoolean(Preferences.PREF_TASK_STACK_BEHAVIOR, true)) {
+			if (!mSettings.getBoolean(Preferences.PREF_TASK_STACK_BEHAVIOR, true)) {
 				finish();
 			}
 		}

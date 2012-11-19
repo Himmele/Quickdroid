@@ -93,7 +93,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private ContentResolver mContentResolver;
 	private FavoriteItemsLauncher mFavoriteItemsLauncher;
 	private Handler mHandler = new Handler();
-	private boolean mNoSoftKeyboard = false;
+	private boolean mShowSoftKeyboard = true;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,7 +187,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         mSearchText.setOnFocusChangeListener(new OnFocusChangeListener() {			
 			@Override
 			public void onFocusChange(View view, boolean hasFocus) {
-				if (hasFocus && !mNoSoftKeyboard) {					
+				if (hasFocus && mShowSoftKeyboard) {					
 					mHandler.postDelayed(mShowInputMethodTask, 0);
 				}
 			}
@@ -314,8 +314,8 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         	gestures.setGestureVisible(false);
         }
         
-        mNoSoftKeyboard = mSettings.getBoolean(Preferences.PREF_SOFT_KEYBOARD, false);
-        if (mNoSoftKeyboard) {
+        mShowSoftKeyboard = mSettings.getBoolean(Preferences.PREF_SHOW_SOFT_KEYBOARD, true);
+        if (!mShowSoftKeyboard) {
 	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
 	        	WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
@@ -363,7 +363,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	@Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && !mNoSoftKeyboard) {        	
+        if (hasFocus && mShowSoftKeyboard) {        	
             mHandler.postDelayed(mShowInputMethodTask, 0);
         }
     }
@@ -637,7 +637,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 44) {
+		if (versionCode < 45) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -674,7 +674,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 44);
+			editor.putInt("versionCode", 45);
 			editor.commit();
 		}
 	}

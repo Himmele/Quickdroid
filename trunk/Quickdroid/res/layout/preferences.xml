@@ -245,15 +245,15 @@
         android:summary="@string/speechRecognizerSummary"
         android:defaultValue="false"/>
 
+    <CheckBoxPreference android:key="showSoftKeyboard"
+        android:title="@string/showSoftKeyboard"
+        android:summary="@string/showSoftKeyboardSummary"
+        android:defaultValue="true"/>
+    
     <CheckBoxPreference android:key="clearSearchTextOnResume"
         android:title="@string/clearSearchTextOnResume"
         android:summary="@string/clearSearchTextOnResumeSummary"
-        android:defaultValue="true"/>
-    
-    <CheckBoxPreference android:key="softKeyboard"
-        android:title="@string/softKeyboard"
-        android:summary="@string/softKeyboardSummary"
-        android:defaultValue="false"/>
+        android:defaultValue="true"/>    
     
     <CheckBoxPreference android:key="backStackBehavior"
         android:title="@string/backStackBehavior"

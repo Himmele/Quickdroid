@@ -18,6 +18,7 @@
     <string name="appDesc">Quickly search, find and launch apps, contacts, bookmarks and music</string>
     <string name="appSettings">Settings</string>
     <string name="searchHint">Type to search</string>
+    <string name="speakHint">Speak to search</string>
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>

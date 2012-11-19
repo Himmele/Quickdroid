@@ -22,13 +22,13 @@
     <string name="quickLaunch">Quick launch</string>
 	<string name="quickLaunchSummary">Provide permanent access to Quickdroid via a status bar symbol</string>
 	<string name="backStackBehavior">Task and back stack behavior</string>
-	<string name="backStackBehaviorSummary">Keep Quickdroid in the back stack</string>
+	<string name="backStackBehaviorSummary">Keep Quickdroid in the back stack after launching something</string>
 	<string name="backKeyHandling">Back key handling</string>
 	<string name="backKeyHandlingSummary">Exit Quickdroid by pressing the back key once</string>
 	<string name="clearSearchTextOnResume">Clear search text</string>
-	<string name="clearSearchTextOnResumeSummary">Automatically clear the search text whenever Quickdroid is resumed</string>
-	<string name="softKeyboard">Soft keyboard</string>
-	<string name="softKeyboardSummary">Do not show the soft keyboard automatically</string>
+	<string name="clearSearchTextOnResumeSummary">Clear the search text whenever Quickdroid is resumed</string>
+	<string name="showSoftKeyboard">Soft keyboard</string>
+	<string name="showSoftKeyboardSummary">Automatically show the soft keyboard</string>
 	<string name="gestureRecognizer">Gesture recognizer</string>
 	<string name="gestureRecognizerSummary">Recognize alphabet gestures and control commands</string>
 	<string name="speechRecognizer">Speech recognizer</string>

@@ -15,12 +15,13 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="45"
-    android:versionName="4.2.1">
+    android:versionCode="46"
+    android:versionName="4.2.2">
     
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />	
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" />
     
     <application android:icon="@drawable/android_with_white_skateboard"

@@ -28,7 +28,7 @@ public abstract class Launcher {
 	public Launcher() {
 		mId = getName().hashCode();
 		mMaxSuggestions = 10;
-		mPatternMatchingLevel = PatternMatchingLevel.LOW;
+		mPatternMatchingLevel = SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT;
 	}
 	
 	public abstract String getName();

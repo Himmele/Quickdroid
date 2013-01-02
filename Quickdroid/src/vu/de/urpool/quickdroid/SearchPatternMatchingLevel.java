@@ -16,23 +16,23 @@ package vu.de.urpool.quickdroid;
  * limitations under the License.
  */
 
-public class PatternMatchingLevel {
+public class SearchPatternMatchingLevel {
 	public static final int NONE = 0;
-	public static final int LOW = 1; // contain each char of the search text
-	public static final int MIDDLE = 2; // contain the search text
-	public static final int HIGH = 3; // start at some place with the search text
-	public static final int TOP = 4; // start with the search text
+	public static final int CONTAINS_EACH_CHAR_OF_SEARCH_TEXT = 1;
+	public static final int CONTAINS_SEARCH_TEXT = 2;
+	public static final int CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT = 3;
+	public static final int STARTS_WITH_SEARCH_TEXT = 4;
 	public static final int NUM_LEVELS = 4;
 
-	public static int nextLowerLevel(int level) {
+	public static int next(int level) {
 		switch(level) {
-			case TOP:
-				return HIGH;
-			case HIGH:
-				return MIDDLE;
-			case MIDDLE:
-				return LOW;
-			case LOW:
+			case STARTS_WITH_SEARCH_TEXT:
+				return CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT;
+			case CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT:
+				return CONTAINS_SEARCH_TEXT;
+			case CONTAINS_SEARCH_TEXT:
+				return CONTAINS_EACH_CHAR_OF_SEARCH_TEXT;
+			case CONTAINS_EACH_CHAR_OF_SEARCH_TEXT:
 				return NONE;
 			default:
 				return NONE;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import vu.de.urpool.quickdroid.Launchable;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.R;
-import vu.de.urpool.quickdroid.PatternMatchingLevel;
+import vu.de.urpool.quickdroid.SearchPatternMatchingLevel;
 import vu.de.urpool.quickdroid.utils.ThumbnailFactory;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -63,21 +63,21 @@ public class ArtistLauncher extends Launcher {
 	public ArrayList<Launchable> getSuggestions(String searchText, int patternMatchingLevel, int offset, int limit) {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
-			case PatternMatchingLevel.TOP:
+			case SearchPatternMatchingLevel.STARTS_WITH_SEARCH_TEXT:
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
 					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?",
 					new String[] { searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
-			case PatternMatchingLevel.HIGH:
+			case SearchPatternMatchingLevel.CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT:
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
 					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?",
 					new String[] { "% " + searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
-			case PatternMatchingLevel.MIDDLE:
+			case SearchPatternMatchingLevel.CONTAINS_SEARCH_TEXT:
 				cursor = mContentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 					ARTISTS_PROJECTION,
 					"LOWER(" + MediaStore.Audio.Artists.ARTIST + ") LIKE ?" +
@@ -86,7 +86,7 @@ public class ArtistLauncher extends Launcher {
 					new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 					MediaStore.Audio.Artists.ARTIST + " ASC");
 				break;
-			case PatternMatchingLevel.LOW:
+			case SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT:
 				String searchPattern = "";
 				for(char c : searchText.toCharArray()) {
 					searchPattern += "%" + c;

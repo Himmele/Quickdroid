@@ -57,29 +57,29 @@ public class Searcher extends Handler {
 	private AsyncSearcher mAsyncSearcher;
 	private String mSearchText;
 	private int mNumSuggestions;
-	private int mPatternMatchingLevel;
+	private int mSearchPatternMatchingLevel;
 	private int mOffset;
 	
 	private class AsyncSearcher implements Runnable {
 		private SearchResult mSearchResult;
 		private String mSearchText;
-		private int mPatternMatchingLevel;
+		private int mSearchPatternMatchingLevel;
 		private int mOffset;
 		private int mLimit;
 		
-		public AsyncSearcher(String searchText, int patternMatchingLevel, int offset, int limit) {
+		public AsyncSearcher(String searchText, int searchPatternMatchingLevel, int offset, int limit) {
 			mSearchResult = new SearchResult();
 			mSearchText = searchText;
-			mPatternMatchingLevel = patternMatchingLevel;
+			mSearchPatternMatchingLevel = searchPatternMatchingLevel;
 			mOffset = offset;
 			mLimit = limit;
 			mSearchResult.searchText = mSearchText;
-			mSearchResult.patternMatchingLevel = mPatternMatchingLevel;
+			mSearchResult.patternMatchingLevel = mSearchPatternMatchingLevel;
 		}
 		
 		@Override
 		public void run() {
-			mSearchResult.suggestions = mLauncher.getSuggestions(mSearchText, mPatternMatchingLevel, mOffset, mLimit);
+			mSearchResult.suggestions = mLauncher.getSuggestions(mSearchText, mSearchPatternMatchingLevel, mOffset, mLimit);
 			Message msg = obtainMessage();
 			msg.what = MSG_PUBLISH_SUGGESTIONS;
 			msg.obj = mSearchResult;
@@ -123,7 +123,7 @@ public class Searcher extends Handler {
 		}
 		mSearchText = searchText;
 		mNumSuggestions = 0;
-		mPatternMatchingLevel = PatternMatchingLevel.TOP;
+		mSearchPatternMatchingLevel = SearchPatternMatchingLevel.STARTS_WITH_SEARCH_TEXT;
 		mOffset = 0;
 		doSearch();
 	}
@@ -138,7 +138,7 @@ public class Searcher extends Handler {
 	}
 	
 	protected void doSearch() {
-		mAsyncSearcher = new AsyncSearcher(mSearchText, mPatternMatchingLevel, mOffset, mLauncher.getMaxSuggestions() - mNumSuggestions);
+		mAsyncSearcher = new AsyncSearcher(mSearchText, mSearchPatternMatchingLevel, mOffset, mLauncher.getMaxSuggestions() - mNumSuggestions);
         sExecutor.execute(mAsyncSearcher);
 	}
 
@@ -152,12 +152,12 @@ public class Searcher extends Handler {
         		int numSuggestions = (searchResult.suggestions != null) ? searchResult.suggestions.size() : 0;
         		mNumSuggestions += numSuggestions;
         		if (numSuggestions < MAX_SUGGESTIONS_PER_QUERY) {
-        			mPatternMatchingLevel = PatternMatchingLevel.nextLowerLevel(mPatternMatchingLevel);
+        			mSearchPatternMatchingLevel = SearchPatternMatchingLevel.next(mSearchPatternMatchingLevel);
         			mOffset = 0;
         		} else {
         			mOffset += numSuggestions;
         		}        		
-        		boolean done = (mPatternMatchingLevel < mLauncher.getPatternMatchingLevel() || mNumSuggestions >= mLauncher.getMaxSuggestions());
+        		boolean done = (mSearchPatternMatchingLevel < mLauncher.getPatternMatchingLevel() || mNumSuggestions >= mLauncher.getMaxSuggestions());
         		if (!done) {
         			doSearch();
         		} else {

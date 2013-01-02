@@ -23,7 +23,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.Launchable;
-import vu.de.urpool.quickdroid.PatternMatchingLevel;
+import vu.de.urpool.quickdroid.SearchPatternMatchingLevel;
 import vu.de.urpool.quickdroid.Quickdroid;
 
 public class FavoriteItemsLauncher extends Launcher {
@@ -70,19 +70,19 @@ public class FavoriteItemsLauncher extends Launcher {
 	public ArrayList<Launchable> getSuggestions(String searchText, int patternMatchingLevel, int offset, int limit) {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
-		case PatternMatchingLevel.TOP:
+		case SearchPatternMatchingLevel.STARTS_WITH_SEARCH_TEXT:
 			cursor = mContentResolver.query(FavoriteItemsProvider.FAVORITE_ITEMS_URI, FAVORITE_ITEMS_PROJECTION,
 				"LOWER(SearchText) LIKE ?", 
 				new String[] { searchText + "%" }, 
 				"SearchText ASC, Counter DESC");
 			break;
-		case PatternMatchingLevel.HIGH:
+		case SearchPatternMatchingLevel.CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT:
 			cursor = mContentResolver.query(FavoriteItemsProvider.FAVORITE_ITEMS_URI, FAVORITE_ITEMS_PROJECTION,
 				"LOWER(SearchText) LIKE ?", 
 				new String[] { "% " + searchText + "%" },
 				"SearchText ASC, Counter DESC");
 			break;
-		case PatternMatchingLevel.MIDDLE:
+		case SearchPatternMatchingLevel.CONTAINS_SEARCH_TEXT:
 			cursor = mContentResolver.query(FavoriteItemsProvider.FAVORITE_ITEMS_URI, FAVORITE_ITEMS_PROJECTION,
 				"LOWER(SearchText) LIKE ?" +
 					" AND LOWER(SearchText) NOT LIKE ?" +
@@ -90,7 +90,7 @@ public class FavoriteItemsLauncher extends Launcher {
 				new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 				"SearchText ASC, Counter DESC");
 			break;
-		case PatternMatchingLevel.LOW:
+		case SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT:
 			String searchPattern = "";
 			for(char c : searchText.toCharArray()) {
 				searchPattern += "%" + c;

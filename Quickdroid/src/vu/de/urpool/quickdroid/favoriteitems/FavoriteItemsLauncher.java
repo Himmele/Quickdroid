@@ -19,6 +19,7 @@ package vu.de.urpool.quickdroid.favoriteitems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import vu.de.urpool.quickdroid.Launcher;
@@ -144,5 +145,10 @@ public class FavoriteItemsLauncher extends Launcher {
 	
 	public boolean unregisterContentObserver(ContentObserver observer) {		
 		return true;
-	}	
+	}
+	
+	@Override
+    public Intent getIntent(Launchable launchable) {
+	    return null;
+	}
 }

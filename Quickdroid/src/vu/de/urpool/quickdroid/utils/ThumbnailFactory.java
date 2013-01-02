@@ -16,6 +16,7 @@ package vu.de.urpool.quickdroid.utils;
  * limitations under the License.
  */
 
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -105,5 +106,18 @@ public final class ThumbnailFactory {
     		sThumbnailHeight = (int)(THUMBNAIL_SIZE * scaleFactor + 0.5f);
         }    	
     	return new BitmapDrawable(Bitmap.createScaledBitmap(bitmap, sThumbnailWidth, sThumbnailHeight, false));
+    }
+    
+    public static Bitmap createShortcutIcon(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap); 
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

@@ -84,5 +84,7 @@
     <string name="contactPhotosSummary">Show contact photos</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="createShortcut">Create home screen shortcut</string>
+    <string name="shortcutCreated">Home screen shortcut has been created.</string>
     <string name="removeFromList">Remove from list</string>
 </resources>

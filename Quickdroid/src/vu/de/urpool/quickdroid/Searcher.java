@@ -157,7 +157,7 @@ public class Searcher extends Handler {
         		} else {
         			mOffset += numSuggestions;
         		}        		
-        		boolean done = (mSearchPatternMatchingLevel < mLauncher.getPatternMatchingLevel() || mNumSuggestions >= mLauncher.getMaxSuggestions());
+        		boolean done = (mSearchPatternMatchingLevel < mLauncher.getSearchPatternMatchingLevel() || mNumSuggestions >= mLauncher.getMaxSuggestions());
         		if (!done) {
         			doSearch();
         		} else {

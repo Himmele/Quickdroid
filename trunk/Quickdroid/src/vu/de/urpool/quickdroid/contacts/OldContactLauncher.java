@@ -60,10 +60,11 @@ public class OldContactLauncher extends Launcher {
 		private static final int ONLINE = 5;
 	}
     
-	private static final Uri MY_CONTACTS = Uri.parse("content://contacts/groups/system_id/" + Contacts.Groups.GROUP_MY_CONTACTS + "/members");
+	private Uri MY_CONTACTS = Uri.parse("content://contacts/groups/system_id/" + Contacts.Groups.GROUP_MY_CONTACTS + "/members");
 	
     private Context mContext;
     private ContentResolver mContentResolver;
+    private boolean mUseAllContactGroups;
     private boolean mUseContactPhotos;
 	private Drawable mContactDefaultThumbnail;
 	private Drawable mContactInvisibleThumbnail;
@@ -75,11 +76,11 @@ public class OldContactLauncher extends Launcher {
 		mContext = context;
 		mContentResolver = context.getContentResolver();
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-		if (settings.getBoolean(Preferences.PREF_CONTACT_PHOTOS, false)) {
-			mUseContactPhotos = true;
-		} else {
-			mUseContactPhotos = false;
+		mUseAllContactGroups = settings.getBoolean(Preferences.PREF_ALL_CONTACT_GROUPS, false);
+		if (mUseAllContactGroups) {
+		    MY_CONTACTS = Uri.parse("content://contacts/people");
 		}
+        mUseContactPhotos = settings.getBoolean(Preferences.PREF_CONTACT_PHOTOS, false);
 		mContactDefaultThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_launcher));
 		mContactInvisibleThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_invisible));
 		mContactAwayThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_away));

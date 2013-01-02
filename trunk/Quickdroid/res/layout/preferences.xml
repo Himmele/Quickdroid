@@ -77,6 +77,11 @@
             android:dialogTitle="@string/patternMatchingDialogTitle"
             android:negativeButtonText="@string/cancel"
             android:dependency="searchContacts"/>
+        <CheckBoxPreference android:key="allContactGroups"
+	        android:title="@string/allContactGroups"
+	        android:summary="@string/allContactGroupsSummary"
+	        android:defaultValue="false"
+	        android:dependency="searchContacts"/>
         <CheckBoxPreference android:key="contactPhotos"
 	        android:title="@string/contactPhotos"
 	        android:summary="@string/contactPhotosSummary"

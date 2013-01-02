@@ -18,6 +18,7 @@ package vu.de.urpool.quickdroid.contacts;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -40,6 +41,7 @@ import vu.de.urpool.quickdroid.R;
 import vu.de.urpool.quickdroid.SearchPatternMatchingLevel;
 import vu.de.urpool.quickdroid.utils.ThumbnailFactory;
 
+@TargetApi(5)
 public class ContactLauncher extends Launcher {
 	public static final String NAME = "ContactLauncher";
 	private static final String NAME_COLUMN = ContactsContract.Contacts.DISPLAY_NAME;
@@ -72,6 +74,7 @@ public class ContactLauncher extends Launcher {
 	
     private Context mContext;
     private ContentResolver mContentResolver;
+    private boolean mUseAllContactGroups;
     private boolean mUseContactPhotos;
 	private Drawable mContactDefaultThumbnail;
 	private Drawable mContactInvisibleThumbnail;
@@ -83,11 +86,8 @@ public class ContactLauncher extends Launcher {
 		mContext = context;
 		mContentResolver = context.getContentResolver();
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-		if (settings.getBoolean(Preferences.PREF_CONTACT_PHOTOS, false)) {
-			mUseContactPhotos = true;
-		} else {
-			mUseContactPhotos = false;
-		}
+		mUseAllContactGroups = settings.getBoolean(Preferences.PREF_ALL_CONTACT_GROUPS, false);
+		mUseContactPhotos = settings.getBoolean(Preferences.PREF_CONTACT_PHOTOS, false);
 		mContactDefaultThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_launcher));
 		mContactInvisibleThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_invisible));
 		mContactAwayThumbnail = ThumbnailFactory.createThumbnail(context, context.getResources().getDrawable(R.drawable.contact_away));
@@ -99,8 +99,8 @@ public class ContactLauncher extends Launcher {
 	public String getName() {
 		return NAME;
 	}
-	
-	@Override
+		
+    @Override
 	public ArrayList<Launchable> getSuggestions(String searchText, int patternMatchingLevel, int offset, int limit) {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
@@ -151,7 +151,7 @@ public class ContactLauncher extends Launcher {
  				cursor.move(offset);
  				int i = 0;
  				while (!cursor.isAfterLast() && i < limit) {
- 					if (cursor.getInt(VISIBILITY_COLUMN_INDEX) != 0) {
+ 					if (mUseAllContactGroups || cursor.getInt(VISIBILITY_COLUMN_INDEX) != 0) {
 	 					ContactLaunchable contactLaunchable = new ContactLaunchable(this,
 	 						cursor.getInt(ID_COLUMN_INDEX),
 	 						cursor.getString(NAME_COLUMN_INDEX),

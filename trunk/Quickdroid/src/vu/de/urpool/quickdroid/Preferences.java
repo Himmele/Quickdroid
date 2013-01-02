@@ -33,6 +33,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	public static final String PREF_BACK_KEY_HANDLING = "backKeyHandling";
 	public static final String PREF_GESTURE_RECOGNIZER = "gestureRecognizer";
 	public static final String PREF_SPEECH_RECOGNIZER = "speechRecognizer";
+	public static final String PREF_ALL_CONTACT_GROUPS = "allContactGroups";
 	public static final String PREF_CONTACT_PHOTOS = "contactPhotos";
 	public static boolean SEARCH_LAUNCHER = true;
 	public static boolean DO_NOT_SEARCH_LAUNCHER = false;

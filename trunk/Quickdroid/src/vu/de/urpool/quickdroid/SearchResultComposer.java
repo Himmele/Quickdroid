@@ -63,7 +63,7 @@ public class SearchResultComposer extends BaseAdapter {
 		mFavoriteItemsLauncher = mQuickdroid.getFavoriteItemsLauncher();
 		mSuggestions = new LinkedList<Launchable>();
 		mViewableSuggestions = new ArrayList<Launchable>();
-		mSearchResultInsertPositions = new int[mNumLaunchers * PatternMatchingLevel.NUM_LEVELS];
+		mSearchResultInsertPositions = new int[mNumLaunchers * SearchPatternMatchingLevel.NUM_LEVELS];
 	}
 	
 	public void onDestroy() {
@@ -156,8 +156,8 @@ public class SearchResultComposer extends BaseAdapter {
 		}
 	}
 	
-	public void addSuggestions(Launcher launcher, String searchText, int patternMatchingLevel, ArrayList<Launchable> suggestions) {
-		if (suggestions != null && suggestions.size() > 0 && patternMatchingLevel >= PatternMatchingLevel.LOW && patternMatchingLevel <= PatternMatchingLevel.TOP) {
+	public void addSuggestions(Launcher launcher, String searchText, int searchPatternMatchingLevel, ArrayList<Launchable> suggestions) {
+		if (suggestions != null && suggestions.size() > 0 && searchPatternMatchingLevel >= SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT && searchPatternMatchingLevel <= SearchPatternMatchingLevel.STARTS_WITH_SEARCH_TEXT) {
 			if (mClearSuggestions) {				
 				mClearSuggestions = false;
 				mSuggestions.clear();
@@ -181,7 +181,12 @@ public class SearchResultComposer extends BaseAdapter {
 					}
 				} else {
 					// Do not add duplicate favorite items
-					int nextFavoriteItemPos = mSearchResultInsertPositions[(PatternMatchingLevel.NUM_LEVELS - PatternMatchingLevel.LOW) * mNumLaunchers + launcherIndex];
+				    int nextFavoriteItemPos = 0;
+		            for (int i = 1; i <= (SearchPatternMatchingLevel.NUM_LEVELS - searchPatternMatchingLevel); i++) {
+		                nextFavoriteItemPos += mSearchResultInsertPositions[i * mNumLaunchers - 1];
+		            }
+		            nextFavoriteItemPos += mSearchResultInsertPositions[(SearchPatternMatchingLevel.NUM_LEVELS - searchPatternMatchingLevel) * mNumLaunchers + launcherIndex];
+				    
 					for (int i = 0; i < nextFavoriteItemPos; i++) {
 						Launchable launchable = mSuggestions.get(i);
 						int j = 0;
@@ -212,13 +217,13 @@ public class SearchResultComposer extends BaseAdapter {
 			
 			// The mSearchResultInsertPositions array holds the insert positions for new suggestions -> sort order: pattern matching level, launcher ID
 			int insertPosition = 0;
-			for (int i = 1; i <= (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel); i++) {
-				insertPosition += mSearchResultInsertPositions[mNumLaunchers * i - 1];
+			for (int i = 1; i <= (SearchPatternMatchingLevel.NUM_LEVELS - searchPatternMatchingLevel); i++) {
+				insertPosition += mSearchResultInsertPositions[i * mNumLaunchers - 1];
 			}
-			insertPosition += mSearchResultInsertPositions[(PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex];
+			insertPosition += mSearchResultInsertPositions[(SearchPatternMatchingLevel.NUM_LEVELS - searchPatternMatchingLevel) * mNumLaunchers + launcherIndex];
 			
 			mSuggestions.addAll(insertPosition, suggestions);
-			int pos = (PatternMatchingLevel.NUM_LEVELS - patternMatchingLevel) * mNumLaunchers + launcherIndex; 
+			int pos = (SearchPatternMatchingLevel.NUM_LEVELS - searchPatternMatchingLevel) * mNumLaunchers + launcherIndex; 
 			for (int i = pos; i < pos + mNumLaunchers - launcherIndex; i++) {
 				mSearchResultInsertPositions[i] += suggestions.size();
 			}

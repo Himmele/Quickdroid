@@ -31,7 +31,7 @@ import android.util.Log;
 import android.widget.Toast;
 import vu.de.urpool.quickdroid.Launcher;
 import vu.de.urpool.quickdroid.Launchable;
-import vu.de.urpool.quickdroid.PatternMatchingLevel;
+import vu.de.urpool.quickdroid.SearchPatternMatchingLevel;
 import vu.de.urpool.quickdroid.R;
 
 public class AppLauncher extends Launcher {
@@ -66,19 +66,19 @@ public class AppLauncher extends Launcher {
 	public ArrayList<Launchable> getSuggestions(String searchText, int patternMatchingLevel, int offset, int limit) {
 		Cursor cursor = null;
 		switch(patternMatchingLevel) {
-		case PatternMatchingLevel.TOP:
+		case SearchPatternMatchingLevel.STARTS_WITH_SEARCH_TEXT:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
 				"LOWER(Label) LIKE ?", 
 				new String[] { searchText + "%" }, 
 				"Label");
 			break;
-		case PatternMatchingLevel.HIGH:
+		case SearchPatternMatchingLevel.CONTAINS_WORD_THAT_STARTS_WITH_SEARCH_TEXT:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
 				"LOWER(Label) LIKE ?", 
 				new String[] { "% " + searchText + "%" },
 				"Label");
 			break;
-		case PatternMatchingLevel.MIDDLE:
+		case SearchPatternMatchingLevel.CONTAINS_SEARCH_TEXT:
 			cursor = mContentResolver.query(AppProvider.APPS_URI, APPS_PROJECTION,
 				"LOWER(Label) LIKE ?" +
 					" AND LOWER(Label) NOT LIKE ?" +
@@ -86,7 +86,7 @@ public class AppLauncher extends Launcher {
 				new String[] { "%" + searchText + "%", searchText + "%", "% " + searchText + "%" },
 				"Label");
 			break;
-		case PatternMatchingLevel.LOW:
+		case SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT:
 			String searchPattern = "";
 			for(char c : searchText.toCharArray()) {
 				searchPattern += "%" + c;

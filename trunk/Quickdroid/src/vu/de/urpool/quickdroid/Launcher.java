@@ -17,18 +17,19 @@ package vu.de.urpool.quickdroid;
  */
 
 import java.util.ArrayList;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.view.View;
 
 public abstract class Launcher {
 	private int mId;
 	private int mMaxSuggestions;
-	private int mPatternMatchingLevel;
+	private int mSearchPatternMatchingLevel;
 	
 	public Launcher() {
 		mId = getName().hashCode();
 		mMaxSuggestions = 10;
-		mPatternMatchingLevel = SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT;
+		mSearchPatternMatchingLevel = SearchPatternMatchingLevel.CONTAINS_EACH_CHAR_OF_SEARCH_TEXT;
 	}
 	
 	public abstract String getName();
@@ -72,11 +73,13 @@ public abstract class Launcher {
 		return mMaxSuggestions;
 	}
 	
-	public void setPatternMatchingLevel(int level) {
-		mPatternMatchingLevel = level;
+	public void setSearchPatternMatchingLevel(int level) {
+		mSearchPatternMatchingLevel = level;
 	}
 	
-	public int getPatternMatchingLevel() {
-		return mPatternMatchingLevel;
+	public int getSearchPatternMatchingLevel() {
+		return mSearchPatternMatchingLevel;
 	}
+	
+	public abstract Intent getIntent(Launchable launchable);
 }

@@ -30,6 +30,7 @@ import vu.de.urpool.quickdroid.favoriteitems.FavoriteItemsProvider;
 import vu.de.urpool.quickdroid.media.audio.AlbumLauncher;
 import vu.de.urpool.quickdroid.media.audio.ArtistLauncher;
 import vu.de.urpool.quickdroid.media.audio.SongLauncher;
+import vu.de.urpool.quickdroid.utils.ThumbnailFactory;
 import android.app.*;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -205,21 +206,39 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+				final Launchable launchable = (Launchable) mListAdapter.getItem(position);					
+				AlertDialog.Builder builder = new AlertDialog.Builder(Quickdroid.this);
+				builder.setTitle(launchable.getLabel());
+				ArrayList<CharSequence> items = new ArrayList<CharSequence>();
+				items.add(getResources().getString(R.string.createShortcut));
 				if (mListAdapter == mSearchHistoryComposer) {
-					final Launchable launchable = (Launchable) mListAdapter.getItem(position);
-					AlertDialog.Builder builder = new AlertDialog.Builder(Quickdroid.this);
-					builder.setTitle(launchable.getLabel());					
-					builder.setItems(new CharSequence[] { getResources().getString(R.string.removeFromList) }, new DialogInterface.OnClickListener() {
-					    public void onClick(DialogInterface dialog, int pos) {					    	
-					    	mSearchHistoryComposer.removeLaunchable(launchable);
-					    }
-					});
-					builder.setNegativeButton(R.string.cancel, null);
-					AlertDialog dialog = builder.create();
-					dialog.show();					
-					return true;
+				    items.add(getResources().getString(R.string.removeFromList));
 				}
-				return false;
+				builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int pos) {
+				        switch (pos) {
+				        case 0:
+				            Intent shortcutIntent = launchable.getLauncher().getIntent(launchable);
+				            if (shortcutIntent != null) {
+					            Intent intent = new Intent();
+					            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+					            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, launchable.getLabel());
+					            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ThumbnailFactory.createShortcutIcon(launchable.getThumbnail()));
+					            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+					            Quickdroid.this.sendBroadcast(intent);
+					            Toast.makeText(getApplicationContext(), getResources().getString(R.string.shortcutCreated), Toast.LENGTH_SHORT).show();
+				            }
+				            break;
+				        case 1:
+				            mSearchHistoryComposer.removeLaunchable(launchable);
+				            break;
+				        }
+				    }
+				});
+				builder.setNegativeButton(R.string.cancel, null);
+				AlertDialog dialog = builder.create();
+				dialog.show();					
+				return true;
 			}
 		});
         getListView().setOnTouchListener(new OnTouchListener() {
@@ -382,7 +401,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	    	String strPatternMatchingLevel = Preferences.DEFAULT_PATTERN_MATCHING_LEVEL;
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		mFavoriteItemsLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		mFavoriteItemsLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 	    	mLaunchers.add(launcherIndex++, mFavoriteItemsLauncher);
@@ -401,7 +420,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		appLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		appLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 	    	mLaunchers.add(launcherIndex++, appLauncher);
@@ -425,7 +444,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		contactLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		contactLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 			mLaunchers.add(launcherIndex++, contactLauncher);
@@ -444,7 +463,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		bookmarkLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		bookmarkLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 			mLaunchers.add(launcherIndex++, bookmarkLauncher);
@@ -470,7 +489,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		artistLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		artistLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 			mLaunchers.add(launcherIndex++, artistLauncher);
@@ -494,7 +513,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		albumLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		albumLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 			mLaunchers.add(launcherIndex++, albumLauncher);
@@ -513,7 +532,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		    	Preferences.DEFAULT_PATTERN_MATCHING_LEVEL);
 	    	try {
 	    		int patternMatchingLevel = Integer.parseInt(strPatternMatchingLevel);
-	    		songLauncher.setPatternMatchingLevel(patternMatchingLevel);
+	    		songLauncher.setSearchPatternMatchingLevel(patternMatchingLevel);
 	    	} catch (NumberFormatException e) {	
 	    	}
 			mLaunchers.add(launcherIndex++, songLauncher);

@@ -165,4 +165,11 @@ public class BookmarkLauncher extends Launcher {
     public Drawable getThumbnail() {
 		return mBookmarkThumbnail;
 	}
+    
+    @Override
+    public Intent getIntent(Launchable launchable) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((BookmarkLaunchable) launchable).getUrl()));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        return intent;
+    }
 }

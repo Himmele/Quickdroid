@@ -244,4 +244,11 @@ public class ContactLauncher extends Launcher {
 			}
     	}
 	}
+    
+    @Override
+    public Intent getIntent(Launchable launchable) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, launchable.getId()));
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        return intent;
+    }
 }

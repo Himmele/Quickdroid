@@ -186,4 +186,17 @@ public class ArtistLauncher extends Launcher {
     public Drawable getThumbnail(Launchable launchable) {
 		return mThumbnail;
 	}
+    
+    @Override
+    public Intent getIntent(Launchable launchable) {
+        String query = "";                    
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.INTENT_ACTION_MEDIA_SEARCH);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        query = launchable.getLabel();
+        intent.putExtra(MediaStore.EXTRA_MEDIA_ARTIST, launchable.getLabel());
+        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE);
+        intent.putExtra(SearchManager.QUERY, query);
+        return intent;
+    }
 }

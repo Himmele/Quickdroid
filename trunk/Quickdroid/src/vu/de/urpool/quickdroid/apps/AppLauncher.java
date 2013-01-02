@@ -184,4 +184,10 @@ public class AppLauncher extends Launcher {
 		}
 		return thumbnail;
 	}
+	
+	@Override
+    public Intent getIntent(Launchable launchable) {
+        AppLaunchable appLaunchable = (AppLaunchable) launchable;
+        return appLaunchable.getIntent(); 
+    }
 }

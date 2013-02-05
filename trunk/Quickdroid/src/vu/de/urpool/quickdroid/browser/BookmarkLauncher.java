@@ -148,9 +148,9 @@ public class BookmarkLauncher extends Launcher {
     @Override
 	public boolean activate(Launchable launchable) {
     	if(launchable instanceof BookmarkLaunchable) {
-    		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((BookmarkLaunchable) launchable).getUrl()));
-    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
     		try {
+    			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(((BookmarkLaunchable) launchable).getUrl()));
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             	mContext.startActivity(intent);
             } catch (Exception e) {
             	Toast.makeText(mContext, "Sorry: Cannot launch \"" + launchable.getLabel() + "\"", Toast.LENGTH_SHORT).show();

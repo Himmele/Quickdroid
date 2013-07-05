@@ -144,8 +144,8 @@ public class FavoriteItemsProvider extends ContentProvider {
 		}
 	}
 	
-	private void insert(SQLiteDatabase db, ContentValues values) {		
-		String searchText = values.getAsString("SearchText");		
+	private void insert(SQLiteDatabase db, ContentValues values) {	
+		String searchText = values.getAsString("SearchText").replace("'", "''"); // escape apostrophes inside of SQL strings		
 		values.remove("SearchText");
 		int launcherId = values.getAsInteger("LauncherID");		
 		values.remove("LauncherID");

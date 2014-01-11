@@ -15,8 +15,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vu.de.urpool.quickdroid"
-    android:versionCode="49"
-    android:versionName="4.3.2">
+    android:versionCode="50"
+    android:versionName="4.4">
     
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
@@ -44,6 +44,10 @@
 		        <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		    </intent-filter>
+		    <intent-filter>
+				<action android:name="android.intent.action.ASSIST"/>
+            	<category android:name="android.intent.category.DEFAULT"/>
+    		</intent-filter>
         </activity>
         <activity android:name=".Preferences"
         	android:label="@string/appSettings"/>

@@ -656,7 +656,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	
 	private void checkSettings() {
 		int versionCode = mSettings.getInt("versionCode", 7);
-		if (versionCode < 49) {
+		if (versionCode < 50) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			if (versionCode < 8) {
 				editor.putInt("versionCode", 8);
@@ -693,7 +693,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				appsEditor.putInt("syncState", AppProvider.OUT_OF_SYNC);
 				appsEditor.commit();
 			}
-			editor.putInt("versionCode", 49);
+			editor.putInt("versionCode", 50);
 			editor.commit();
 		}
 	}

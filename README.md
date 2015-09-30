@@ -16,7 +16,6 @@ Key Features:
 
 Here are some screenshots...
 
-First Header  | Second Header
 ------------- | -------------
 ![Screenshot1](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot1.png) | ![Screenshot2](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot2.png)
 ![Screenshot3](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot3.png) | ![Screenshot4](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot4.png)

@@ -12,7 +12,6 @@ Key Features:
 - As fast as Google's search app while providing better search results :-)
 - Search history for quick access to the most recently used items
 - Search widget support
--...
 
 Quickdroid | Quickdroid
 --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------

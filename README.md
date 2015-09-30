@@ -16,8 +16,12 @@ Key Features:
 
 Here are some screenshots...
 
-:-------------------------:|:-------------------------:
-![Screenshot1](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot1.png) | ![Screenshot2](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot2.png)
-![Screenshot3](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot3.png) | ![Screenshot4](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot4.png)
-![Screenshot5](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot5.png) | ![Screenshot6](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot6.png)
-![Screenshot7](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot7.png) | ![Screenshot8](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot8.png)
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
+| ![Screenshot1](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot1.png) | ![Screenshot2](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot2.png) |
+| ![Screenshot3](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot3.png) | ![Screenshot4](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot4.png) |
+| ![Screenshot5](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot5.png) | ![Screenshot6](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot6.png) |
+| ![Screenshot7](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot7.png) | ![Screenshot8](https://raw.github.com/Himmele/Quickdroid/master/images/Screenshot8.png) |
